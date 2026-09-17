@@ -122,6 +122,20 @@ python predict_ppe.py --source video.mp4 --imgsz 1280 --conf 0.25 --show
 
 Outputs are saved under `runs/ppe/`.
 
+## Tested on internet videos
+
+The released checkpoint was also run on two openly reusable internet-video excerpts. The repository includes:
+
+- Annotated H.264 MP4 outputs
+- Representative annotated JPEG frames
+- Per-class detection counts and timing data
+- Reproducible multi-video testing code in `test_video_inference.py`
+- Source links, licenses and modification details
+
+See **[internet-video test results](TEST_RESULTS.md)** or open the machine-readable [`results_summary.json`](test_results/results_summary.json).
+
+These example clips do not have ground-truth boxes, so their detection counts are not an accuracy measurement. Use the published validation metrics above for the model benchmark and evaluate against labeled footage from the intended deployment site.
+
 ## Model provenance
 
 - Dataset and original checkpoints: [SH17 dataset repository](https://github.com/ahmadmughees/SH17dataset)

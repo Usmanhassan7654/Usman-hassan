@@ -1,0 +1,71 @@
+{
+  "model": "SH17_YOLOv9e_PPE_17class.pt",
+  "model_classes": {
+    "0": "person",
+    "1": "ear",
+    "2": "ear-mufs",
+    "3": "face",
+    "4": "face-guard",
+    "5": "face-mask",
+    "6": "foot",
+    "7": "tool",
+    "8": "glasses",
+    "9": "gloves",
+    "10": "helmet",
+    "11": "hands",
+    "12": "head",
+    "13": "medical-suit",
+    "14": "shoes",
+    "15": "safety-suit",
+    "16": "safety-vest"
+  },
+  "settings": {
+    "confidence": 0.25,
+    "iou": 0.5,
+    "image_size": 640,
+    "device": "cpu"
+  },
+  "videos": [
+    {
+      "source_file": "abseiling_worker.mp4",
+      "annotated_video": "abseiling_worker_annotated.mp4",
+      "representative_frame": "abseiling_worker_best_frame.jpg",
+      "frames_processed": 24,
+      "frames_with_detections": 23,
+      "duration_seconds": 6.0,
+      "processing_seconds": 15.225,
+      "processing_fps": 1.576,
+      "detections_by_class": {
+        "face": 5,
+        "gloves": 19,
+        "hands": 4,
+        "head": 25,
+        "helmet": 11,
+        "person": 32,
+        "shoes": 11,
+        "tool": 1
+      },
+      "h264_output": true
+    },
+    {
+      "source_file": "historical_workers.mp4",
+      "annotated_video": "historical_workers_annotated.mp4",
+      "representative_frame": "historical_workers_best_frame.jpg",
+      "frames_processed": 24,
+      "frames_with_detections": 24,
+      "duration_seconds": 6.0,
+      "processing_seconds": 17.77,
+      "processing_fps": 1.351,
+      "detections_by_class": {
+        "ear": 3,
+        "foot": 14,
+        "hands": 5,
+        "head": 82,
+        "person": 151,
+        "shoes": 2,
+        "tool": 2
+      },
+      "h264_output": true
+    }
+  ]
+}
