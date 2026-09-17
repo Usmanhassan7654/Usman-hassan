@@ -1,0 +1,31 @@
+name: Publish PPE model release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish-model:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download verified SH17 YOLOv9-e checkpoint
+        run: |
+          curl -L --fail --retry 3 \
+            -o SH17_YOLOv9e_PPE_17class.pt \
+            https://github.com/ahmadmughees/SH17dataset/releases/download/v1/yolo9e.pt
+          echo "5ac6ac236da0f5cee84418f38170de67e314404f7a63a97c74ba5d172e33f39d  SH17_YOLOv9e_PPE_17class.pt" | sha256sum --check
+
+      - name: Create release or update its model asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view ppe-v1.0 --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            gh release upload ppe-v1.0 SH17_YOLOv9e_PPE_17class.pt --clobber --repo "${{ github.repository }}"
+          else
+            gh release create ppe-v1.0 SH17_YOLOv9e_PPE_17class.pt \
+              --repo "${{ github.repository }}" \
+              --title "Industrial PPE Detection Model v1.0" \
+              --notes "YOLOv9-e checkpoint trained by the SH17 dataset authors for 17-class industrial PPE detection. See README for classes, metrics, limitations, checksum and usage."
+          fi
