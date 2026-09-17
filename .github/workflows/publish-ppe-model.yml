@@ -1,6 +1,10 @@
 name: Publish PPE model release
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/publish-ppe-model.yml
   workflow_dispatch:
 
 permissions:
