@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Usman Hasan's working portfolio of grounded sales, call-handling, and lead-generation agents." />
+  <title>Usman Hasan — Agent Systems Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Agent Systems Lab home">
+      <span class="brand-mark">UH</span>
+      <span><strong>Agent Systems Lab</strong><small>by Usman Hasan</small></span>
+    </a>
+    <div class="top-actions">
+      <span class="status-pill"><i></i> 7 demos online</span>
+      <a class="ghost-button" href="#architecture">How they stay grounded</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="intro">
+      <div>
+        <p class="eyebrow">PRODUCTION-MINDED AGENTIC AI</p>
+        <h1>Don’t watch a pitch.<br><span>Test the agents.</span></h1>
+      </div>
+      <p class="intro-copy">Seven interactive prototypes for sales, call handling and lead generation. Every response is constrained by approved data, rules and visible evidence.</p>
+    </section>
+
+    <section class="lab" aria-label="Interactive agent lab">
+      <aside class="agent-rail">
+        <div class="rail-heading">
+          <span>LIVE SYSTEMS</span>
+          <span class="count">07</span>
+        </div>
+        <div id="agent-list" class="agent-list"></div>
+      </aside>
+
+      <article class="workspace">
+        <div class="workspace-head">
+          <div>
+            <div class="agent-kicker"><span id="agent-index">01</span> / <span id="agent-type">SALES AGENT</span></div>
+            <h2 id="agent-name">Haramain Gift Concierge</h2>
+            <p id="agent-company">Haramain Gifts · Makkah & Madinah</p>
+          </div>
+          <div class="confidence"><span>Grounding policy</span><strong>Strict</strong></div>
+        </div>
+
+        <div class="capability-row" id="capabilities"></div>
+
+        <div class="conversation" id="conversation" aria-live="polite"></div>
+
+        <div class="evidence-panel" id="evidence-panel">
+          <div class="evidence-title"><span>VERIFIED CONTEXT USED</span><button id="toggle-evidence" type="button">Hide</button></div>
+          <div id="evidence-content"></div>
+        </div>
+
+        <div class="quick-prompts" id="quick-prompts"></div>
+
+        <form id="chat-form" class="composer">
+          <label class="sr-only" for="message">Test this agent</label>
+          <input id="message" autocomplete="off" placeholder="Ask a realistic customer question…" />
+          <button type="submit" aria-label="Send message">Run <span>↗</span></button>
+        </form>
+      </article>
+    </section>
+
+    <section id="architecture" class="architecture">
+      <div class="section-label">ANTI-HALLUCINATION ARCHITECTURE</div>
+      <div class="architecture-grid">
+        <article><span>01</span><h3>Approved knowledge only</h3><p>Answers come from a versioned catalogue, service sheet or operating policy—not open-ended invention.</p></article>
+        <article><span>02</span><h3>Deterministic business rules</h3><p>Pricing, lead scores, budget checks and handoffs are calculated by code and displayed for inspection.</p></article>
+        <article><span>03</span><h3>Evidence with every result</h3><p>The prototype exposes the exact records it used. Missing data produces a clear refusal or human escalation.</p></article>
+        <article><span>04</span><h3>Safe action boundaries</h3><p>Agents draft and qualify inside the demo. Sensitive payments, claims and commitments require human approval.</p></article>
+      </div>
+    </section>
+
+    <section class="footer-cta">
+      <div><p class="eyebrow">BUILT BY USMAN HASAN</p><h2>AI/ML Engineer · Computer Vision · Agentic Systems</h2></div>
+      <a href="https://github.com/Usmanhassan7654/Usman-hassan/tree/main/agent-systems-lab" target="_blank" rel="noreferrer">Review the source <span>↗</span></a>
+    </section>
+  </main>
+
+  <footer><span>Agent Systems Lab</span><span>Prototype data is clearly labelled. No live customer action is performed.</span></footer>
+  <script src="app.js"></script>
+</body>
+</html>
