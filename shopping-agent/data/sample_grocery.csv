@@ -1,0 +1,103 @@
+sku,name,category,brand,price,unit,stock,tags,description
+DAI-001,Whole Milk,Dairy & Eggs,Green Valley,1.29,1 L,120,dairy;vegetarian,Fresh pasteurised whole milk
+DAI-002,Skimmed Milk,Dairy & Eggs,Green Valley,1.19,1 L,80,dairy;vegetarian;low-fat,Fat-free skimmed milk
+DAI-003,Oat Milk,Dairy & Eggs,Oatly,2.49,1 L,60,vegan;dairy-free;plant-based,Creamy oat drink
+DAI-004,Free-Range Eggs,Dairy & Eggs,Sunny Farm,3.49,12 pack,90,vegetarian;gluten-free,Large free-range eggs
+DAI-005,Greek Yogurt,Dairy & Eggs,Fage,2.99,500 g,50,vegetarian;high-protein,Thick strained natural yogurt
+DAI-006,Cheddar Cheese,Dairy & Eggs,Cathedral,3.79,400 g,45,vegetarian,Mature cheddar block
+DAI-007,Unsalted Butter,Dairy & Eggs,Lurpak,2.89,250 g,70,vegetarian,Unsalted butter
+DAI-008,Parmesan Cheese,Dairy & Eggs,Grana,4.49,200 g,30,vegetarian,Aged parmesan wedge
+DAI-009,Plain Yogurt,Dairy & Eggs,Green Valley,1.49,500 g,40,vegetarian,Natural set yogurt
+BAK-001,Wholemeal Bread,Bakery,Hovis,1.59,800 g loaf,60,vegan,Sliced wholemeal loaf
+BAK-002,White Sandwich Bread,Bakery,Warburtons,1.39,800 g loaf,70,vegan,Soft white sliced bread
+BAK-003,Gluten-Free Bread,Bakery,Schar,3.29,400 g loaf,20,gluten-free;vegan,Gluten-free white loaf
+BAK-004,Croissants,Bakery,Bakery Fresh,2.49,4 pack,25,vegetarian,All-butter croissants
+BAK-005,Naan Bread,Bakery,Patak's,1.99,4 pack,35,vegetarian,Plain naan breads
+FRU-001,Bananas,Fruit & Vegetables,Fresh,0.99,bunch of 5,150,vegan;gluten-free;fruit,Ripe yellow bananas
+FRU-002,Apples Gala,Fruit & Vegetables,Fresh,2.29,6 pack,100,vegan;gluten-free;fruit,Crisp sweet gala apples
+FRU-003,Blueberries,Fruit & Vegetables,Fresh,2.99,150 g,40,vegan;gluten-free;fruit,Sweet blueberries
+FRU-004,Strawberries,Fruit & Vegetables,Fresh,2.49,400 g,30,vegan;gluten-free;fruit,British strawberries
+FRU-005,Lemons,Fruit & Vegetables,Fresh,1.20,4 pack,60,vegan;gluten-free;fruit,Unwaxed lemons
+FRU-006,Oranges,Fruit & Vegetables,Fresh,2.10,6 pack,50,vegan;gluten-free;fruit,Juicy navel oranges
+VEG-001,Tomatoes,Fruit & Vegetables,Fresh,1.49,6 pack,90,vegan;gluten-free;vegetable,Salad tomatoes
+VEG-002,Onions,Fruit & Vegetables,Fresh,0.89,1 kg,120,vegan;gluten-free;vegetable,Brown onions
+VEG-003,Garlic,Fruit & Vegetables,Fresh,0.59,3 bulbs,100,vegan;gluten-free;vegetable,Fresh garlic bulbs
+VEG-004,Ginger Root,Fruit & Vegetables,Fresh,0.79,100 g,60,vegan;gluten-free;vegetable,Fresh ginger
+VEG-005,Potatoes,Fruit & Vegetables,Fresh,1.79,2.5 kg,80,vegan;gluten-free;vegetable,White potatoes
+VEG-006,Carrots,Fruit & Vegetables,Fresh,0.69,1 kg,90,vegan;gluten-free;vegetable,Washed carrots
+VEG-007,Baby Spinach,Fruit & Vegetables,Fresh,1.50,200 g,40,vegan;gluten-free;vegetable,Washed baby spinach leaves
+VEG-008,Bell Peppers,Fruit & Vegetables,Fresh,1.99,3 pack,50,vegan;gluten-free;vegetable,Mixed red yellow green peppers
+VEG-009,Broccoli,Fruit & Vegetables,Fresh,0.89,each,45,vegan;gluten-free;vegetable,Broccoli head
+VEG-010,Fresh Coriander,Fruit & Vegetables,Fresh,0.79,30 g,30,vegan;gluten-free;herb,Fresh coriander bunch
+VEG-011,Green Chillies,Fruit & Vegetables,Fresh,0.69,50 g,40,vegan;gluten-free;vegetable,Hot green chillies
+VEG-012,Fresh Basil,Fruit & Vegetables,Fresh,0.89,30 g,25,vegan;gluten-free;herb,Sweet basil
+VEG-013,Avocados,Fruit & Vegetables,Fresh,2.00,2 pack,35,vegan;gluten-free;fruit,Ripe and ready avocados
+VEG-014,Mint Leaves,Fruit & Vegetables,Fresh,0.79,30 g,25,vegan;gluten-free;herb,Fresh mint
+MEA-001,Chicken Breast Fillets,Meat & Fish,Farm Fresh,5.49,600 g,40,halal;gluten-free;high-protein,Skinless chicken breast
+MEA-002,Chicken Thighs Bone-In,Meat & Fish,Farm Fresh,3.99,1 kg,35,halal;gluten-free,Bone-in chicken thighs ideal for curry and biryani
+MEA-003,Beef Mince 5% Fat,Meat & Fish,Farm Fresh,4.29,500 g,40,halal;gluten-free;high-protein,Lean ground beef
+MEA-004,Lamb Leg Steaks,Meat & Fish,Farm Fresh,6.99,400 g,15,halal;gluten-free,Lamb leg steaks
+MEA-005,Salmon Fillets,Meat & Fish,Ocean Catch,5.99,2 pack,25,gluten-free;high-protein;pescatarian,Boneless salmon fillets
+MEA-006,Smoked Bacon,Meat & Fish,Farm Fresh,2.99,300 g,30,gluten-free,Smoked back bacon
+MEA-007,Tuna Chunks in Water,Meat & Fish,John West,1.29,145 g can,100,gluten-free;pescatarian;canned,Tuna in spring water
+PAN-001,Basmati Rice,Pantry,Tilda,4.49,2 kg,60,vegan;gluten-free,Long-grain basmati rice
+PAN-002,Spaghetti,Pantry,De Cecco,1.29,500 g,80,vegan,Durum wheat spaghetti pasta
+PAN-003,Penne Pasta,Pantry,De Cecco,1.29,500 g,70,vegan,Durum wheat penne
+PAN-004,Gluten-Free Pasta,Pantry,Barilla,2.29,400 g,25,vegan;gluten-free,Corn and rice fusilli
+PAN-005,Chopped Tomatoes,Pantry,Mutti,0.89,400 g can,120,vegan;gluten-free;canned,Italian chopped tomatoes
+PAN-006,Tomato Passata,Pantry,Mutti,1.19,500 g,70,vegan;gluten-free,Smooth sieved tomatoes
+PAN-007,Extra Virgin Olive Oil,Pantry,Filippo Berio,5.99,500 ml,50,vegan;gluten-free,Cold-pressed olive oil
+PAN-008,Sunflower Oil,Pantry,Flora,2.49,1 L,60,vegan;gluten-free,Cooking oil
+PAN-009,Rolled Oats,Pantry,Quaker,1.79,1 kg,70,vegan,Wholegrain porridge oats
+PAN-010,Cornflakes,Pantry,Kellogg's,2.29,500 g,50,vegetarian,Classic cornflakes cereal
+PAN-011,Granola,Pantry,Jordans,3.29,750 g,40,vegetarian,Crunchy honey granola
+PAN-012,Peanut Butter,Pantry,Whole Earth,2.79,340 g,40,vegan;gluten-free,Crunchy peanut butter
+PAN-013,Strawberry Jam,Pantry,Bonne Maman,2.49,370 g,35,vegan;gluten-free,Strawberry conserve
+PAN-014,Honey,Pantry,Rowse,3.49,340 g,30,vegetarian;gluten-free,Clear honey
+PAN-015,Red Lentils,Pantry,Natco,1.69,1 kg,40,vegan;gluten-free,Split red lentils
+PAN-016,Chickpeas,Pantry,Napolina,0.75,400 g can,80,vegan;gluten-free;canned,Chickpeas in water
+PAN-017,Plain Flour,Pantry,McDougalls,0.95,1.5 kg,40,vegan,All-purpose flour
+PAN-018,Granulated Sugar,Pantry,Tate & Lyle,1.10,1 kg,50,vegan;gluten-free,White sugar
+PAN-019,Sea Salt,Pantry,Maldon,1.99,250 g,40,vegan;gluten-free,Sea salt flakes
+PAN-020,Coconut Milk,Pantry,KTC,1.29,400 ml can,50,vegan;gluten-free;canned,Coconut milk for curries
+SPI-001,Garam Masala,Spices,East End,1.49,100 g,40,vegan;gluten-free,Garam masala spice blend
+SPI-002,Ground Turmeric,Spices,East End,0.99,100 g,40,vegan;gluten-free,Turmeric powder
+SPI-003,Chilli Powder,Spices,East End,0.99,100 g,40,vegan;gluten-free,Hot chilli powder
+SPI-004,Cumin Seeds,Spices,East End,1.19,100 g,40,vegan;gluten-free,Whole cumin seeds
+SPI-005,Biryani Masala,Spices,Shan,1.79,50 g,30,vegan;gluten-free,Spice mix for biryani
+SPI-006,Black Pepper,Spices,Schwartz,1.89,50 g,40,vegan;gluten-free,Ground black pepper
+SPI-007,Dried Oregano,Spices,Schwartz,1.29,15 g,30,vegan;gluten-free,Dried oregano
+SPI-008,Bay Leaves,Spices,East End,0.89,20 g,30,vegan;gluten-free,Dried bay leaves
+SPI-009,Cardamom Pods,Spices,East End,1.99,50 g,25,vegan;gluten-free,Green cardamom
+SNK-001,Salted Crisps,Snacks,Walkers,1.99,6 pack,60,vegetarian,Ready salted potato chips
+SNK-002,Mixed Nuts,Snacks,Whitworths,3.49,300 g,40,vegan;gluten-free;healthy,Unsalted mixed nuts
+SNK-003,Dark Chocolate 70%,Snacks,Lindt,2.29,100 g,50,vegan;gluten-free,70% cocoa dark chocolate
+SNK-004,Hummus,Snacks,Sabra,1.79,200 g,30,vegan;gluten-free;healthy,Classic houmous
+SNK-005,Rice Cakes,Snacks,Kallo,1.20,130 g,30,vegan;gluten-free;healthy,Lightly salted rice cakes
+SNK-006,Protein Bars,Snacks,Grenade,6.99,4 pack,25,high-protein,Chocolate chip protein bars
+SNK-007,Popcorn,Snacks,Propercorn,1.50,4 pack,0,vegan;gluten-free,Lightly sea salted popcorn
+DRK-001,Orange Juice,Drinks,Tropicana,2.99,1 L,50,vegan;gluten-free,Smooth orange juice no bits
+DRK-002,Coca-Cola,Drinks,Coca-Cola,4.49,6 x 330 ml,60,vegan;soda,Classic cola soft drink
+DRK-003,Sparkling Water,Drinks,San Pellegrino,3.29,6 x 500 ml,50,vegan,Sparkling mineral water
+DRK-004,Ground Coffee,Drinks,Lavazza,4.99,250 g,40,vegan,Medium roast ground coffee
+DRK-005,Black Tea Bags,Drinks,PG Tips,3.19,80 bags,50,vegan,Black tea bags
+DRK-006,Green Tea Bags,Drinks,Twinings,2.49,40 bags,30,vegan,Pure green tea
+FRZ-001,Frozen Peas,Frozen,Birds Eye,1.49,800 g,50,vegan;gluten-free;vegetable,Garden peas
+FRZ-002,Vanilla Ice Cream,Frozen,Haagen-Dazs,4.99,460 ml,25,vegetarian,Vanilla ice cream
+FRZ-003,Margherita Pizza,Frozen,Goodfella's,2.99,each,30,vegetarian,Stone baked margherita pizza
+FRZ-004,Frozen Mixed Berries,Frozen,Fresh,2.99,500 g,30,vegan;gluten-free;fruit,Mixed berries for smoothies
+HOU-001,Washing Up Liquid,Household,Fairy,1.89,780 ml,60,cleaning,Dish soap washing-up liquid
+HOU-002,Laundry Detergent,Household,Persil,7.99,38 washes,40,cleaning,Bio laundry liquid
+HOU-003,Multi-Surface Cleaner,Household,Dettol,2.49,750 ml,50,cleaning;antibacterial,Antibacterial spray cleaner
+HOU-004,Toilet Roll,Household,Andrex,4.50,9 rolls,60,paper,Soft toilet tissue
+HOU-005,Kitchen Roll,Household,Plenty,2.99,2 rolls,50,paper,Absorbent kitchen towels
+HOU-006,Bin Bags,Household,Glad,2.79,20 bags,40,,Heavy duty bin liners
+HOU-007,Sponges,Household,Scotch-Brite,1.29,3 pack,40,cleaning,Scrub sponges
+HOU-008,Bleach,Household,Domestos,1.49,750 ml,40,cleaning,Thick bleach
+HOU-009,Dishwasher Tablets,Household,Finish,6.49,30 tabs,30,cleaning,All-in-one dishwasher tablets
+PER-001,Toothpaste,Personal Care,Colgate,1.99,100 ml,50,,Fluoride toothpaste
+PER-002,Shampoo,Personal Care,Head & Shoulders,3.49,400 ml,30,,Anti-dandruff shampoo
+PER-003,Hand Soap,Personal Care,Carex,1.29,250 ml,40,antibacterial,Antibacterial hand wash
+PER-004,Shower Gel,Personal Care,Dove,2.29,450 ml,35,,Moisturising body wash
+BAB-001,Baby Nappies Size 4,Baby,Pampers,8.99,44 pack,20,,Baby diapers size 4
+BAB-002,Baby Wipes,Baby,WaterWipes,2.99,60 wipes,30,,Sensitive baby wipes
