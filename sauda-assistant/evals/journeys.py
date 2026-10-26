@@ -155,7 +155,10 @@ def run(journey: Journey, spec: str | None, effort: str) -> dict:
         turns = []
         for message, checks in journey.turns:
             started = time.time()
+            print(f"   … {journey.name}: \"{message}\"", flush=True)
             ctx.result = agent.handle(scope, ctx.session, message)
+            print(f"     answered in {time.time() - started:.0f}s with {ctx.result.usage['model_calls']} model calls"
+                  + (f"; provider error: {ctx.result.usage['errors'][-1][:160]}" if ctx.result.usage.get("errors") else ""), flush=True)
             outcomes = []
             for label, check in checks + COMMON:
                 try:
@@ -171,18 +174,22 @@ def run(journey: Journey, spec: str | None, effort: str) -> dict:
 def main() -> int:
     p = argparse.ArgumentParser()
     p.add_argument("--only", help="run journeys whose name contains this")
+    p.add_argument("--quick", action="store_true", help="run 4 core journeys only (milk, potatoes, correction, basket)")
     p.add_argument("--repeat", type=int, default=1, help="runs per journey (behaviour varies run to run)")
     p.add_argument("--llm", help="provider chain, e.g. groq, gemini, 'groq,gemini' (default: SAUDA_LLM or every provider with a key)")
     p.add_argument("--effort", default="medium", help="Claude only")
     args = p.parse_args()
     selected = [j for j in JOURNEYS if not args.only or args.only in j.name]
+    if args.quick:
+        selected = [j for j in selected if j.name in ("milk_is_milk", "potatoes_not_chips", "correction_preserves_others", "basket_only_on_request")]
+    print(f"Running {len(selected)} journeys. On free API plans each answer can take up to a minute because of rate limits.", flush=True)
     runs = []
     for j in selected:
         for i in range(args.repeat):
             r = run(j, args.llm, args.effort)
             runs.append(r)
             mark = "PASS" if r["passed"] else "FAIL"
-            print(f"{mark}  {j.name}  (run {i + 1})")
+            print(f"{mark}  {j.name}  (run {i + 1})", flush=True)
             for t in r["turns"]:
                 for o in t["checks"]:
                     if not o["passed"]:
