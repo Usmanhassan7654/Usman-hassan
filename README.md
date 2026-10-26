@@ -1,6 +1,6 @@
 # Industrial PPE Detection — SH17 YOLOv9-e
 
-> Also in this repo: [`shopping-agent/`](shopping-agent/), an AI shopping assistant built on Claude that turns plain-language needs into a filled cart and a placed order.
+> Also in this repo: [`shopping-agent/`](shopping-agent/), an AI shopping assistant built on Claude that turns plain-language needs into a filled cart and a placed order, and [`sauda-assistant/`](sauda-assistant/), a multi-retailer shopping assistant with a grounded task ledger, suitability checks and journey evals.
 
 This repository includes a ready-to-use industrial Personal Protective Equipment (PPE) detection model based on **YOLOv9-e**, trained by the SH17 dataset authors on industrial and construction imagery.
 
