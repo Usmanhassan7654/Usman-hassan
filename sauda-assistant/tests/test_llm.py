@@ -219,3 +219,20 @@ def test_typical_turn_takes_two_model_calls(repo, scope):
     r = Agent(repo, model=llm.OpenAICompatModel("groq", "openai/gpt-oss-20b", "k", session=session)).handle(scope, "s1", "doodh aur double roti")
     plan = next(c for c in r.cards if c["type"] == "plan")
     assert r.usage["model_calls"] == 2 and plan["total"] == 510 and r.grounding == {"issues": []}
+
+
+def test_groq_per_minute_limit_is_waited_out_not_treated_as_exhausted(monkeypatch):
+    waits = []
+    monkeypatch.setattr(llm.time, "sleep", waits.append)
+    tpm = FakeResponse(429, {"error": {"message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_x` service tier "
+                                       "`on_demand` on tokens per minute (TPM): Limit 8000, Used 7600, Requested 2100. Please try again in "
+                                       "13.2s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing",
+                                       "type": "tokens", "code": "rate_limit_exceeded"}}, {"retry-after": "14"})
+    tpd = FakeResponse(429, {"error": {"message": "Rate limit reached for model `openai/gpt-oss-120b` on tokens per day (TPD): Limit 200000, Used 199000."}})
+    session = FakeSession([tpm, completion("ok")])
+    assert llm.OpenAICompatModel("groq", "openai/gpt-oss-120b", "k", session=session).complete("S", [{"role": "user", "content": "hi"}], TOOLS).text == "ok"
+    assert waits == [14]
+    session = FakeSession([tpd])
+    with pytest.raises(llm.LLMError, match="tokens per day"):
+        llm.OpenAICompatModel("groq", "openai/gpt-oss-120b", "k", session=session).complete("S", [{"role": "user", "content": "hi"}], TOOLS)
+    assert len(session.requests) == 1
