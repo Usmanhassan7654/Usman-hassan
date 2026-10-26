@@ -110,7 +110,7 @@ class Agent:
         messages: list[dict] = _recent(history)
         messages.append({"role": "user", "content": text})
         messages.append({"role": "state", "content": self.state_message(turn)})
-        usage = {"input_tokens": 0, "output_tokens": 0, "cached_tokens": 0, "model_calls": 0, "models": []}
+        usage = {"input_tokens": 0, "output_tokens": 0, "cached_tokens": 0, "model_calls": 0, "models": [], "errors": []}
 
         reply = self._run(turn, messages, emit, started, usage)
         grounding = check_grounding(reply, turn, text)
@@ -141,7 +141,8 @@ class Agent:
                 return final_text or "Sorry, that took too long on my side. Could you send that again?"
             try:
                 reply = self.model.complete(self.system_prompt(turn.scope), messages, TOOLS)
-            except llm.LLMError:
+            except llm.LLMError as e:
+                usage["errors"].append(str(e))
                 return final_text or "Sorry, I'm having trouble reaching my assistant service right now. Please try again in a minute."
             _add_usage(usage, reply)
             messages.append({"role": "assistant", "content": reply.text, "tool_calls": reply.tool_calls, "raw": reply.raw})

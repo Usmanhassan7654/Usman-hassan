@@ -22,6 +22,7 @@ from __future__ import annotations
 import json
 import os
 import random
+import re
 import time
 import uuid
 from dataclasses import dataclass, field
@@ -31,6 +32,7 @@ import requests
 
 DEFAULT_MODELS = {"groq": "openai/gpt-oss-120b", "gemini": "gemini-flash-latest", "claude": "claude-opus-5-5"}
 BASE_URLS = {"groq": "https://api.groq.com/openai/v1", "gemini": "https://generativelanguage.googleapis.com/v1beta/openai"}
+GEMINI_SKIP_SIGNATURE = "skip_thought_signature_validator"
 KEY_VARS = {"groq": ("GROQ_API_KEY",), "gemini": ("GEMINI_API_KEY", "GOOGLE_API_KEY"), "claude": ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN")}
 
 
@@ -124,7 +126,7 @@ class OpenAICompatModel(ChatModel):
     """Groq and Gemini (and any other OpenAI-compatible chat completions API)."""
 
     def __init__(self, provider: str, model: str, api_key: str, base_url: str | None = None, timeout: float = 60,
-                 max_retries: int = 2, session: requests.Session | None = None):
+                 max_retries: int = 3, session: requests.Session | None = None):
         self.provider, self.model, self.api_key = provider, model, api_key
         self.base_url = (base_url or BASE_URLS[provider]).rstrip("/")
         self.timeout, self.max_retries = timeout, max_retries
@@ -139,7 +141,7 @@ class OpenAICompatModel(ChatModel):
                                                         "parameters": _clean_schema(t["input_schema"])}} for t in tools],
             "tool_choice": "auto",
             "temperature": 0.2,
-            "max_tokens": 4096,
+            "max_tokens": 2048,  # replies are short; a smaller reservation also counts less against per-minute token limits
         }
         data = self._post(body)
         choice = (data.get("choices") or [{}])[0]
@@ -154,7 +156,10 @@ class OpenAICompatModel(ChatModel):
                     raise ValueError
             except ValueError:
                 args = {"__invalid_arguments__": str(raw_args)[:500]}
-            calls.append({"id": tc.get("id") or f"call_{uuid.uuid4().hex[:12]}", "name": fn.get("name", ""), "args": args})
+            call = {"id": tc.get("id") or f"call_{uuid.uuid4().hex[:12]}", "name": fn.get("name", ""), "args": args}
+            if tc.get("extra_content"):  # e.g. Gemini's thought signature, which must be sent back with the call
+                call["extra"] = {"provider": self.provider, "content": tc["extra_content"]}
+            calls.append(call)
         finish = choice.get("finish_reason") or ""
         stop = "tool_use" if calls else {"length": "length", "content_filter": "refusal"}.get(finish, "end")
         u = data.get("usage") or {}
@@ -165,27 +170,29 @@ class OpenAICompatModel(ChatModel):
     def _post(self, body: dict) -> dict:
         url = f"{self.base_url}/chat/completions"
         headers = {"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}
+        regenerated = False
         for attempt in range(self.max_retries + 1):
             try:
                 r = self.session.post(url, json=body, headers=headers, timeout=self.timeout)
             except requests.RequestException as e:
                 if attempt == self.max_retries:
-                    raise LLMError(f"{self.name}: connection failed ({type(e).__name__})", retryable=True, provider=self.provider) from e
+                    raise LLMError(f"{self.name}: connection failed ({type(e).__name__}: {e})", retryable=True, provider=self.provider) from e
                 time.sleep(_backoff(attempt))
                 continue
             if r.status_code == 200:
                 return r.json()
-            retryable = r.status_code in (408, 409, 429) or r.status_code >= 500
             detail = _error_detail(r)
-            if retryable and attempt < self.max_retries:
-                wait = r.headers.get("retry-after")
-                time.sleep(min(float(wait), 10) if wait and wait.replace(".", "").isdigit() else _backoff(attempt))
+            # Groq answers 400 tool_use_failed when the model wrote a malformed tool call; a fresh try usually works.
+            bad_generation = r.status_code == 400 and "tool_use_failed" in r.text
+            retryable = r.status_code in (408, 409, 429) or r.status_code >= 500 or bad_generation
+            if retryable and attempt < self.max_retries and not (bad_generation and regenerated):
+                regenerated = regenerated or bad_generation  # a malformed tool call gets one fresh try
+                time.sleep(_retry_wait(r, attempt))
                 continue
             raise LLMError(f"{self.name}: HTTP {r.status_code} {detail}", retryable=retryable, provider=self.provider)
         raise LLMError(f"{self.name}: no response", retryable=True, provider=self.provider)
 
-    @staticmethod
-    def _convert(system: str, messages: list[dict]) -> list[dict]:
+    def _convert(self, system: str, messages: list[dict]) -> list[dict]:
         out: list[dict] = [{"role": "system", "content": system}]
         for m in messages:
             role = m["role"]
@@ -200,15 +207,24 @@ class OpenAICompatModel(ChatModel):
             elif role == "assistant":
                 entry: dict[str, Any] = {"role": "assistant", "content": m.get("content") or ""}
                 if m.get("tool_calls"):
-                    entry["tool_calls"] = [{"id": c["id"], "type": "function",
-                                            "function": {"name": c["name"], "arguments": json.dumps(c["args"], ensure_ascii=False)}}
-                                           for c in m["tool_calls"]]
+                    entry["tool_calls"] = [self._tool_call(c) for c in m["tool_calls"]]
                     if not entry["content"]:
                         entry["content"] = None
                 out.append(entry)
             elif role == "tool":
                 out.append({"role": "tool", "tool_call_id": m["id"], "content": m["content"]})
         return out
+
+    def _tool_call(self, c: dict) -> dict:
+        tc = {"id": c["id"], "type": "function", "function": {"name": c["name"], "arguments": json.dumps(c["args"], ensure_ascii=False)}}
+        extra = c.get("extra") or {}
+        if extra.get("provider") == self.provider:
+            tc["extra_content"] = extra["content"]
+        elif self.provider == "gemini":
+            # Gemini's thinking models expect a thought signature on earlier tool calls. Calls made by another
+            # provider have none; this documented placeholder tells Gemini to accept them as plain history.
+            tc["extra_content"] = {"google": {"thought_signature": GEMINI_SKIP_SIGNATURE}}
+        return tc
 
     def list_models(self) -> list[str]:
         r = self.session.get(f"{self.base_url}/models", headers={"Authorization": f"Bearer {self.api_key}"}, timeout=self.timeout)
@@ -219,7 +235,13 @@ class OpenAICompatModel(ChatModel):
 # -------------------------------------------------------------- fallback
 
 class FallbackModel(ChatModel):
-    """Try each model in order; move on when one is rate limited, down or times out."""
+    """Try each model in order; move on when one is rate limited, down, times out or rejects the request.
+
+    A provider that just failed is tried last for the next COOLDOWN_S seconds, so the rest of a
+    customer's turn doesn't keep waiting on it.
+    """
+
+    COOLDOWN_S = 60
 
     def __init__(self, models: list[ChatModel]):
         if not models:
@@ -228,19 +250,20 @@ class FallbackModel(ChatModel):
         self.name = " -> ".join(m.name for m in models)
         self.last_used = ""
         self.failovers = 0
+        self._failed_at: dict[str, float] = {}
 
     def complete(self, system, messages, tools) -> Reply:
+        now = time.monotonic()
+        order = sorted(self.models, key=lambda m: now - self._failed_at.get(m.name, -1e9) < self.COOLDOWN_S)
         errors = []
-        for model in self.models:
+        for model in order:
             try:
                 reply = model.complete(system, messages, tools)
                 self.last_used = model.name
                 return reply
-            except LLMError as e:  # rate limit, outage, bad key or a request this provider rejects: try the next one
-                errors.append(str(e))
-                self.failovers += 1
-            except Exception as e:  # SDK errors from the Claude adapter
-                errors.append(f"{model.name}: {type(e).__name__}: {e}")
+            except Exception as e:  # LLMError, or an SDK error from the Claude adapter
+                errors.append(str(e) if isinstance(e, LLMError) else f"{model.name}: {type(e).__name__}: {e}")
+                self._failed_at[model.name] = time.monotonic()
                 self.failovers += 1
         raise LLMError("All models failed: " + " | ".join(errors), retryable=True)
 
@@ -298,6 +321,17 @@ def _clean_schema(schema: Any) -> Any:
     if isinstance(schema, list):
         return [_clean_schema(s) for s in schema]
     return schema
+
+
+def _retry_wait(r: requests.Response, attempt: int) -> float:
+    """Honour the provider's retry-after (rate limits often ask for 5-30 s), within reason."""
+    for header in ("retry-after", "x-ratelimit-reset-tokens", "x-ratelimit-reset-requests"):
+        value = r.headers.get(header, "")
+        m = re.match(r"^\s*(?:(\d+)m)?\s*([\d.]+)\s*(ms|s)?\s*$", value)
+        if m and value:
+            seconds = float(m.group(2)) / (1000 if m.group(3) == "ms" else 1) + 60 * int(m.group(1) or 0)
+            return min(max(seconds, 0.5), 30.0)
+    return _backoff(attempt) * (3 if r.status_code == 429 else 1)
 
 
 def _backoff(attempt: int) -> float:

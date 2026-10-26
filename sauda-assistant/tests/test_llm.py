@@ -82,7 +82,7 @@ def test_tool_calls_round_trip_and_bad_json():
     # history goes back in OpenAI shape
     convo = [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "", "tool_calls": r.tool_calls},
              {"role": "tool", "id": "call_0", "name": "find_products", "content": "{}"}]
-    out = llm.OpenAICompatModel._convert("S", convo)
+    out = m._convert("S", convo)
     assert out[2]["content"] is None and out[2]["tool_calls"][0]["function"]["arguments"] == '{"need_ids": ["n1"]}'
     assert out[3] == {"role": "tool", "tool_call_id": "call_0", "content": "{}"}
 
@@ -98,7 +98,7 @@ def test_retries_rate_limits_then_fails_over_to_the_next_provider():
 
 def test_bad_request_moves_on_and_total_failure_is_reported():
     bad = FakeSession([FakeResponse(400, {"error": {"message": "schema rejected"}})])
-    down = FakeSession([FakeResponse(503, {"error": "down"})] * 3)
+    down = FakeSession([FakeResponse(503, {"error": "down"})] * 4)
     chain = llm.FallbackModel([llm.OpenAICompatModel("gemini", "m", "k", session=bad), llm.OpenAICompatModel("groq", "g", "k", session=down)])
     with pytest.raises(llm.LLMError) as e:
         chain.complete("S", [{"role": "user", "content": "hi"}], TOOLS)
@@ -147,3 +147,45 @@ def test_grounding_check_also_guards_open_models(repo, scope):
     ])
     r = Agent(repo, model=llm.OpenAICompatModel("gemini", "gemini-flash-latest", "k", session=session)).handle(scope, "s1", "cheeni")
     assert r.reply.startswith("Cheeni Rs 155") and len(r.grounding["corrected"]) == 2
+
+
+def test_gemini_thought_signatures_are_sent_back_or_placeholdered():
+    session = FakeSession([{"choices": [{"message": {"role": "assistant", "content": None, "tool_calls": [
+        {"id": "g1", "type": "function", "function": {"name": "find_products", "arguments": "{}"},
+         "extra_content": {"google": {"thought_signature": "SIG"}}}]}, "finish_reason": "tool_calls"}]}])
+    gem = llm.OpenAICompatModel("gemini", "gemini-flash-latest", "k", session=session)
+    r = gem.complete("S", [{"role": "user", "content": "hi"}], TOOLS)
+    own = {"role": "assistant", "content": "", "tool_calls": r.tool_calls}
+    from_groq = {"role": "assistant", "content": "", "tool_calls": [{"id": "c9", "name": "show", "args": {}}]}
+    out = gem._convert("S", [{"role": "user", "content": "hi"}, from_groq, {"role": "tool", "id": "c9", "name": "show", "content": "{}"}, own])
+    assert out[2]["tool_calls"][0]["extra_content"] == {"google": {"thought_signature": llm.GEMINI_SKIP_SIGNATURE}}
+    assert out[4]["tool_calls"][0]["extra_content"] == {"google": {"thought_signature": "SIG"}}
+    # Groq never receives Gemini-only fields
+    groq_out = llm.OpenAICompatModel("groq", "g", "k")._convert("S", [{"role": "user", "content": "hi"}, own])
+    assert "extra_content" not in groq_out[2]["tool_calls"][0]
+
+
+def test_rate_limit_waits_follow_the_provider(monkeypatch):
+    waits = []
+    monkeypatch.setattr(llm.time, "sleep", waits.append)
+    session = FakeSession([FakeResponse(429, {"error": {"message": "tpm"}}, {"retry-after": "12"}),
+                           FakeResponse(429, {"error": {"message": "tpm"}}, {"x-ratelimit-reset-tokens": "1m5.5s"}),
+                           FakeResponse(400, {"error": {"message": "x", "code": "tool_use_failed"}}),
+                           completion("ok")])
+    r = llm.OpenAICompatModel("groq", "g", "k", session=session).complete("S", [{"role": "user", "content": "hi"}], TOOLS)
+    assert r.text == "ok" and waits[0] == 12 and waits[1] == 30  # capped
+
+
+def test_failed_provider_is_tried_last_for_a_while():
+    groq = FakeSession([FakeResponse(401, {"error": {"message": "invalid api key"}})] + [completion("groq back")])
+    gemini = FakeSession([completion("one"), completion("two")])
+    chain = llm.FallbackModel([llm.OpenAICompatModel("groq", "g", "k", session=groq), llm.OpenAICompatModel("gemini", "m", "k", session=gemini)])
+    assert chain.complete("S", [{"role": "user", "content": "a"}], TOOLS).text == "one"
+    assert chain.complete("S", [{"role": "user", "content": "b"}], TOOLS).text == "two"   # groq skipped during cooldown
+    assert len(groq.requests) == 1
+
+
+def test_provider_errors_are_reported_not_hidden(repo, scope):
+    down = FakeSession([FakeResponse(401, {"error": {"message": "Invalid API Key"}})])
+    r = Agent(repo, model=llm.OpenAICompatModel("groq", "g", "bad", session=down)).handle(scope, "s1", "doodh")
+    assert r.reply.startswith("Sorry, I'm having trouble") and "Invalid API Key" in r.usage["errors"][0]
