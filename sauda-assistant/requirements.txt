@@ -1,4 +1,4 @@
-anthropic>=2.3.0
 fastapi>=0.110
 uvicorn>=0.29
 requests>=2.31
+anthropic>=2.3.0   # only needed for the Claude provider

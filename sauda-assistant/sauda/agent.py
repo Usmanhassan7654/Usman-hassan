@@ -17,15 +17,12 @@ import time
 from dataclasses import dataclass, field
 from typing import Any, Callable
 
-import anthropic
-
 from . import basket as B
-from . import presenter, taxonomy
+from . import llm, presenter, taxonomy
 from .db import ConcurrentUpdate, Repo, Scope
 from .ledger import Ledger, compact_need
 from .tools import TOOLS, ToolError, Turn, budget_status, execute, plan_lines
 
-MODEL = "claude-opus-5-5"
 HISTORY_TURNS = 12          # recent text turns kept verbatim; the ledger carries everything older
 MAX_STEPS = 12              # model calls per customer message
 TURN_DEADLINE_S = 120
@@ -75,12 +72,25 @@ class Result:
 
 
 class Agent:
-    def __init__(self, repo: Repo, client: Any | None = None, model: str = MODEL, effort: str = "medium"):
+    """`model` is any llm.ChatModel (Groq, Gemini, Claude or a fallback chain).
+
+    For tests, `client` accepts an Anthropic-style client and wraps it in the Claude adapter.
+    """
+
+    def __init__(self, repo: Repo, model: llm.ChatModel | None = None, client: Any | None = None, effort: str = "medium"):
         self.repo = repo
-        self.client = client or anthropic.Anthropic(max_retries=2, timeout=60)
-        self.model = model
-        self.effort = effort
+        if client is not None:
+            model = llm.AnthropicModel(effort=effort, client=client)
+        self.model = model or llm.build(effort=effort)
         self._system_cache: dict[str, str] = {}
+
+    @property
+    def client(self):  # tests swap the scripted client between turns
+        return self.model.client
+
+    @client.setter
+    def client(self, client) -> None:
+        self.model = llm.AnthropicModel(effort=getattr(self.model, "effort", "medium"), client=client)
 
     def system_prompt(self, scope: Scope) -> str:
         if scope.store_id not in self._system_cache:
@@ -99,8 +109,8 @@ class Agent:
 
         messages: list[dict] = _recent(history)
         messages.append({"role": "user", "content": text})
-        messages.append({"role": "system", "content": self.state_message(turn)})
-        usage = {"input_tokens": 0, "output_tokens": 0, "cache_read_input_tokens": 0, "model_calls": 0}
+        messages.append({"role": "state", "content": self.state_message(turn)})
+        usage = {"input_tokens": 0, "output_tokens": 0, "cached_tokens": 0, "model_calls": 0, "models": []}
 
         reply = self._run(turn, messages, emit, started, usage)
         grounding = check_grounding(reply, turn, text)
@@ -129,38 +139,30 @@ class Agent:
         for _ in range(MAX_STEPS):
             if time.monotonic() - started > TURN_DEADLINE_S:
                 return final_text or "Sorry, that took too long on my side. Could you send that again?"
-            response = self.client.beta.messages.create(
-                model=self.model,
-                max_tokens=16000,
-                system=[{"type": "text", "text": self.system_prompt(turn.scope), "cache_control": {"type": "ephemeral"}}],
-                tools=TOOLS,
-                messages=messages,
-                output_config={"effort": self.effort},
-                betas=["server-side-fallback-2026-07-01"],
-                fallbacks="default",
-            )
-            _add_usage(usage, response)
-            messages.append({"role": "assistant", "content": response.content})
-            if response.stop_reason == "refusal":
+            try:
+                reply = self.model.complete(self.system_prompt(turn.scope), messages, TOOLS)
+            except llm.LLMError:
+                return final_text or "Sorry, I'm having trouble reaching my assistant service right now. Please try again in a minute."
+            _add_usage(usage, reply)
+            messages.append({"role": "assistant", "content": reply.text, "tool_calls": reply.tool_calls, "raw": reply.raw})
+            if reply.stop == "refusal":
                 return "Sorry, I can't help with that. Is there something from the store I can find for you?"
-            texts = [b.text for b in response.content if getattr(b, "type", "") == "text" and b.text.strip()]
-            if texts:
-                final_text = "\n\n".join(texts).strip()
-            if response.stop_reason == "pause_turn":
+            if reply.text:
+                final_text = reply.text
+            if reply.stop == "pause":
                 continue
-            if response.stop_reason != "tool_use":
+            if reply.stop != "tool_use":
                 break
-            results = []
-            for block in response.content:
-                if getattr(block, "type", "") != "tool_use":
-                    continue
-                emit({"type": "status", "text": _status_label(block.name, block.input, turn)})
+            for call in reply.tool_calls:
+                emit({"type": "status", "text": _status_label(call["name"], call["args"], turn)})
                 try:
-                    output = execute(turn, block.name, dict(block.input or {}))
-                    results.append({"type": "tool_result", "tool_use_id": block.id, "content": json.dumps(output, ensure_ascii=False)})
+                    if "__invalid_arguments__" in call["args"]:
+                        raise ToolError("The arguments were not valid JSON. Send them again as a JSON object.")
+                    output = execute(turn, call["name"], dict(call["args"]))
+                    messages.append({"role": "tool", "id": call["id"], "name": call["name"],
+                                     "content": json.dumps(output, ensure_ascii=False)})
                 except (ToolError, B.BasketError, TypeError, ValueError, KeyError) as e:
-                    results.append({"type": "tool_result", "tool_use_id": block.id, "content": f"Error: {e}", "is_error": True})
-            messages.append({"role": "user", "content": results})
+                    messages.append({"role": "tool", "id": call["id"], "name": call["name"], "content": f"Error: {e}", "is_error": True})
         return final_text or "Sorry, something went wrong on my side. Could you say that again?"
 
     # ----------------------------------------------------------------- state
@@ -223,13 +225,12 @@ def _recent(history: list[dict]) -> list[dict]:
     return [dict(m) for m in msgs]
 
 
-def _add_usage(usage: dict, response) -> None:
-    u = getattr(response, "usage", None)
+def _add_usage(usage: dict, reply: llm.Reply) -> None:
     usage["model_calls"] += 1
-    if u is None:
-        return
-    for k in ("input_tokens", "output_tokens", "cache_read_input_tokens"):
-        usage[k] += getattr(u, k, 0) or 0
+    for k in ("input_tokens", "output_tokens", "cached_tokens"):
+        usage[k] += reply.usage.get(k, 0)
+    if reply.model and reply.model not in usage["models"]:
+        usage["models"].append(reply.model)
 
 
 def _status_label(name: str, args: dict, turn: Turn) -> str:

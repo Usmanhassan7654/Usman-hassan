@@ -3,7 +3,8 @@
     python -m sauda.cli add-store --retailer demo-mart --store demo-khi --key demo-store-key
     python -m sauda.cli sync --key demo-store-key --source data/sample_pk_grocery.csv
     python -m sauda.cli stats --key demo-store-key
-    python -m sauda.cli chat --key demo-store-key
+    python -m sauda.cli chat --key demo-store-key [--llm groq,gemini]
+    python -m sauda.cli models groq            # model ids your key can use
 """
 
 from __future__ import annotations
@@ -36,10 +37,21 @@ def main(argv: list[str] | None = None) -> int:
     st.add_argument("--key", required=True)
     c = sub.add_parser("chat")
     c.add_argument("--key", required=True)
-    c.add_argument("--model", default="claude-opus-5-5")
-    c.add_argument("--effort", default="medium")
+    c.add_argument("--llm", help="provider chain, e.g. 'groq,gemini' or 'gemini:gemini-flash-latest' (default: SAUDA_LLM or every provider with a key)")
+    c.add_argument("--effort", default="medium", help="Claude only")
+    m = sub.add_parser("models", help="list the models your Groq or Gemini key can use")
+    m.add_argument("provider", choices=["groq", "gemini"])
     args = p.parse_args(argv)
 
+    if args.cmd == "models":
+        from . import llm
+
+        key = llm._key(args.provider)
+        if not key:
+            print(f"Set {' or '.join(llm.KEY_VARS[args.provider])} first.", file=sys.stderr)
+            return 2
+        print("\n".join(llm.OpenAICompatModel(args.provider, "", key).list_models()))
+        return 0
     repo = Repo(args.db)
     if args.cmd == "add-store":
         scope = repo.add_store(args.retailer, args.retailer_name or args.retailer, args.store, args.store_name or args.store, args.key, args.currency)
@@ -54,10 +66,12 @@ def main(argv: list[str] | None = None) -> int:
     elif args.cmd == "stats":
         print(json.dumps(repo.catalog_stats(scope), indent=1))
     elif args.cmd == "chat":
+        from . import llm
         from .agent import Agent
 
-        agent, session = Agent(repo, model=args.model, effort=args.effort), uuid.uuid4().hex
-        print(f"{repo.store_name(scope)} — type what you need. Ctrl-C to quit.\n")
+        model = llm.build(args.llm, effort=args.effort)
+        agent, session = Agent(repo, model=model), uuid.uuid4().hex
+        print(f"{repo.store_name(scope)} via {model.name} — type what you need. Ctrl-C to quit.\n")
         while True:
             try:
                 text = input("you> ").strip()

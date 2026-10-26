@@ -10,8 +10,8 @@ This is a new implementation built from the project brief. It follows the brief'
 customer message
   → store resolved from the X-Store-Key header (never from the model)
   → session ledger + basket loaded (SQLite, scoped to the store)
-  → Claude sees: recent conversation (text) + this message + a fresh "authoritative state" system message
-  → Claude calls tools; application code does the work:
+  → the model (Groq, Gemini or Claude) sees: recent conversation (text) + this message + the authoritative store state
+  → the model calls tools; application code does the work:
        update_needs     record / correct needs, household, budget        (validated against the taxonomy)
        find_products    per-need search → status + suitable options      (kind gate + shared suitability check)
        choose_products  propose product + packs; totals & budget computed by code
@@ -19,7 +19,7 @@ customer message
        update_basket    only when the customer asks; revisioned, idempotent
        browse_catalog   paginated "what do you have"
   → grounding check: every Rs amount and every "added to basket" claim must match tool results;
-    otherwise Claude corrects the reply once before the customer sees it
+    otherwise the model corrects the reply once before the customer sees it
   → cards built from the ledger/basket (never from the reply text), ledger saved with a version check
 ```
 
@@ -40,11 +40,33 @@ customer message
 
 The basket mismatch after reload is fixed by design. The server holds the basket, every change carries the last-seen revision and an idempotency key, a stale write returns 409 with the current basket, and the page always re-renders from the server's answer.
 
+## Model providers
+
+Sauda runs on **Groq**, **Google Gemini** or **Claude**, through one adapter layer (`sauda/llm.py`). Groq and Gemini use their OpenAI-compatible chat APIs with tool calling. Set the keys you have:
+
+| Provider | Key variable | Default model |
+|---|---|---|
+| Groq | `GROQ_API_KEY` | `openai/gpt-oss-120b` |
+| Gemini | `GEMINI_API_KEY` (or `GOOGLE_API_KEY`) | `gemini-flash-latest` (Google's alias for its newest Flash model) |
+| Claude | `ANTHROPIC_API_KEY` | `claude-opus-5-5` |
+
+`SAUDA_LLM` sets the order, with an optional model per provider. When a call is rate limited, times out, fails or is rejected, the next provider takes over for that call:
+
+```bash
+export SAUDA_LLM="groq,gemini"                                   # Groq first, Gemini as fallback
+export SAUDA_LLM="gemini:gemini-flash-latest,groq:openai/gpt-oss-120b"
+python -m sauda.cli models groq                                  # list the model ids your key can use
+```
+
+Without `SAUDA_LLM`, every provider with a key is used, in the order Groq, Gemini, Claude. Model names change often, so check them with `models` and set them explicitly for production.
+
+The application rules don't depend on the model. Suitability, totals, basket changes and the grounding check work the same on every provider. The quality of understanding (Roman Urdu, recipes, corrections) does depend on the model. Run the live journeys on each provider you plan to use.
+
 ## Run it
 
 ```bash
 pip install -r requirements.txt
-export ANTHROPIC_API_KEY=...            # or: ant auth login
+export GROQ_API_KEY=...  GEMINI_API_KEY=...
 SAUDA_DEMO=1 uvicorn sauda.server:app   # seeds "Demo Mart" from data/sample_pk_grocery.csv
 # open http://localhost:8000
 ```
@@ -60,7 +82,7 @@ python -m sauda.cli chat --key <publishable-key>                          # term
 
 The chat page takes `?store=<publishable-key>`. Admin sync over HTTP (`POST /api/admin/sync`) needs `SAUDA_ADMIN_KEY`.
 
-Settings: `SAUDA_DB` (default `sauda.db`), `SAUDA_MODEL` (default `claude-opus-5-5`), `SAUDA_EFFORT` (default `medium`).
+Settings: `SAUDA_DB` (default `sauda.db`), `SAUDA_LLM` (provider chain, see above), `SAUDA_EFFORT` (Claude only, default `medium`).
 
 ## Endpoints
 
@@ -84,15 +106,16 @@ Limits: 1,000 characters per message, 20 messages per minute per session, one tu
 ## Tests
 
 ```bash
-python -m pytest -q                                 # 30 tests, no network, ~7 s
-ANTHROPIC_API_KEY=... python evals/journeys.py      # live journeys against the real model (spends usage)
+python -m pytest -q                                          # 38 tests, no network, ~7 s
+GROQ_API_KEY=... python evals/journeys.py --llm groq         # live journeys against a real model (spends usage)
+GEMINI_API_KEY=... python evals/journeys.py --llm gemini --repeat 3
 ```
 
-The offline tests use the real database, catalog, suitability rules, basket and API. Claude is replaced by a scripted stand-in, so they prove the application's contracts: suitability traps, corrections, budgets, totals, basket revisions, tenant isolation, sync, grounding corrections and the HTTP API. They don't prove how well the model interprets customers. That's what the live journeys are for.
+The offline tests use the real database, catalog, suitability rules, basket and API. The model is replaced by scripted responses (in both the Claude and the OpenAI-compatible formats), so they prove the application's contracts: suitability traps, corrections, budgets, totals, basket revisions, tenant isolation, sync, grounding corrections and the HTTP API. They don't prove how well the model interprets customers. That's what the live journeys are for.
 
 ## Status and known gaps
 
-- **The live journeys haven't been run yet.** They need an API key. Run them before trusting the interpretation quality, ideally with `--repeat 3`.
+- **The live journeys haven't been run yet**, on any provider. They need a key, and Groq's API can't be reached from the environment this was built in. Run them on each provider before trusting the interpretation quality, ideally with `--repeat 3`. Expect open models to make more tool-use mistakes than Claude. The app-level checks catch wrong products, totals and basket claims, but not every misunderstanding.
 - **No vector search.** Retrieval is a deterministic kind gate plus BM25 ranking and a value preference. Claude does the multilingual interpretation (Roman Urdu or Urdu to kinds and English terms), so search doesn't depend on embedding quality. A vector ranker could be added later to rank inside the kind gate.
 - **Unknown products aren't auto-classified.** Products the rules can't place stay `unknown` and are excluded. The next step is a model-assisted classifier that writes back to the products table, with review.
 - **Quantities are estimates.** Household quantities use rough weekly per-person amounts per kind, and the assistant calls them estimates.

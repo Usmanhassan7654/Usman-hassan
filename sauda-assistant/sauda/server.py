@@ -49,9 +49,10 @@ def repo() -> Repo:
 def agent():
     global _agent
     if _agent is None:
+        from . import llm
         from .agent import Agent
 
-        _agent = Agent(repo(), model=os.environ.get("SAUDA_MODEL", "claude-opus-5-5"), effort=os.environ.get("SAUDA_EFFORT", "medium"))
+        _agent = Agent(repo(), model=llm.build(effort=os.environ.get("SAUDA_EFFORT", "medium")))
     return _agent
 
 
@@ -129,7 +130,9 @@ def ready() -> JSONResponse:
         checks["database"] = True
     except Exception:
         checks["database"] = False
-    checks["model_credentials"] = bool(os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_AUTH_TOKEN"))
+    from . import llm
+
+    checks["model_credentials"] = llm.configured()
     stores = repo().conn.execute("SELECT id, retailer_id, currency FROM stores").fetchall() if checks["database"] else []
     checks["stores_with_catalog"] = sum(1 for s in stores if repo().catalog_stats(Scope(s["retailer_id"], s["id"], s["currency"]))["store_offers"] > 0)
     ok = checks["database"] and checks["model_credentials"] and checks["stores_with_catalog"] > 0
@@ -170,6 +173,8 @@ def _run_turn(scope: Scope, session_id: str, message: str, emit=None) -> dict:
     metrics["model_calls"] += result.usage.get("model_calls", 0)
     metrics["input_tokens"] += result.usage.get("input_tokens", 0)
     metrics["output_tokens"] += result.usage.get("output_tokens", 0)
+    for name in result.usage.get("models", []):
+        metrics[f"turns_by_model:{name}"] += 1
     if result.grounding.get("corrected"):
         metrics["grounding_corrections"] += 1
     if result.grounding.get("issues"):

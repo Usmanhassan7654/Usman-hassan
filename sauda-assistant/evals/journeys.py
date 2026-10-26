@@ -1,7 +1,7 @@
 """Live customer-journey evaluation against the real model.
 
-    ANTHROPIC_API_KEY=... python evals/journeys.py            # all journeys
-    python evals/journeys.py --only correction --repeat 3      # one journey, 3 runs
+    GROQ_API_KEY=... python evals/journeys.py --llm groq             # all journeys on Groq
+    GEMINI_API_KEY=... python evals/journeys.py --llm gemini --only correction --repeat 3
 
 Each journey is a multi-turn conversation in a fresh store. After every turn,
 checks look at what the customer would see (reply, cards, basket) and at the
@@ -24,7 +24,7 @@ from typing import Callable
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from sauda import ingest  # noqa: E402
+from sauda import ingest, llm  # noqa: E402
 from sauda.agent import Agent  # noqa: E402
 from sauda.db import Repo  # noqa: E402
 from sauda.ledger import Ledger  # noqa: E402
@@ -146,12 +146,12 @@ JOURNEYS = [
 ]
 
 
-def run(journey: Journey, model: str, effort: str) -> dict:
+def run(journey: Journey, spec: str | None, effort: str) -> dict:
     with tempfile.TemporaryDirectory() as d:
         repo = Repo(Path(d) / "eval.db")
         scope = repo.add_store("demo-mart", "Demo Mart", "demo-khi", "Karachi", api_key="k")
         ingest.sync(repo, scope, str(ROOT / "data" / "sample_pk_grocery.csv"))
-        agent, ctx = Agent(repo, model=model, effort=effort), Ctx(repo, scope, f"eval-{journey.name}")
+        agent, ctx = Agent(repo, model=llm.build(spec, effort=effort)), Ctx(repo, scope, f"eval-{journey.name}")
         turns = []
         for message, checks in journey.turns:
             started = time.time()
@@ -172,14 +172,14 @@ def main() -> int:
     p = argparse.ArgumentParser()
     p.add_argument("--only", help="run journeys whose name contains this")
     p.add_argument("--repeat", type=int, default=1, help="runs per journey (behaviour varies run to run)")
-    p.add_argument("--model", default="claude-opus-5-5")
-    p.add_argument("--effort", default="medium")
+    p.add_argument("--llm", help="provider chain, e.g. groq, gemini, 'groq,gemini' (default: SAUDA_LLM or every provider with a key)")
+    p.add_argument("--effort", default="medium", help="Claude only")
     args = p.parse_args()
     selected = [j for j in JOURNEYS if not args.only or args.only in j.name]
     runs = []
     for j in selected:
         for i in range(args.repeat):
-            r = run(j, args.model, args.effort)
+            r = run(j, args.llm, args.effort)
             runs.append(r)
             mark = "PASS" if r["passed"] else "FAIL"
             print(f"{mark}  {j.name}  (run {i + 1})")
@@ -192,7 +192,7 @@ def main() -> int:
     out = ROOT / "evals" / "reports"
     out.mkdir(parents=True, exist_ok=True)
     path = out / f"{time.strftime('%Y%m%d-%H%M%S')}.json"
-    path.write_text(json.dumps({"model": args.model, "effort": args.effort, "runs": runs}, indent=1, ensure_ascii=False))
+    path.write_text(json.dumps({"llm": args.llm or llm.build().name, "runs": runs}, indent=1, ensure_ascii=False))
     print(f"Report: {path}")
     return 0 if passed == len(runs) else 1
 
