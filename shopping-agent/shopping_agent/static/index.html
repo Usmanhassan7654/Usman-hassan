@@ -17,7 +17,7 @@
   body { margin: 0; font: 15px/1.5 system-ui, -apple-system, Segoe UI, sans-serif; background: var(--bg); color: var(--text); }
   header { padding: 14px 16px; border-bottom: 1px solid var(--border); background: var(--panel); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
   header h1 { font-size: 17px; margin: 0; }
-  header .src { color: var(--muted); font-size: 13px; flex: 1; min-width: 160px; }
+  header .src { color: var(--muted); font-size: 13px; flex: 1; min-width: 0; overflow-wrap: anywhere; }
   header form { display: flex; gap: 6px; flex-wrap: wrap; }
   header input[type=text] { width: 260px; max-width: 100%; }
   main { display: grid; grid-template-columns: 1fr 320px; gap: 16px; padding: 16px; max-width: 1200px; margin: 0 auto; height: calc(100vh - 64px); }
@@ -41,6 +41,24 @@
   #cartItems .q { color: var(--muted); }
   #cartTotal { padding: 12px 16px; border-top: 1px solid var(--border); font-weight: 600; }
   #cartTotal small { display: block; font-weight: 400; color: var(--muted); }
+  .cards { align-self: stretch; display: flex; flex-direction: column; gap: 8px; }
+  .cards h3 { margin: 0; font-size: 13px; font-weight: 600; color: var(--muted); }
+  .card-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .card { border: 1px solid var(--border); border-radius: 10px; background: var(--panel); display: flex; flex-direction: column; overflow: hidden; }
+  .thumb { aspect-ratio: 1; max-width: 100%; background: #fff; display: flex; align-items: center; justify-content: center; }
+  .thumb img, .mini img { width: 100%; height: 100%; object-fit: contain; }
+  .ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 26px; letter-spacing: .02em; }
+  .card-body { padding: 8px 10px 10px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .card-name { font-size: 13.5px; line-height: 1.3; }
+  .card-unit { font-size: 12px; color: var(--muted); }
+  .card-price { font-weight: 700; font-variant-numeric: tabular-nums; margin-top: auto; }
+  .stepper { display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--accent); border-radius: 8px; overflow: hidden; }
+  .stepper button { background: transparent; color: var(--accent); padding: 6px 12px; border-radius: 0; font-weight: 700; }
+  .stepper span { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .add { width: 100%; }
+  #cartItems .ci { display: flex; gap: 8px; align-items: center; min-width: 0; }
+  #cartItems .mini { width: 34px; height: 34px; border-radius: 6px; overflow: hidden; flex: none; background: #fff; border: 1px solid var(--border); }
+  #cartItems .mini .ph { font-size: 12px; }
   .chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 16px 12px; }
   .chips button { background: var(--bg); color: var(--text); border: 1px solid var(--border); font-size: 13px; padding: 6px 10px; }
 </style>
@@ -91,17 +109,89 @@
     return el;
   }
 
+  // ---- product pictures: the store's image, or a coloured tile with initials when there is none
+  function hue(s) { let h = 0; for (const c of s || "") h = (h * 31 + c.charCodeAt(0)) % 360; return h; }
+  function placeholder(p) {
+    const d = document.createElement("div"); d.className = "ph";
+    const h = hue(p.name); d.style.background = `hsl(${h} 45% 90%)`; d.style.color = `hsl(${h} 45% 32%)`;
+    d.textContent = (p.name || "?").split(/\s+/).filter(w => /[a-z0-9]/i.test(w)).slice(0, 2).map(w => w[0].toUpperCase()).join("");
+    return d;
+  }
+  function picture(p, cls) {
+    const box = document.createElement("div"); box.className = cls;
+    if (p.image) {
+      const img = new Image(); img.alt = p.name; img.loading = "lazy"; img.referrerPolicy = "no-referrer";
+      img.onerror = () => img.replaceWith(placeholder(p));
+      img.src = p.image; box.appendChild(img);
+    } else box.appendChild(placeholder(p));
+    return box;
+  }
+
+  // ---- product cards in the chat; every card for the same product stays in sync with the cart
+  const cardControls = new Map();  // product_id -> [render functions]
+  function quantityIn(cart, id) { const it = cart && cart.items.find(i => i.product_id === id); return it ? it.quantity : 0; }
+  function syncCards(cart) { for (const [id, fns] of cardControls) fns.forEach(fn => fn(quantityIn(cart, id))); }
+
+  async function setQuantity(id, qty) {
+    if (!sessionId) return;
+    const res = await fetch(`/api/cart/${sessionId}/items`, { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ product_id: id, quantity: qty }) });
+    const data = await res.json();
+    if (!res.ok) { add("steps", data.detail || "Couldn't update the cart."); return; }
+    renderCart(data);
+  }
+
+  function renderCards(groups, cur) {
+    for (const g of groups || []) {
+      const wrap = document.createElement("div"); wrap.className = "cards";
+      const h = document.createElement("h3"); h.textContent = g.title; wrap.appendChild(h);
+      const row = document.createElement("div"); row.className = "card-row";
+      for (const p of g.products) {
+        const card = document.createElement("div"); card.className = "card";
+        card.appendChild(picture(p, "thumb"));
+        const body = document.createElement("div"); body.className = "card-body";
+        const name = document.createElement("div"); name.className = "card-name"; name.textContent = p.name;
+        const unit = document.createElement("div"); unit.className = "card-unit"; unit.textContent = [p.brand, p.unit].filter(Boolean).join(" · ");
+        const price = document.createElement("div"); price.className = "card-price"; price.textContent = `${p.currency || cur} ${p.price.toFixed(2)}`;
+        const ctl = document.createElement("div");
+        body.append(name, unit, price, ctl); card.appendChild(body); row.appendChild(card);
+        const draw = (qty) => {
+          ctl.replaceChildren();
+          if (!qty) {
+            const b = document.createElement("button"); b.className = "add"; b.textContent = "Add";
+            b.onclick = () => setQuantity(p.id, 1); ctl.appendChild(b);
+          } else {
+            const s = document.createElement("div"); s.className = "stepper";
+            const minus = document.createElement("button"); minus.textContent = "−"; minus.setAttribute("aria-label", `One less ${p.name}`);
+            const n = document.createElement("span"); n.textContent = qty;
+            const plus = document.createElement("button"); plus.textContent = "+"; plus.setAttribute("aria-label", `One more ${p.name}`);
+            minus.onclick = () => setQuantity(p.id, qty - 1); plus.onclick = () => setQuantity(p.id, qty + 1);
+            s.append(minus, n, plus); ctl.appendChild(s);
+          }
+        };
+        draw(p.in_cart || 0);
+        if (!cardControls.has(p.id)) cardControls.set(p.id, []);
+        cardControls.get(p.id).push(draw);
+      }
+      wrap.appendChild(row); $("log").appendChild(wrap);
+    }
+    $("log").scrollTop = $("log").scrollHeight;
+  }
+
   function renderCart(cart) {
     const ul = $("cartItems"); ul.innerHTML = "";
     if (!cart || !cart.items.length) { ul.innerHTML = '<li class="q">Empty</li>'; }
     else for (const it of cart.items) {
       const li = document.createElement("li");
-      li.innerHTML = `<span></span><span></span>`;
-      li.children[0].textContent = `${it.name}`;
-      li.children[1].textContent = `${it.quantity} × ${it.unit_price.toFixed(2)}`;
-      li.children[1].className = "q";
+      const left = document.createElement("span"); left.className = "ci";
+      const label = document.createElement("span"); label.textContent = it.name;
+      left.append(picture(it, "mini"), label);
+      const right = document.createElement("span"); right.className = "q";
+      right.textContent = `${it.quantity} × ${it.unit_price.toFixed(2)}`;
+      li.append(left, right);
       ul.appendChild(li);
     }
+    syncCards(cart);
     const cur = cart ? cart.currency : "";
     let html = `Total: ${(cart ? cart.total : 0).toFixed(2)} ${cur}`;
     if (cart && cart.budget) html += `<small>Budget ${cart.budget} · remaining ${cart.remaining_budget.toFixed(2)}</small>`;
@@ -126,6 +216,7 @@
         s.innerHTML = data.steps.map(st => `<code>${st.tool}</code>`).join(" → ");
       }
       add("msg bot", data.reply || "(no reply)");
+      renderCards(data.cards, data.cart.currency);
       renderCart(data.cart);
       if (data.order) add("order", `✅ Order ${data.order.order_id} confirmed — ${data.order.item_count} items, total ${data.order.total.toFixed(2)} ${data.order.currency}.`);
     } catch (err) {
@@ -133,8 +224,8 @@
     } finally { $("send").disabled = false; $("input").focus(); }
   }
 
-  function showSource(info) { $("src").textContent = `${info.count} products · ${info.source}`; }
-  function resetSession() { sessionId = null; try { sessionStorage.removeItem("shop-session"); } catch (e) {} renderCart(null); }
+  function showSource(info) { $("src").textContent = `${info.count} products · ${String(info.source).split(/[\\/]/).pop()}`; }
+  function resetSession() { sessionId = null; cardControls.clear(); try { sessionStorage.removeItem("shop-session"); } catch (e) {} renderCart(null); }
 
   $("composer").addEventListener("submit", (e) => { e.preventDefault(); send($("input").value); });
   $("chips").addEventListener("click", (e) => { if (e.target.tagName === "BUTTON") send(e.target.textContent); });

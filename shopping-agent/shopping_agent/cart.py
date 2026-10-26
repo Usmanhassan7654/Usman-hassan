@@ -76,6 +76,7 @@ class Cart:
                     "product_id": pid,
                     "name": line.product.name,
                     "unit": line.product.unit,
+                    "image": line.product.image,
                     "unit_price": line.product.price,
                     "quantity": line.quantity,
                     "subtotal": line.subtotal,

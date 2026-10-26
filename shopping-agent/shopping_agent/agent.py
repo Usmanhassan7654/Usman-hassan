@@ -33,6 +33,7 @@ How to work:
 - After filling the cart, show a brief cart summary with the total and ask if they want changes or are ready to check out.
 - Checkout: collect the customer's name, delivery address, preferred delivery slot and payment method (cash on delivery or card on delivery). Then call prepare_checkout and show the summary it returns. Only call place_order after the customer has clearly said yes to that summary in their next message.
 - Keep replies short and scannable: bullet lists with item, quantity and price. Use the store's currency.
+- The chat shows products as cards with a picture, price and Add / quantity buttons. Items you add to the cart appear as cards automatically. When the customer should choose between options, or asks to see products, call show_products with those ids instead of listing them in text. The customer can also change quantities with the buttons; you'll be told about those changes in their next message.
 
 Store catalog overview:
 {catalog_summary}
@@ -61,6 +62,21 @@ TOOLS: list[dict] = [
                 "limit": {"type": "integer", "minimum": 1, "maximum": 20},
             },
             "required": ["query"],
+        },
+    },
+    {
+        "name": "show_products",
+        "description": (
+            "Show products to the customer as cards with picture, price and Add buttons, e.g. a few "
+            "options to choose from. Items you add to the cart are shown automatically; don't repeat them here."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "product_ids": {"type": "array", "items": {"type": "string"}, "minItems": 1, "maxItems": 12},
+                "title": {"type": "string", "description": "Short heading, e.g. 'Pick a cooking oil'."},
+            },
+            "required": ["product_ids"],
         },
     },
     {
@@ -185,6 +201,10 @@ class ShoppingSession:
     pending_checkout_turn: int = -1
     turn: int = 0
     last_order: dict | None = None
+    # Product cards to show in the chat for the current turn: [{"title", "product_ids"}].
+    displays: list[dict] = field(default_factory=list)
+    # Cart changes the customer made with the buttons, reported to Claude on the next message.
+    ui_changes: list[str] = field(default_factory=list)
 
     # ----------------------------------------------------------- tool impls
 
@@ -221,7 +241,7 @@ class ShoppingSession:
         return {"categories": counts}
 
     def tool_add_to_cart(self, items: list[dict]) -> dict:
-        added, errors = [], []
+        added, errors, added_ids = [], [], []
         for item in items:
             pid = str(item.get("product_id", ""))
             product = self.catalog.get(pid)
@@ -231,10 +251,21 @@ class ShoppingSession:
             try:
                 self.cart.add(product, int(item.get("quantity", 1)), item.get("note", ""))
                 added.append(f"{item.get('quantity', 1)} x {product.name}")
+                added_ids.append(product.id)
             except ValueError as e:
                 errors.append(str(e))
+        if added_ids:
+            self._display("Added to your cart", added_ids)
         self._invalidate_checkout()
         return {"added": added, "errors": errors, "cart": self.cart_view()}
+
+    def tool_show_products(self, product_ids: list[str], title: str = "") -> dict:
+        found = [pid for pid in product_ids if self.catalog.get(str(pid))]
+        missing = [pid for pid in product_ids if not self.catalog.get(str(pid))]
+        if not found:
+            raise ToolError("None of those product ids exist.")
+        self._display(title or "Products", [str(pid) for pid in found])
+        return {"shown": len(found), **({"unknown_ids": missing} if missing else {})}
 
     def tool_update_cart_item(self, product_id: str, quantity: int) -> dict:
         try:
@@ -291,13 +322,59 @@ class ShoppingSession:
         self.pending_checkout = None
         return {"order": order}
 
+    # ------------------------------------------------------ customer buttons
+
+    def set_quantity_from_ui(self, product_id: str, quantity: int) -> dict:
+        """Apply an Add / + / - click from a product card, without a Claude round trip."""
+        product = self.catalog.get(product_id)
+        if not product:
+            raise ToolError(f"No product with id '{product_id}'.")
+        quantity = max(0, int(quantity))
+        current = self.cart.lines[product_id].quantity if product_id in self.cart.lines else 0
+        if quantity == current:
+            return self.cart_view(images=True)
+        if current == 0:
+            self.cart.add(product, quantity)
+        else:
+            self.cart.set_quantity(product_id, quantity)
+        self.ui_changes.append(f"{product.name} ({product_id}): {current} -> {quantity}")
+        self._invalidate_checkout()
+        return self.cart_view(images=True)
+
+    def take_displays(self) -> list[dict]:
+        """Product cards for this turn, with the details the UI needs."""
+        groups = []
+        for d in self.displays:
+            products = []
+            for pid in dict.fromkeys(d["product_ids"]):
+                product = self.catalog.get(pid)
+                if product:
+                    card = product.to_dict()
+                    card["in_cart"] = self.cart.lines[pid].quantity if pid in self.cart.lines else 0
+                    products.append(card)
+            if products:
+                groups.append({"title": d["title"], "products": products})
+        self.displays = []
+        return groups
+
     # -------------------------------------------------------------- helpers
+
+    def _display(self, title: str, product_ids: list[str]) -> None:
+        # Repeated adds in one turn go into one "Added to your cart" group.
+        for d in self.displays:
+            if d["title"] == title:
+                d["product_ids"].extend(product_ids)
+                return
+        self.displays.append({"title": title, "product_ids": list(product_ids)})
 
     def _invalidate_checkout(self) -> None:
         self.pending_checkout = None
 
-    def cart_view(self) -> dict:
+    def cart_view(self, images: bool = False) -> dict:
         view = self.cart.to_dict()
+        if not images:
+            for item in view["items"]:
+                item.pop("image", None)
         budget = self.preferences.get("budget")
         if budget:
             view["budget"] = budget
@@ -339,6 +416,10 @@ class ShoppingAgent:
     def chat(self, user_text: str, on_event: EventCallback | None = None) -> str:
         emit = on_event or (lambda kind, data: None)
         self.session.turn += 1
+        if self.session.ui_changes:
+            note = "; ".join(self.session.ui_changes)
+            user_text = f"[The customer changed the cart with the buttons: {note}]\n\n{user_text}"
+            self.session.ui_changes = []
         self.messages.append({"role": "user", "content": user_text})
         text_parts: list[str] = []
 

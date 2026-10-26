@@ -111,3 +111,32 @@ def test_refusal_returns_message(catalog, tmp_path):
     client = FakeClient([resp(stop="refusal")])
     agent = ShoppingAgent(catalog, client=client, orders=OrderStore(tmp_path / "o.jsonl"))
     assert "can't help" in agent.chat("something bad")
+
+
+def test_product_cards_and_button_changes(catalog, tmp_path):
+    client = FakeClient([
+        resp(tool("add_to_cart", {"items": [{"product_id": "DAI-001", "quantity": 2}]}, "a1"),
+             tool("show_products", {"product_ids": ["PAN-007", "PAN-008", "NOPE"], "title": "Pick an oil"}, "a2"),
+             stop="tool_use"),
+        resp(text("Added milk. Which oil?")),
+        resp(text("Got it.")),
+    ])
+    agent = ShoppingAgent(catalog, client=client, orders=OrderStore(tmp_path / "o.jsonl"))
+    agent.chat("milk and some oil")
+    cards = agent.session.take_displays()
+    assert [g["title"] for g in cards] == ["Added to your cart", "Pick an oil"]
+    assert cards[0]["products"][0]["in_cart"] == 2
+    assert [p["id"] for p in cards[1]["products"]] == ["PAN-007", "PAN-008"]
+    assert agent.session.take_displays() == []  # handed out once
+
+    # Card buttons change the cart directly and Claude hears about it next turn.
+    view = agent.session.set_quantity_from_ui("PAN-008", 1)
+    assert "image" in view["items"][0]
+    agent.session.set_quantity_from_ui("DAI-001", 0)
+    assert [i["product_id"] for i in agent.session.cart_view()["items"]] == ["PAN-008"]
+    assert "image" not in agent.session.cart_view()["items"][0]  # not sent to Claude
+    agent.chat("thanks")
+    sent = client.calls[-1]["messages"][-1]["content"]
+    assert sent.startswith("[The customer changed the cart with the buttons: Sunflower Oil (PAN-008): 0 -> 1; Whole Milk (DAI-001): 2 -> 0]")
+    with pytest.raises(ToolError):
+        agent.session.set_quantity_from_ui("NOPE", 1)

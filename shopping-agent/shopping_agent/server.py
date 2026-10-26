@@ -16,7 +16,7 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
-from .agent import MODEL, ShoppingAgent
+from .agent import MODEL, ShoppingAgent, ToolError
 from .cart import OrderStore
 from .catalog import Catalog, load_csv_text, load_json_data, load_source
 
@@ -49,6 +49,11 @@ def _agent(session_id: str) -> ShoppingAgent:
 class ChatIn(BaseModel):
     message: str
     session_id: str | None = None
+
+
+class CartItemIn(BaseModel):
+    product_id: str
+    quantity: int
 
 
 class SourceIn(BaseModel):
@@ -113,7 +118,8 @@ def chat(body: ChatIn) -> dict:
         "session_id": session_id,
         "reply": reply,
         "steps": steps,
-        "cart": agent.session.cart_view(),
+        "cards": agent.session.take_displays(),
+        "cart": agent.session.cart_view(images=True),
         "order": order,
     }
 
@@ -123,4 +129,14 @@ def get_cart(session_id: str) -> dict:
     agent = _sessions.get(session_id)
     if not agent:
         raise HTTPException(404, "Unknown session")
-    return agent.session.cart_view()
+    return agent.session.cart_view(images=True)
+
+
+@app.post("/api/cart/{session_id}/items")
+def set_cart_item(session_id: str, body: CartItemIn) -> dict:
+    """Add / + / - buttons on product cards change the cart directly, without asking Claude."""
+    agent = _agent(session_id)
+    try:
+        return agent.session.set_quantity_from_ui(body.product_id, body.quantity)
+    except (ToolError, KeyError, ValueError) as e:
+        raise HTTPException(400, str(e).strip("'\"")) from e

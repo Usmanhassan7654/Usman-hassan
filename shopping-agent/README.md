@@ -11,7 +11,8 @@ From there the agent:
 1. **Works out what you mean.** It turns a vague need into a concrete shopping list with sensible quantities (a recipe's ingredients, the usual breakfast items, cleaning basics).
 2. **Searches the catalog** once per item, tries other words when a search comes back empty, and respects your budget, dietary needs, brands and household size.
 3. **Fills the cart itself** and tells you what it picked and why. It suggests substitutes for anything that's missing or out of stock.
-4. **Takes you through checkout**: name, address, delivery slot and payment method. It shows an order summary and **places the order only after you confirm it in your next message**. The code enforces this rule, so it doesn't rely on the prompt alone.
+4. **Shows products as cards in the chat**, with the store's picture, price and an Add button that turns into a − / + quantity stepper. Items it adds appear as cards automatically, and when you need to choose (which cooking oil, which brand) it shows the options as cards. Button clicks change the cart instantly without waiting for Claude, and Claude is told about them with your next message. Products without a picture get a tile with their initials.
+5. **Takes you through checkout**: name, address, delivery slot and payment method. It shows an order summary and **places the order only after you confirm it in your next message**. The code enforces this rule, so it doesn't rely on the prompt alone.
 
 ## Product data sources
 
@@ -52,6 +53,7 @@ customer message
       ▼
 ShoppingAgent.chat()  ── Claude (tool use loop) ──►  tools
                                                       ├─ search_products / get_product_details / list_categories
+                                                      ├─ show_products (cards with pictures and Add buttons)
                                                       ├─ add_to_cart / update_cart_item / remove_from_cart / view_cart
                                                       ├─ save_preferences (budget, dietary, household size)
                                                       ├─ prepare_checkout  → summary, nothing placed yet
