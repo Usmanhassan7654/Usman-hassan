@@ -228,8 +228,9 @@ class OpenAICompatModel(ChatModel):
 
     def list_models(self) -> list[str]:
         r = self.session.get(f"{self.base_url}/models", headers={"Authorization": f"Bearer {self.api_key}"}, timeout=self.timeout)
-        r.raise_for_status()
-        return sorted(m.get("id", "") for m in r.json().get("data", []))
+        if r.status_code != 200:
+            raise LLMError(f"{self.name}: HTTP {r.status_code} {_error_detail(r)}", provider=self.provider)
+        return sorted(m.get("id", "").removeprefix("models/") for m in r.json().get("data", []))
 
 
 # -------------------------------------------------------------- fallback
@@ -339,8 +340,14 @@ def _backoff(attempt: int) -> float:
 
 
 def _error_detail(r: requests.Response) -> str:
+    """The provider's error message. Groq sends {"error": {...}}; Gemini sends [{"error": {...}}]."""
     try:
-        err = r.json().get("error")
-        return (err.get("message") if isinstance(err, dict) else str(err or ""))[:300]
+        body = r.json()
     except ValueError:
         return r.text[:300]
+    if isinstance(body, list) and body:
+        body = body[0]
+    err = body.get("error") if isinstance(body, dict) else body
+    if isinstance(err, dict):
+        return str(err.get("message") or err.get("status") or err)[:300]
+    return str(err or r.text)[:300]

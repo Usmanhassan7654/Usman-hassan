@@ -189,3 +189,9 @@ def test_provider_errors_are_reported_not_hidden(repo, scope):
     down = FakeSession([FakeResponse(401, {"error": {"message": "Invalid API Key"}})])
     r = Agent(repo, model=llm.OpenAICompatModel("groq", "g", "bad", session=down)).handle(scope, "s1", "doodh")
     assert r.reply.startswith("Sorry, I'm having trouble") and "Invalid API Key" in r.usage["errors"][0]
+
+
+def test_gemini_list_shaped_errors_are_read():
+    session = FakeSession([FakeResponse(400, [{"error": {"code": 400, "message": "Please pass a valid API key", "status": "INVALID_ARGUMENT"}}])])
+    with pytest.raises(llm.LLMError, match="Please pass a valid API key"):
+        llm.OpenAICompatModel("gemini", "gemini-flash-latest", "bad", session=session).complete("S", [{"role": "user", "content": "hi"}], TOOLS)
