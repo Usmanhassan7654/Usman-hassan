@@ -62,6 +62,10 @@ Without `SAUDA_LLM`, every provider with a key is used, in the order Groq, Gemin
 
 The application rules don't depend on the model. Suitability, totals, basket changes and the grounding check work the same on every provider. The quality of understanding (Roman Urdu, recipes, corrections) does depend on the model. Run the live journeys on each provider you plan to use.
 
+## Try it in Google Colab (nothing to install)
+
+Open [Sauda_Colab.ipynb](https://colab.research.google.com/github/Usmanhassan7654/Usman-hassan/blob/claude/ecommerce-ai-assistant-t27kqw/sauda-assistant/Sauda_Colab.ipynb), add `GEMINI_API_KEY` and/or `GROQ_API_KEY` under the key icon (Secrets), and run the cells top to bottom. It runs the tests, lets you chat, runs the live customer journeys and can open the chat website.
+
 ## Run it
 
 ```bash

@@ -2,3 +2,5 @@ sauda.db*
 __pycache__/
 .pytest_cache/
 evals/reports/
+colab.db*
+web.db*
