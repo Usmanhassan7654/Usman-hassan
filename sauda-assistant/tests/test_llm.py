@@ -113,7 +113,7 @@ def test_build_from_environment(monkeypatch):
     monkeypatch.setenv("GROQ_API_KEY", "g")
     monkeypatch.setenv("GEMINI_API_KEY", "m")
     chain = llm.build()
-    assert chain.name == "groq:openai/gpt-oss-120b -> gemini:gemini-flash-latest"
+    assert chain.name == "groq:openai/gpt-oss-20b -> gemini:gemini-flash-latest"
     assert llm.build("gemini:gemini-2.5-pro").name == "gemini:gemini-2.5-pro"
     with pytest.raises(ValueError, match="ANTHROPIC|not set|Unknown"):
         llm.build("openai:gpt")

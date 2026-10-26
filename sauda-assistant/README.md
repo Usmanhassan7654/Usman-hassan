@@ -46,7 +46,7 @@ Sauda runs on **Groq**, **Google Gemini** or **Claude**, through one adapter lay
 
 | Provider | Key variable | Default model |
 |---|---|---|
-| Groq | `GROQ_API_KEY` | `openai/gpt-oss-120b` |
+| Groq | `GROQ_API_KEY` | `openai/gpt-oss-20b` |
 | Gemini | `GEMINI_API_KEY` (or `GOOGLE_API_KEY`) | `gemini-flash-latest` (Google's alias for its newest Flash model) |
 | Claude | `ANTHROPIC_API_KEY` | `claude-opus-5-5` |
 
@@ -54,7 +54,7 @@ Sauda runs on **Groq**, **Google Gemini** or **Claude**, through one adapter lay
 
 ```bash
 export SAUDA_LLM="groq,gemini"                                   # Groq first, Gemini as fallback
-export SAUDA_LLM="gemini:gemini-flash-latest,groq:openai/gpt-oss-120b"
+export SAUDA_LLM="gemini:gemini-flash-latest,groq:openai/gpt-oss-20b"
 python -m sauda.cli models groq                                  # list the model ids your key can use
 ```
 

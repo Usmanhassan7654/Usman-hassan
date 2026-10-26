@@ -14,7 +14,7 @@ Providers:
     claude   Anthropic Messages API                         (ANTHROPIC_API_KEY)
 
 SAUDA_LLM picks the chain, tried in order when a call fails with a rate limit,
-server error or timeout, e.g.  SAUDA_LLM="groq:openai/gpt-oss-120b,gemini:gemini-flash-latest"
+server error or timeout, e.g.  SAUDA_LLM="groq:openai/gpt-oss-20b,gemini:gemini-flash-latest"
 """
 
 from __future__ import annotations
@@ -30,7 +30,7 @@ from typing import Any
 
 import requests
 
-DEFAULT_MODELS = {"groq": "openai/gpt-oss-120b", "gemini": "gemini-flash-latest", "claude": "claude-opus-5-5"}
+DEFAULT_MODELS = {"groq": "openai/gpt-oss-20b", "gemini": "gemini-flash-latest", "claude": "claude-opus-5-5"}
 BASE_URLS = {"groq": "https://api.groq.com/openai/v1", "gemini": "https://generativelanguage.googleapis.com/v1beta/openai"}
 GEMINI_SKIP_SIGNATURE = "skip_thought_signature_validator"
 KEY_VARS = {"groq": ("GROQ_API_KEY",), "gemini": ("GEMINI_API_KEY", "GOOGLE_API_KEY"), "claude": ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN")}
