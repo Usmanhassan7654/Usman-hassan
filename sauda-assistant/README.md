@@ -115,7 +115,7 @@ Limits: 1,000 characters per message, 20 messages per minute per session, one tu
 ## Tests
 
 ```bash
-python -m pytest -q                                          # 68 tests, no network, ~10 s
+python -m pytest -q                                          # 66 tests, no network, ~10 s
 GROQ_API_KEY=... python evals/journeys.py --llm groq         # live journeys against a real model (spends usage)
 GEMINI_API_KEY=... python evals/journeys.py --llm gemini --repeat 3
 ```
