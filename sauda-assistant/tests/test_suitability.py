@@ -59,16 +59,18 @@ def test_correcting_one_need_preserves_the_others(repo, scope):
     # "not Olpers" -> only the milk choice is dropped
     update_needs(turn, {"needs": [{"id": "n1", "constraints": {"exclude_brands": ["Olpers"]}}]})
     milk, rice = turn.ledger.get("n1"), turn.ledger.get("n2")
-    assert milk.selection is None and "dropped choice" in milk.history[-1]
+    assert "dropped choice demo-mart:MLK-001" in " ".join(milk.history)
     assert all("MLK-001" not in c for c in milk.candidates)
-    assert rice.selection["product_id"] == "demo-mart:STP-008"
+    assert milk.selection["product_id"] != "demo-mart:MLK-001" and milk.selection["auto"]   # a non-Olpers milk is proposed instead
+    assert rice.selection["product_id"] == "demo-mart:STP-008"                              # untouched
 
 
 def test_choose_rejects_unsuitable_product(repo, scope):
     turn = Turn(repo, scope, "s1", Ledger())
     update_needs(turn, {"needs": [{"label": "Milk", "kinds": ["dairy.milk"]}]})
     out = choose_products(turn, {"choices": [{"need_id": "n1", "product_id": "demo-mart:MLK-009"}]})  # Nutella
-    assert out["errors"] and "wrong_kind" in out["errors"][0] and out["plan"] == []
+    assert out["errors"] and "wrong_kind" in out["errors"][0]
+    assert all("Nutella" not in l["name"] for l in out["plan"])   # the proposed real milk stays
 
 
 def test_budget_words_are_not_needs_and_totals_are_computed(repo, scope):
@@ -83,3 +85,15 @@ def test_budget_words_are_not_needs_and_totals_are_computed(repo, scope):
     expected = milk["price"] * 7 + 390 * 2  # 16 eggs -> 2 dozen
     assert plan["plan_total"] == expected
     assert plan["budgets"][0]["remaining"] == 2000 - expected and plan["budgets"][0]["over"] is (expected > 2000)
+
+
+def test_update_needs_searches_and_proposes_in_one_call(repo, scope):
+    turn = Turn(repo, scope, "s1", Ledger())
+    out = update_needs(turn, {"household": {"people": 2, "days": 7},
+                              "needs": [{"label": "Doodh"}, {"label": "Aloo", "quantity": {"amount": 2, "unit": "kg"}}, {"label": "Budget"}]})
+    by_label = {r["label"]: r for r in out["results"]}
+    assert by_label["Doodh"]["proposed"]["name"].endswith("Milk 1 Litre") and by_label["Doodh"]["proposed"]["packs"] == 4
+    assert by_label["Aloo"]["proposed"] == {"product_id": "demo-mart:VEG-001", "name": "Potatoes 1 kg", "size": "1 kg",
+                                            "price": 120.0, "packs": 2, "line_total": 240.0}
+    assert "Budget" not in by_label and out["errors"]          # not a product: reported, not searched
+    assert out["plan_total"] == by_label["Doodh"]["proposed"]["line_total"] + 240

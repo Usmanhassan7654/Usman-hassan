@@ -195,3 +195,27 @@ def test_gemini_list_shaped_errors_are_read():
     session = FakeSession([FakeResponse(400, [{"error": {"code": 400, "message": "Please pass a valid API key", "status": "INVALID_ARGUMENT"}}])])
     with pytest.raises(llm.LLMError, match="Please pass a valid API key"):
         llm.OpenAICompatModel("gemini", "gemini-flash-latest", "bad", session=session).complete("S", [{"role": "user", "content": "hi"}], TOOLS)
+
+
+def test_groq_parsing_failure_is_retried_and_exhausted_quota_fails_fast(monkeypatch):
+    waits = []
+    monkeypatch.setattr(llm.time, "sleep", waits.append)
+    parse_fail = FakeResponse(400, {"error": {"message": "Parsing failed. The model generated output that could not be parsed.",
+                                              "type": "invalid_request_error", "failed_generation": "..."}})
+    session = FakeSession([parse_fail, completion("ok")])
+    assert llm.OpenAICompatModel("groq", "openai/gpt-oss-20b", "k", session=session).complete("S", [{"role": "user", "content": "hi"}], TOOLS).text == "ok"
+    quota = FakeResponse(429, [{"error": {"code": 429, "message": "You exceeded your current quota, please check your plan and billing details."}}])
+    session = FakeSession([quota])
+    with pytest.raises(llm.LLMError, match="exceeded your current quota"):
+        llm.OpenAICompatModel("gemini", "gemini-flash-latest", "k", session=session).complete("S", [{"role": "user", "content": "hi"}], TOOLS)
+    assert len(session.requests) == 1   # no pointless waiting
+
+
+def test_typical_turn_takes_two_model_calls(repo, scope):
+    session = FakeSession([
+        completion(tool_calls=[("update_needs", {"needs": [{"label": "Milk", "kinds": ["dairy.milk"]}, {"label": "Bread", "kinds": ["bakery.bread"]}]})]),
+        completion("Milk and bread: Rs 510 total. Basket mein daal doon?"),
+    ])
+    r = Agent(repo, model=llm.OpenAICompatModel("groq", "openai/gpt-oss-20b", "k", session=session)).handle(scope, "s1", "doodh aur double roti")
+    plan = next(c for c in r.cards if c["type"] == "plan")
+    assert r.usage["model_calls"] == 2 and plan["total"] == 510 and r.grounding == {"issues": []}

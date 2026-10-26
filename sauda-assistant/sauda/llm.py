@@ -182,10 +182,12 @@ class OpenAICompatModel(ChatModel):
             if r.status_code == 200:
                 return r.json()
             detail = _error_detail(r)
-            # Groq answers 400 tool_use_failed when the model wrote a malformed tool call; a fresh try usually works.
-            bad_generation = r.status_code == 400 and "tool_use_failed" in r.text
+            # Groq answers 400 (tool_use_failed / "Parsing failed") when the model wrote a malformed tool call; a fresh try usually works.
+            bad_generation = r.status_code == 400 and any(t in r.text for t in ("tool_use_failed", "failed_generation", "Parsing failed", "output_parse_failed"))
+            # An exhausted daily/plan quota won't recover in seconds: hand over to the next provider at once.
+            quota_gone = r.status_code == 429 and any(t in r.text.lower() for t in ("quota", "per day", "(tpd)", "(rpd)", "billing"))
             retryable = r.status_code in (408, 409, 429) or r.status_code >= 500 or bad_generation
-            if retryable and attempt < self.max_retries and not (bad_generation and regenerated):
+            if retryable and attempt < self.max_retries and not (bad_generation and regenerated) and not quota_gone:
                 regenerated = regenerated or bad_generation  # a malformed tool call gets one fresh try
                 time.sleep(_retry_wait(r, attempt))
                 continue

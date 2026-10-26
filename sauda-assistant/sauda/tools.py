@@ -49,10 +49,10 @@ _CONSTRAINTS = {
     "type": "object",
     "properties": {
         "brands": {"type": "array", "items": {"type": "string"}, "description": "Preferred brands."},
-        "brand_required": {"type": "boolean", "description": "True only if the customer insists on these brands."},
+        "brand_required": {"type": "boolean", "description": "Only if the customer insists."},
         "exclude_brands": {"type": "array", "items": {"type": "string"}},
-        "exclude_terms": {"type": "array", "items": {"type": "string"}, "description": "Words a product must not have, e.g. 'flavoured', 'powder'."},
-        "must_terms": {"type": "array", "items": {"type": "string"}, "description": "Words a product must have, e.g. 'basmati', 'boneless'."},
+        "exclude_terms": {"type": "array", "items": {"type": "string"}, "description": "e.g. ['flavoured']"},
+        "must_terms": {"type": "array", "items": {"type": "string"}, "description": "e.g. ['basmati']"},
         "max_unit_price": {"type": "number"},
     },
 }
@@ -61,10 +61,9 @@ TOOLS: list[dict] = [
     {
         "name": "update_needs",
         "description": (
-            "Create or change the customer's shopping needs, household, budget and preferences. This is the authoritative task "
-            "record. To correct a need, pass its existing id with the changed fields; other needs are untouched. Each need must "
-            "name taxonomy kinds that can satisfy it (see the kind list in the system prompt). Words like 'budget', 'week' or "
-            "'something to eat' describe the task, not products: record them as household/budget/purpose, not as needs."
+            "Record or correct the shopping list, household, budget and preferences, then search the store: returns, per need, a "
+            "proposed product with packs and line total, a few alternatives, and the plan total. To correct a need, pass its id "
+            "with only the changed fields. Budget/week/household words are not products."
         ),
         "input_schema": {
             "type": "object",
@@ -74,38 +73,34 @@ TOOLS: list[dict] = [
                     "items": {
                         "type": "object",
                         "properties": {
-                            "id": {"type": "string", "description": "Existing need id to change. Omit to create a new need."},
-                            "label": {"type": "string", "description": "Short customer-facing name, e.g. 'Milk for chai'."},
-                            "kinds": {"type": "array", "items": {"type": "string"}, "description": "Taxonomy kind ids that satisfy this need."},
-                            "search_terms": {"type": "array", "items": {"type": "string"}, "description": "English product words for ranking, e.g. ['basmati', 'sella']."},
-                            "quantity": {"type": "object", "description": "{'amount': 1.5, 'unit': 'kg'|'g'|'l'|'ml'|'pc'|'dozen'} or {'packs': 2}.",
+                            "id": {"type": "string", "description": "Existing need id to change; omit for a new need."},
+                            "label": {"type": "string", "description": "Short English name, e.g. 'Milk'."},
+                            "kinds": {"type": "array", "items": {"type": "string"}, "description": "Kind ids from the list in the instructions."},
+                            "search_terms": {"type": "array", "items": {"type": "string"}, "description": "English words, e.g. ['basmati']."},
+                            "quantity": {"type": "object", "description": "amount+unit (kg, g, l, ml, pc, dozen) or packs.",
                                          "properties": {"amount": {"type": "number"}, "unit": {"type": "string"}, "packs": {"type": "integer"}}},
-                            "purpose": {"type": "string", "description": "The recipe or plan it belongs to, e.g. 'chicken biryani for 6'."},
+                            "purpose": {"type": "string", "description": "e.g. 'biryani for 6'"},
                             "constraints": _CONSTRAINTS,
-                            "allow_substitutes": {"type": "boolean", "description": "True if a related kind (e.g. ghee for oil) may be offered, with explanation."},
+                            "allow_substitutes": {"type": "boolean", "description": "Allow a related product, clearly labelled."},
                             "action": {"type": "string", "enum": ["upsert", "remove", "defer"]},
                         },
                     },
                 },
                 "household": {"type": "object", "properties": {"people": {"type": "integer"}, "days": {"type": "integer"}}},
-                "budget": {"type": "object", "description": "Set a budget. Omit need_ids for the whole order. amount 0 clears it.",
+                "budget": {"type": "object", "description": "Omit need_ids for the whole order; amount 0 clears it.",
                            "properties": {"amount": {"type": "number"}, "need_ids": {"type": "array", "items": {"type": "string"}},
                                           "label": {"type": "string"}}},
-                "preferences": {"type": "object", "description": "Lasting preferences for this customer.",
+                "preferences": {"type": "object",
                                 "properties": {"avoid_brands": {"type": "array", "items": {"type": "string"}},
                                                "preferred_brands": {"type": "array", "items": {"type": "string"}},
                                                "diet": {"type": "string"}, "notes": {"type": "string"}}},
-                "start_over": {"type": "boolean", "description": "Clear all needs and budgets (not the basket)."},
+                "start_over": {"type": "boolean", "description": "Clear the list and budgets (not the basket)."},
             },
         },
     },
     {
         "name": "find_products",
-        "description": (
-            "Search the store for the given needs. Returns, per need, a status (found / only_substitutes / none_eligible / "
-            "not_in_catalog) and up to 5 suitable in-stock options with price, size, unit price and suggested packs. Every option "
-            "has already passed the suitability check for that need. Search all needs of a request in one call."
-        ),
+        "description": "Search again for needs, e.g. prefer 'cheapest' to fit a budget. update_needs already searches new or changed needs.",
         "input_schema": {
             "type": "object",
             "properties": {
@@ -117,10 +112,7 @@ TOOLS: list[dict] = [
     },
     {
         "name": "choose_products",
-        "description": (
-            "Propose a product and quantity for needs (a plan, not a basket change). Returns the line totals, the plan total and "
-            "budget status, computed by the store. packs defaults to the suggested quantity, else 1."
-        ),
+        "description": "Switch the proposed product or packs for needs (a plan, not the basket). Returns line totals, plan total and budget.",
         "input_schema": {
             "type": "object",
             "properties": {
@@ -136,11 +128,7 @@ TOOLS: list[dict] = [
     },
     {
         "name": "show",
-        "description": (
-            "Choose what the customer sees as cards under your reply. 'options': products to choose from for the given needs "
-            "(numbered, with Add buttons). 'plan': the proposed list with quantities and totals. 'comparison': a side-by-side table "
-            "of 2-4 product_ids. 'basket': the current basket. Show options only when the customer has to pick."
-        ),
+        "description": "Cards under your reply: 'options' (numbered choices for needs), 'plan', 'comparison' (2-4 product_ids) or 'basket'.",
         "input_schema": {
             "type": "object",
             "properties": {
@@ -153,11 +141,7 @@ TOOLS: list[dict] = [
     },
     {
         "name": "update_basket",
-        "description": (
-            "Change the customer's basket. Only call this when the customer asked for it in their own words (e.g. 'add these', "
-            "'remove the oil', 'make it 2'). from_plan=true adds every chosen line of the plan (optionally only need_ids). "
-            "Returns exactly what changed; only claim changes listed there."
-        ),
+        "description": "Change the basket, only when the customer asks. from_plan=true adds the planned lines. Report only the changes returned.",
         "input_schema": {
             "type": "object",
             "properties": {
@@ -172,7 +156,7 @@ TOOLS: list[dict] = [
     },
     {
         "name": "browse_catalog",
-        "description": "List what the store carries, by kind and/or words, 10 per page. Use for 'what do you have' questions.",
+        "description": "List what the store carries by kind and/or words, 10 per page.",
         "input_schema": {
             "type": "object",
             "properties": {"kind": {"type": "string"}, "query": {"type": "string"}, "page": {"type": "integer", "minimum": 1}},
@@ -197,7 +181,7 @@ def _strs(v) -> list[str]:
 
 
 def update_needs(turn: Turn, a: dict) -> dict:
-    L, notes, errors = turn.ledger, [], []
+    L, notes, errors, touched = turn.ledger, [], [], []
     if a.get("start_over"):
         for n in L.active_needs():
             n.status = "removed"
@@ -224,17 +208,23 @@ def update_needs(turn: Turn, a: dict) -> dict:
                 need.history.append(action + "d")
                 turn.selections_changed = True
             continue
-        kinds = _strs(spec.get("kinds"))
-        bad = [k for k in kinds if not taxonomy.get(k)]
-        if bad:
-            errors.append(f"Unknown kinds {bad}; closest valid: {sorted({c for k in bad for c in taxonomy.closest(k)})}")
-            continue
+        kinds = [k for k in _strs(spec.get("kinds")) if taxonomy.get(k)]
+        bad = [k for k in _strs(spec.get("kinds")) if not taxonomy.get(k)]
+        if not kinds and (bad or not need):
+            inferred = infer_kind(str(spec.get("label", "")), _strs(spec.get("search_terms")))
+            if inferred:
+                kinds = [inferred]
+            elif bad:
+                errors.append(f"Unknown kinds {bad} for '{spec.get('label', '')}'; closest valid: "
+                              f"{sorted({c for k in bad for c in taxonomy.closest(k)})}. Not a product? Use budget/household/purpose.")
+                continue
         if not need:
             if not kinds or not spec.get("label"):
-                errors.append("A new need needs a label and at least one kind.")
+                errors.append(f"Couldn't tell what product '{spec.get('label', '')}' is; give a kind id, or skip it if it isn't a product.")
                 continue
             need = Need(id=L.new_id(), label=str(spec["label"]), kinds=kinds)
             L.needs.append(need)
+            touched.append(need)
         else:
             change = []
             if kinds and kinds != need.kinds:
@@ -263,6 +253,8 @@ def update_needs(turn: Turn, a: dict) -> dict:
             need.allow_substitutes = bool(spec["allow_substitutes"])
         if need.status in ("deferred", "missing"):
             need.status = "open"
+        if need not in touched and any(k in spec for k in ("kinds", "search_terms", "constraints", "quantity", "allow_substitutes", "label")):
+            touched.append(need)
         _revalidate(turn, need)
 
     b = a.get("budget")
@@ -274,8 +266,71 @@ def update_needs(turn: Turn, a: dict) -> dict:
             L.budgets.append(Budget(amount=float(b["amount"]), scope=label, need_ids=ids))
         turn.money(b["amount"])
     turn.steps.append("updated the shopping list")
-    return {"needs": [compact_need(n) for n in L.active_needs()], "household": L.household,
-            "budgets": budget_status(turn), "errors": errors, "notes": notes}
+    results = [_search_and_propose(turn, n) for n in touched if n.active()]
+    if a.get("household") or L.household:  # quantities may depend on the household: refresh auto-picked packs
+        for n in L.active_needs():
+            if n not in touched and n.selection and n.selection.get("auto"):
+                _search_and_propose(turn, n, keep_choice=True)
+    out = {"results": results, "plan_total": plan_summary(turn)["plan_total"], "budgets": budget_status(turn)}
+    if L.household:
+        out["household"] = L.household
+    other = [{"id": n.id, "label": n.label, "status": n.status} for n in L.active_needs() if n not in touched]
+    if other:
+        out["other_needs"] = other
+    if errors:
+        out["errors"] = errors
+    if notes:
+        out["notes"] = notes
+    return out
+
+
+def infer_kind(label: str, terms: list[str]) -> str | None:
+    """Kind from the need's own words, for models that don't name one. None if unclear."""
+    from .text import classify
+
+    for text in [" ".join([label] + terms), label] + terms:
+        k = classify(text).kind
+        if k != taxonomy.UNKNOWN:
+            return k
+    return None
+
+
+def _search_and_propose(turn: Turn, need: Need, keep_choice: bool = False) -> dict:
+    """Search one need, bind its candidates, and propose the top real match if nothing is chosen yet."""
+    L = turn.ledger
+    out = R.search(turn.repo, turn.scope, need, L.household, limit=4)
+    need.candidates = [c.product_id for c in out.candidates]
+    real = [c for c in out.candidates if not c.substitute]
+    if keep_choice and need.selection:
+        top = next((c for c in out.candidates if c.product_id == need.selection["product_id"]), None)
+        if top and top.suggested_packs:
+            need.selection["packs"] = top.suggested_packs
+    elif real and (not need.selection or need.selection.get("auto")):
+        top = real[0]
+        need.selection = {"product_id": top.product_id, "packs": top.suggested_packs or 1, "substitute": False, "auto": True}
+        need.status, need.note = "chosen", ""
+        turn.selections_changed = True
+    elif out.candidates:
+        need.status, need.note = ("chosen" if need.selection else "options"), ""
+    else:
+        need.status, need.note = "missing", out.status + (f": {out.message}" if out.message else "")
+    r: dict[str, Any] = {"need_id": need.id, "label": need.label, "status": out.status}
+    if need.selection:
+        row = turn.repo.products_by_ids(turn.scope, [need.selection["product_id"]]).get(need.selection["product_id"])
+        if row:
+            line = round(float(row["price"]) * need.selection["packs"], 2)
+            r["proposed"] = {"product_id": row["product_id"], "name": row["name"], "size": row["size_text"] or "",
+                             "price": float(row["price"]), "packs": need.selection["packs"], "line_total": line}
+            turn.money(row["price"], line)
+    alts = [c for c in out.candidates if not need.selection or c.product_id != need.selection["product_id"]][:3]
+    if alts:
+        r["alternatives"] = [{k: v for k, v in c.brief().items() if k in ("product_id", "name", "price", "size", "unit_price", "substitute_for_kind")}
+                             for c in alts]
+        for c in alts:
+            turn.money(c.price, c.price * (c.suggested_packs or 1))
+    if out.message:
+        r["message"] = out.message
+    return r
 
 
 def _revalidate(turn: Turn, need: Need) -> None:
@@ -299,7 +354,7 @@ def find_products(turn: Turn, a: dict) -> dict:
     todo = [i for i in ids if L.get(i)]
     for nid in todo[:MAX_NEEDS_PER_SEARCH]:
         need = L.get(nid)
-        out = R.search(turn.repo, turn.scope, need, L.household)
+        out = R.search(turn.repo, turn.scope, need, L.household, limit=4)
         if a.get("prefer") == "cheapest":
             out.candidates.sort(key=lambda c: (c.substitute, c.price * (c.suggested_packs or 1)))
         need.candidates = [c.product_id for c in out.candidates]
