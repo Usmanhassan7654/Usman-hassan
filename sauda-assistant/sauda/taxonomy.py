@@ -177,6 +177,12 @@ KINDS: list[Kind] = [
 ]
 
 UNKNOWN = "unknown"
+
+# Kinds that group different products (peas and cauliflower are both "other vegetables"). For these a
+# product must also match the need's own words, or it doesn't count.
+BROAD = {"produce.vegetables", "produce.fruit", "produce.herbs", "spices.whole_garam", "meat.frozen_ready", "condiments.ketchup",
+         "bev.juice", "bev.soft_drink", "snacks.biscuits", "snacks.chocolate", "snacks.dessert_mix", "home.cleaner", "home.tissue",
+         "breakfast.jam", "breakfast.cereal", "staples.pasta", "dairy.cheese", "care.soap"}
 BY_ID: dict[str, Kind] = {k.id: k for k in KINDS}
 
 

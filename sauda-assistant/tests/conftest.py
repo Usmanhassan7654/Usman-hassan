@@ -13,6 +13,12 @@ from sauda.db import Repo  # noqa: E402
 CSV = str(ROOT / "data" / "sample_pk_grocery.csv")
 
 
+@pytest.fixture(autouse=True)
+def model_path_by_default(monkeypatch):
+    """Most tests exercise the model path; fast-path tests turn it on explicitly."""
+    monkeypatch.setenv("SAUDA_FASTPATH", "0")
+
+
 @pytest.fixture
 def repo(tmp_path):
     return Repo(tmp_path / "test.db")

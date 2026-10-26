@@ -116,6 +116,18 @@ def search(repo: Repo, scope: Scope, need: Need, household: dict | None = None, 
             for reason in v.reasons:
                 rejected[reason] += 1
 
+    # Broad kinds: the product must also match what was asked for (peas, not just any vegetable).
+    if primary & taxonomy.BROAD:
+        words = need.search_terms or [need.label]
+        kept = []
+        for r, sub in eligible:
+            text = normalize(f"{r['name']} {r['brand'] or ''}")
+            if r["kind"] not in taxonomy.BROAD or any(has_phrase(text, w) for w in words):
+                kept.append((r, sub))
+            else:
+                rejected[S.MISSING_TERM] += 1
+        eligible = kept
+
     lexical = repo.lexical_scores(scope, need.search_terms + [need.label], [r["product_id"] for r, _ in eligible])
     prefer = [normalize(b) for b in need.constraints.brands]
 
@@ -127,6 +139,20 @@ def search(repo: Repo, scope: Scope, need: Need, household: dict | None = None, 
     comparable = len(units) == 1 and None not in units
     prices = [value(r) if comparable else float(r["price"]) for r, _ in eligible] or [1.0]
     cheapest, dearest = min(prices), max(prices)
+
+    conv = {"kg": 1000, "g": 1, "l": 1000, "ml": 1, "pc": 1, "dozen": 12}
+
+    def too_big(r) -> bool:
+        """A pack far larger than the stated quantity or the household's usual use."""
+        kind = taxonomy.get(r["kind"])
+        if not kind or not kind.norm or r["pack_unit"] != kind.unit or not r["pack_amount"]:
+            return False
+        q = need.quantity or {}
+        if q.get("amount") and q.get("unit"):
+            wanted = float(q["amount"]) * conv.get(str(q["unit"]).lower(), 1)
+        else:
+            wanted = kind.norm * max(1, household.get("people", 1)) * household.get("days", 7) / 7
+        return r["pack_amount"] > 4 * wanted
 
     def score(item) -> float:
         r, sub = item
@@ -140,6 +166,8 @@ def search(repo: Repo, scope: Scope, need: Need, household: dict | None = None, 
             s += 0.8 * (1 - (p - cheapest) / (dearest - cheapest))
         if r["stock"] is not None and r["stock"] <= 5:
             s -= 0.3
+        if too_big(r):
+            s -= 1.5  # a 5 kg bag is cheaper per kg, but not what someone asking for "cheeni" usually means
         if sub:
             s -= 6  # real matches always rank above substitutes
         return s

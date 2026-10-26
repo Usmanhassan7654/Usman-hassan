@@ -40,13 +40,13 @@ def main(argv: list[str] | None = None) -> int:
     c.add_argument("--llm", help="provider chain, e.g. 'groq,gemini' or 'gemini:gemini-flash-latest' (default: SAUDA_LLM or every provider with a key)")
     c.add_argument("--effort", default="medium", help="Claude only")
     m = sub.add_parser("models", help="list the models your Groq or Gemini key can use")
-    m.add_argument("provider", choices=["groq", "gemini"])
+    m.add_argument("provider", choices=["groq", "gemini", "cerebras", "openrouter", "mistral", "ollama"])
     args = p.parse_args(argv)
 
     if args.cmd == "models":
         from . import llm
 
-        key = llm._key(args.provider)
+        key = llm._key(args.provider) or ("ollama" if args.provider == "ollama" else None)
         if not key:
             print(f"Set {' or '.join(llm.KEY_VARS[args.provider])} first.", file=sys.stderr)
             return 2

@@ -106,7 +106,8 @@ def test_bad_request_moves_on_and_total_failure_is_reported():
 
 
 def test_build_from_environment(monkeypatch):
-    for v in ("GROQ_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY", "ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "SAUDA_LLM"):
+    for v in ("GROQ_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY", "ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "SAUDA_LLM",
+              "CEREBRAS_API_KEY", "OPENROUTER_API_KEY", "MISTRAL_API_KEY"):
         monkeypatch.delenv(v, raising=False)
     with pytest.raises(ValueError, match="No model provider"):
         llm.build()
@@ -236,3 +237,22 @@ def test_groq_per_minute_limit_is_waited_out_not_treated_as_exhausted(monkeypatc
     with pytest.raises(llm.LLMError, match="tokens per day"):
         llm.OpenAICompatModel("groq", "openai/gpt-oss-120b", "k", session=session).complete("S", [{"role": "user", "content": "hi"}], TOOLS)
     assert len(session.requests) == 1
+
+
+def test_free_providers_and_local_ollama(monkeypatch):
+    for v in ("GROQ_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY", "CEREBRAS_API_KEY", "OPENROUTER_API_KEY", "MISTRAL_API_KEY", "SAUDA_LLM"):
+        monkeypatch.delenv(v, raising=False)
+    local = llm.build("ollama")
+    assert local.name == "ollama:qwen2.5:7b" and local.base_url == "http://localhost:11434/v1" and local.timeout == 300
+    monkeypatch.setenv("CEREBRAS_API_KEY", "c")
+    monkeypatch.setenv("OPENROUTER_API_KEY", "o")
+    chain = llm.build("cerebras,openrouter,ollama:qwen2.5:14b")
+    assert chain.name == "cerebras:gpt-oss-120b -> openrouter:openai/gpt-oss-20b:free -> ollama:qwen2.5:14b"
+    assert chain.models[0].base_url == "https://api.cerebras.ai/v1" and chain.models[1].base_url == "https://openrouter.ai/api/v1"
+    with pytest.raises(ValueError, match="MISTRAL_API_KEY"):
+        llm.build("mistral")
+
+
+def test_thinking_tags_are_removed_from_open_model_replies():
+    session = FakeSession([completion("<think>user wants milk</think>Doodh mil gaya.")])
+    assert llm.OpenAICompatModel("ollama", "qwen3:8b", "ollama", session=session).complete("S", [{"role": "user", "content": "x"}], TOOLS).text == "Doodh mil gaya."

@@ -29,7 +29,7 @@ customer message
 |---|---|
 | 1. "budget", "week", "eatable" are task words, not products | Needs must name a taxonomy kind; `update_needs` rejects anything else. Budget, household and purpose are separate fields. |
 | 2. Chocolate spread / nutrition powder aren't milk | Every product is classified into a kind at ingest (`text.classify`). A product can only fill a need whose kinds accept it (`suitability.check`), and that rule runs in search, selection, cards and basket. |
-| 3. Potato snacks aren't fresh potatoes | Same kind gate: `snacks.chips` ≠ `produce.potato`; "chips/crisps/fries" veto the potato kind at classification. |
+| 3. Potato snacks aren't fresh potatoes | Same kind gate: `snacks.chips` ≠ `produce.potato`; "chips/crisps/fries" veto the potato kind at classification. Broad kinds ("other vegetables", "fruit", "whole spices") also require the product to match the asked-for item, so peas are never answered with cauliflower. |
 | 4. Chaat/fries masala isn't biryani masala | Separate kinds. A related kind can only be offered as an explicit, labelled substitute (`allow_substitutes`). |
 | 5. Missing data vs retrieval failure vs rejection | `find_products` returns `not_in_catalog`, `none_eligible` (with counts per reason: out of stock, constraint, brand…) or `only_substitutes`. Tool failures come back as errors. |
 | 6. Correcting one need preserves the others | Needs have stable ids; corrections update one need and re-validate only its candidates and choice. |
@@ -42,29 +42,34 @@ The basket mismatch after reload is fixed by design. The server holds the basket
 
 ## Model providers
 
-Sauda runs on **Groq**, **Google Gemini** or **Claude**, through one adapter layer (`sauda/llm.py`). Groq and Gemini use their OpenAI-compatible chat APIs with tool calling. Set the keys you have:
+Sauda runs on several providers through one adapter layer (`sauda/llm.py`). All except Claude use OpenAI-compatible chat APIs with tool calling.
 
-| Provider | Key variable | Default model |
-|---|---|---|
-| Groq | `GROQ_API_KEY` | `openai/gpt-oss-20b` |
-| Gemini | `GEMINI_API_KEY` (or `GOOGLE_API_KEY`) | `gemini-flash-latest` (Google's alias for its newest Flash model) |
-| Claude | `ANTHROPIC_API_KEY` | `claude-opus-5-5` |
+| Provider | Key variable | Default model | Cost |
+|---|---|---|---|
+| Ollama (local) | none | `qwen2.5:7b` | free, no limits; runs on your machine or a Colab GPU |
+| Groq | `GROQ_API_KEY` | `openai/gpt-oss-20b` | free tier with per-minute/day limits |
+| Cerebras | `CEREBRAS_API_KEY` | `gpt-oss-120b` | free tier |
+| Gemini | `GEMINI_API_KEY` | `gemini-flash-latest` | free tier |
+| OpenRouter | `OPENROUTER_API_KEY` | `openai/gpt-oss-20b:free` | free models |
+| Mistral | `MISTRAL_API_KEY` | `mistral-small-latest` | free tier |
+| Claude | `ANTHROPIC_API_KEY` | `claude-opus-5-5` | paid |
 
-`SAUDA_LLM` sets the order, with an optional model per provider. When a call is rate limited, times out, fails or is rejected, the next provider takes over for that call:
+`SAUDA_LLM` sets the order, with an optional model per provider. When a call hits a limit, fails or is rejected, the next provider takes it; a provider that just failed is tried last for a minute. A used-up daily quota hands over at once:
 
 ```bash
-export SAUDA_LLM="groq,gemini"                                   # Groq first, Gemini as fallback
-export SAUDA_LLM="gemini:gemini-flash-latest,groq:openai/gpt-oss-20b"
-python -m sauda.cli models groq                                  # list the model ids your key can use
+export SAUDA_LLM="groq:openai/gpt-oss-120b,cerebras,gemini,ollama"
+python -m sauda.cli models groq        # model ids a key can use (free-tier names change often)
 ```
 
-Without `SAUDA_LLM`, every provider with a key is used, in the order Groq, Gemini, Claude. Model names change often, so check them with `models` and set them explicitly for production.
+Without `SAUDA_LLM`, every cloud provider with a key is used. Model names and free limits change often and couldn't be verified from the build environment, so check them with `models`.
 
-The application rules don't depend on the model. Suitability, totals, basket changes and the grounding check work the same on every provider. The quality of understanding (Roman Urdu, recipes, corrections) does depend on the model. Run the live journeys on each provider you plan to use.
+**No model needed for simple messages.** Clear product lists ("doodh aur double roti", "2 kg aloo, 1 kg pyaz", "eggs, bread and milk", "چینی اور چائے") and a "yes" to "Shall I add these to your basket?" are handled by the app itself (`sauda/fastpath.py`). They use no quota. Anything more (a recipe, a budget, a question, a correction, an unknown word, a broad product type) goes to the model. Set `SAUDA_FASTPATH=0` to send everything to the model.
 
-## Try it in Google Colab (nothing to install)
+The application rules don't depend on the model: suitability, totals, basket changes and the grounding check work the same everywhere. The quality of understanding does depend on the model. Smaller local models make more mistakes, so run the live journeys on whatever you plan to use.
 
-Open [Sauda_Colab.ipynb](https://colab.research.google.com/github/Usmanhassan7654/Usman-hassan/blob/claude/ecommerce-ai-assistant-t27kqw/sauda-assistant/Sauda_Colab.ipynb), add `GEMINI_API_KEY` and/or `GROQ_API_KEY` under the key icon (Secrets), and run the cells top to bottom. It runs the tests, lets you chat, runs the live customer journeys and can open the chat website.
+## Try it in Google Colab (free, nothing to install)
+
+Open [Sauda_Colab.ipynb](https://colab.research.google.com/github/Usmanhassan7654/Usman-hassan/blob/claude/ecommerce-ai-assistant-t27kqw/sauda-assistant/Sauda_Colab.ipynb). Either add free keys under the key icon (Secrets), or switch the runtime to a T4 GPU and run the Ollama step for a local model with no key and no limits. Then run the cells top to bottom: tests, a provider check, chat, the live customer journeys and the chat website.
 
 ## Run it
 
@@ -110,7 +115,7 @@ Limits: 1,000 characters per message, 20 messages per minute per session, one tu
 ## Tests
 
 ```bash
-python -m pytest -q                                          # 38 tests, no network, ~7 s
+python -m pytest -q                                          # 68 tests, no network, ~10 s
 GROQ_API_KEY=... python evals/journeys.py --llm groq         # live journeys against a real model (spends usage)
 GEMINI_API_KEY=... python evals/journeys.py --llm gemini --repeat 3
 ```

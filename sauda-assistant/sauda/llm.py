@@ -9,9 +9,15 @@ converts it to its API:
     {"role": "tool", "id": str, "name": str, "content": str, "is_error": bool}
 
 Providers:
-    groq     OpenAI-compatible API at api.groq.com          (GROQ_API_KEY)
-    gemini   Gemini's OpenAI-compatible endpoint            (GEMINI_API_KEY or GOOGLE_API_KEY)
-    claude   Anthropic Messages API                         (ANTHROPIC_API_KEY)
+    groq        api.groq.com (free tier)                       GROQ_API_KEY
+    gemini      Gemini's OpenAI-compatible endpoint (free tier) GEMINI_API_KEY or GOOGLE_API_KEY
+    cerebras    api.cerebras.ai (free tier)                    CEREBRAS_API_KEY
+    openrouter  openrouter.ai (":free" models)                 OPENROUTER_API_KEY
+    mistral     api.mistral.ai (free tier)                     MISTRAL_API_KEY
+    ollama      a model running on this machine, no key, no quota (OLLAMA_URL, default http://localhost:11434/v1)
+    claude      Anthropic Messages API                         ANTHROPIC_API_KEY
+
+Free tiers and their model names change often: `python -m sauda.cli models <provider>` lists what a key can use.
 
 SAUDA_LLM picks the chain, tried in order when a call fails with a rate limit,
 server error or timeout, e.g.  SAUDA_LLM="groq:openai/gpt-oss-20b,gemini:gemini-flash-latest"
@@ -30,10 +36,16 @@ from typing import Any
 
 import requests
 
-DEFAULT_MODELS = {"groq": "openai/gpt-oss-20b", "gemini": "gemini-flash-latest", "claude": "claude-opus-5-5"}
-BASE_URLS = {"groq": "https://api.groq.com/openai/v1", "gemini": "https://generativelanguage.googleapis.com/v1beta/openai"}
+DEFAULT_MODELS = {"groq": "openai/gpt-oss-20b", "gemini": "gemini-flash-latest", "cerebras": "gpt-oss-120b",
+                  "openrouter": "openai/gpt-oss-20b:free", "mistral": "mistral-small-latest", "ollama": "qwen2.5:7b",
+                  "claude": "claude-opus-5-5"}
+BASE_URLS = {"groq": "https://api.groq.com/openai/v1", "gemini": "https://generativelanguage.googleapis.com/v1beta/openai",
+             "cerebras": "https://api.cerebras.ai/v1", "openrouter": "https://openrouter.ai/api/v1", "mistral": "https://api.mistral.ai/v1",
+             "ollama": "http://localhost:11434/v1"}
+CLOUD_ORDER = ("groq", "cerebras", "gemini", "openrouter", "mistral")
 GEMINI_SKIP_SIGNATURE = "skip_thought_signature_validator"
-KEY_VARS = {"groq": ("GROQ_API_KEY",), "gemini": ("GEMINI_API_KEY", "GOOGLE_API_KEY"), "claude": ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN")}
+KEY_VARS = {"groq": ("GROQ_API_KEY",), "gemini": ("GEMINI_API_KEY", "GOOGLE_API_KEY"), "cerebras": ("CEREBRAS_API_KEY",),
+            "openrouter": ("OPENROUTER_API_KEY",), "mistral": ("MISTRAL_API_KEY",), "ollama": (), "claude": ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN")}
 
 
 class LLMError(Exception):
@@ -165,7 +177,8 @@ class OpenAICompatModel(ChatModel):
         u = data.get("usage") or {}
         usage = {"input_tokens": u.get("prompt_tokens", 0) or 0, "output_tokens": u.get("completion_tokens", 0) or 0,
                  "cached_tokens": (u.get("prompt_tokens_details") or {}).get("cached_tokens", 0) or 0}
-        return Reply((msg.get("content") or "").strip(), calls, stop, usage=usage, model=self.name)
+        text = re.sub(r"<think>.*?</think>", "", msg.get("content") or "", flags=re.S).strip()  # some open models think out loud
+        return Reply(text, calls, stop, usage=usage, model=self.name)
 
     def _post(self, body: dict) -> dict:
         url = f"{self.base_url}/chat/completions"
@@ -275,34 +288,37 @@ class FallbackModel(ChatModel):
 # ---------------------------------------------------------------- config
 
 def _key(provider: str) -> str | None:
-    return next((os.environ[v] for v in KEY_VARS[provider] if os.environ.get(v)), None)
+    return next((os.environ[v] for v in KEY_VARS.get(provider, ()) if os.environ.get(v)), None)
 
 
 def build(spec: str | None = None, effort: str = "medium") -> ChatModel:
-    """Build the model chain from SAUDA_LLM (or `spec`); default: every provider that has a key, Groq first."""
+    """Build the model chain from SAUDA_LLM (or `spec`); default: every cloud provider that has a key."""
     spec = spec if spec is not None else os.environ.get("SAUDA_LLM", "")
-    entries = [s.strip() for s in spec.split(",") if s.strip()] or [p for p in ("groq", "gemini", "claude") if _key(p)]
+    entries = [s.strip() for s in spec.split(",") if s.strip()] or [p for p in CLOUD_ORDER + ("claude",) if _key(p)]
     models: list[ChatModel] = []
     for entry in entries:
         provider, _, model = entry.partition(":")
         provider = provider.strip().lower()
         if provider not in DEFAULT_MODELS:
-            raise ValueError(f"Unknown provider '{provider}'. Use groq, gemini or claude.")
+            raise ValueError(f"Unknown provider '{provider}'. Use one of: {', '.join(DEFAULT_MODELS)}.")
         model = model.strip() or DEFAULT_MODELS[provider]
         if provider == "claude":
             models.append(AnthropicModel(model, effort))
-            continue
-        key = _key(provider)
-        if not key:
-            raise ValueError(f"{provider} is configured but {' or '.join(KEY_VARS[provider])} is not set.")
-        models.append(OpenAICompatModel(provider, model, key))
+        elif provider == "ollama":  # local: no key, no quota, but slower on small machines
+            models.append(OpenAICompatModel("ollama", model, "ollama", base_url=os.environ.get("OLLAMA_URL"), timeout=300, max_retries=1))
+        else:
+            key = _key(provider)
+            if not key:
+                raise ValueError(f"{provider} is configured but {' or '.join(KEY_VARS[provider])} is not set.")
+            models.append(OpenAICompatModel(provider, model, key))
     if not models:
-        raise ValueError("No model provider configured. Set GROQ_API_KEY, GEMINI_API_KEY or ANTHROPIC_API_KEY (and optionally SAUDA_LLM).")
+        raise ValueError("No model provider configured. Set a key (GROQ_API_KEY, GEMINI_API_KEY, CEREBRAS_API_KEY, OPENROUTER_API_KEY, "
+                         "MISTRAL_API_KEY) or SAUDA_LLM=ollama for a local model.")
     return models[0] if len(models) == 1 else FallbackModel(models)
 
 
 def configured() -> bool:
-    return any(_key(p) for p in KEY_VARS)
+    return any(_key(p) for p in KEY_VARS if KEY_VARS[p]) or "ollama" in os.environ.get("SAUDA_LLM", "")
 
 
 # ------------------------------------------------------------------ helpers

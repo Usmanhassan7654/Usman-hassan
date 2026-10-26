@@ -12,13 +12,14 @@ doesn't match, the model gets one chance to correct its reply.
 from __future__ import annotations
 
 import json
+import os
 import re
 import time
 from dataclasses import dataclass, field
 from typing import Any, Callable
 
 from . import basket as B
-from . import llm, presenter, taxonomy
+from . import fastpath, llm, presenter, taxonomy
 from .db import ConcurrentUpdate, Repo, Scope
 from .ledger import Ledger, compact_need
 from .tools import TOOLS, ToolError, Turn, budget_status, execute, plan_lines
@@ -71,12 +72,26 @@ class Agent:
     For tests, `client` accepts an Anthropic-style client and wraps it in the Claude adapter.
     """
 
-    def __init__(self, repo: Repo, model: llm.ChatModel | None = None, client: Any | None = None, effort: str = "medium"):
+    def __init__(self, repo: Repo, model: llm.ChatModel | None = None, client: Any | None = None, effort: str = "medium",
+                 fast_path: bool | None = None):
         self.repo = repo
+        # Clear product lists and "yes, add them" are handled without a model call (SAUDA_FASTPATH=0 turns this off).
+        self.fast_path = fast_path if fast_path is not None else os.environ.get("SAUDA_FASTPATH", "1") != "0"
         if client is not None:
             model = llm.AnthropicModel(effort=effort, client=client)
-        self.model = model or llm.build(effort=effort)
+        self._model = model
+        self._effort = effort
         self._system_cache: dict[str, str] = {}
+
+    @property
+    def model(self) -> llm.ChatModel:
+        if self._model is None:  # built on first use, so a fast-path-only turn needs no key
+            self._model = llm.build(effort=self._effort)
+        return self._model
+
+    @model.setter
+    def model(self, value: llm.ChatModel) -> None:
+        self._model = value
 
     @property
     def client(self):  # tests swap the scripted client between turns
@@ -84,7 +99,7 @@ class Agent:
 
     @client.setter
     def client(self, client) -> None:
-        self.model = llm.AnthropicModel(effort=getattr(self.model, "effort", "medium"), client=client)
+        self._model = llm.AnthropicModel(effort=self._effort, client=client)
 
     def system_prompt(self, scope: Scope) -> str:
         if scope.store_id not in self._system_cache:
@@ -101,10 +116,17 @@ class Agent:
         ledger.turn += 1
         turn = Turn(self.repo, scope, session_id, ledger)
 
+        usage = {"input_tokens": 0, "output_tokens": 0, "cached_tokens": 0, "model_calls": 0, "models": [], "errors": [], "fast_path": False}
+        reply = fastpath.try_handle(turn, text) if self.fast_path else None
+        if reply is not None:
+            usage["fast_path"] = True
+            emit({"type": "status", "text": "Finding your items"})
+            return self._finish(turn, scope, session_id, text, reply, history, version, check_grounding(reply, turn, text), usage)
+        ledger.preferences.pop("_awaiting", None)
+
         messages: list[dict] = _recent(history)
         messages.append({"role": "user", "content": text})
         messages.append({"role": "state", "content": self.state_message(turn)})
-        usage = {"input_tokens": 0, "output_tokens": 0, "cached_tokens": 0, "model_calls": 0, "models": [], "errors": []}
 
         reply = self._run(turn, messages, emit, started, usage)
         grounding = check_grounding(reply, turn, text)
@@ -116,7 +138,11 @@ class Agent:
             reply = self._run(turn, messages, emit, started, usage)
             second = check_grounding(reply, turn, text)
             grounding = {"issues": second["issues"], "corrected": grounding["issues"]}
+        return self._finish(turn, scope, session_id, text, reply, history, version, grounding, usage)
 
+    def _finish(self, turn: Turn, scope: Scope, session_id: str, text: str, reply: str, history: list, version: int,
+                grounding: dict, usage: dict) -> Result:
+        ledger = turn.ledger
         cards = presenter.build(turn)
         basket = B.view(self.repo, scope, session_id)
         ledger.seen_basket_revision = basket["revision"]
@@ -173,7 +199,7 @@ class Agent:
             "plan_total": round(sum(l["line_total"] for l in lines), 2),
             "budgets": budget_status(turn),
             "household": L.household or None,
-            "preferences": L.preferences or None,
+            "preferences": {k: v for k, v in L.preferences.items() if not k.startswith("_")} or None,
             "basket": {"items": [{"name": i["name"], "product_id": i["product_id"], "quantity": i["quantity"], "line_total": i["line_total"],
                                   **({"issue": i["issue"]} if i.get("issue") else {})} for i in basket["items"]],
                        "total": basket["total"]},
