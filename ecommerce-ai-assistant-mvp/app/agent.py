@@ -19,8 +19,9 @@ SYSTEM = """You are the AI shopping assistant of an online grocery store. You he
 
 How to help:
 - Understand what the customer is trying to do before searching. Pick the right tool:
-  - A budget ("I have $50 for the week") -> plan_budget_cart.
-  - A dish or recipe ("chicken pasta for 4", "what do I need for lasagna") -> recipe_ingredients. List every ingredient with a short search phrase and how many packs are needed for the servings. If the customer said what they already have at home, pass it as have_at_home.
+  - A budget ("I have $50 for the week") -> plan_budget_cart. Pass brands the customer likes or dislikes as prefer_brands / avoid_brands.
+  - A dish or recipe ("chicken pasta for 4", "what do I need for lasagna") -> recipe_ingredients. List every ingredient, including staples like salt and oil, with a short search phrase and the amount per serving with its unit (e.g. 150 g chicken, 60 ml cream); the store works out the packs. If the customer said what they already have, pass it as have_at_home.
+  - The recipe result lists pantry_check items (salt, oil, spices...) that were not added. Ask the customer in one short question whether they already have them. If they need some, call add_to_cart for those, or recipe_ingredients again with include_pantry.
   - Looking for products ("gluten-free snacks under $10", "do you have oat milk?") -> search_products, with filters for price, diet and allergens.
   - "Add it", "add all", "remove the milk", "make it 2" -> add_to_cart / update_cart.
   - "Checkout", "I'm done", "place my order" -> show_checkout.
@@ -43,17 +44,22 @@ TOOLS = [
     {"name": "plan_budget_cart", "description": "Build a balanced grocery basket of weekly basics that stays within the budget. The store calculates all totals.",
      "parameters": {"type": "object", "properties": {
          "budget": {"type": "number"}, "people": {"type": "integer"}, "days": {"type": "integer"},
+         "prefer_brands": {"type": "array", "items": {"type": "string"}}, "avoid_brands": {"type": "array", "items": {"type": "string"}},
          "dietary": {"type": "array", "items": {"type": "string", "enum": ["vegan", "vegetarian", "gluten-free", "dairy-free", "organic", "keto"]}},
          "exclude_allergens": {"type": "array", "items": {"type": "string", "enum": ["milk", "eggs", "wheat", "nuts", "soy", "fish", "shellfish"]}}},
          "required": ["budget"]}},
-    {"name": "recipe_ingredients", "description": "Find store products for every ingredient of a recipe, scaled to the servings, skipping what the customer has at home.",
+    {"name": "recipe_ingredients", "description": "Find store products for every ingredient of a recipe. The store scales amounts to the servings and works out packs; pantry staples come back separately for the customer to confirm.",
      "parameters": {"type": "object", "properties": {
          "recipe": {"type": "string"}, "servings": {"type": "integer"},
          "ingredients": {"type": "array", "items": {"type": "object", "properties": {
              "name": {"type": "string", "description": "e.g. 'heavy cream'"},
              "search": {"type": "string", "description": "Short product search, e.g. 'heavy cream'."},
-             "packs": {"type": "integer", "description": "Packs needed for the servings."}}, "required": ["name"]}},
-         "have_at_home": {"type": "array", "items": {"type": "string"}}},
+             "amount_per_serving": {"type": "number", "description": "e.g. 60"},
+             "unit": {"type": "string", "description": "g, kg, oz, lb, ml, l, cup, tbsp, tsp, pc"},
+             "packs": {"type": "integer", "description": "Only if no amount is known."},
+             "pantry_staple": {"type": "boolean", "description": "True for salt, oil, spices and similar basics."}}, "required": ["name"]}},
+         "have_at_home": {"type": "array", "items": {"type": "string"}},
+         "include_pantry": {"type": "boolean", "description": "True once the customer said they need the pantry items."}},
          "required": ["recipe", "servings", "ingredients"]}},
     {"name": "add_to_cart", "description": "Add products to the cart, only when the customer asks.",
      "parameters": {"type": "object", "properties": {"items": {"type": "array", "items": {"type": "object", "properties": {
@@ -117,15 +123,19 @@ class Assistant:
                 cards.append({"type": "products", "items": [card(p) for p in found["results"]]})
             return {"results": [brief(p) for p in found["results"]], "out_of_stock": [brief(p) for p in found["out_of_stock"]]}
         if name == "plan_budget_cart":
-            plan = self.shop.plan_budget(float(a["budget"]), a.get("people", 1), a.get("days", 7), a.get("dietary"), a.get("exclude_allergens"))
+            plan = self.shop.plan_budget(float(a["budget"]), a.get("people", 1), a.get("days", 7), a.get("dietary"), a.get("exclude_allergens"),
+                                         prefer_brands=a.get("prefer_brands"), avoid_brands=a.get("avoid_brands"))
             cards.append({"type": "bundle", **plan})
             return {k: plan[k] for k in ("total", "budget", "remaining", "left_out")} | {
                 "items": [{"name": i["name"], "quantity": i["quantity"], "line_total": i["line_total"]} for i in plan["items"]]}
         if name == "recipe_ingredients":
-            kit = self.shop.recipe_kit(a.get("recipe", "recipe"), int(a.get("servings") or 2), a.get("ingredients", []), a.get("have_at_home"))
+            kit = self.shop.recipe_kit(a.get("recipe", "recipe"), int(a.get("servings") or 2), a.get("ingredients", []), a.get("have_at_home"),
+                                       include_pantry=bool(a.get("include_pantry")))
             cards.append({"type": "bundle", **kit})
             return {"total": kit["total"], "missing": kit["missing"], "already_have": kit["already_have"],
-                    "items": [{"for": i["for"], "name": i["name"], "quantity": i["quantity"], "line_total": i["line_total"]} for i in kit["items"]]}
+                    "items": [{"for": i["for"], "name": i["name"], "quantity": i["quantity"], "needed": i.get("needed"), "line_total": i["line_total"]}
+                              for i in kit["items"]],
+                    "pantry_check": [{"for": i["for"], "product_id": i["id"], "name": i["name"], "price": i["price"]} for i in kit["pantry_check"]]}
         if name == "add_to_cart":
             for item in a.get("items", []):
                 self.shop.add(sid, item["product_id"], item.get("quantity", 1))

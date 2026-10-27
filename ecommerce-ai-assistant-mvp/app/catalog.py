@@ -6,8 +6,11 @@ and products are ranked by cosine similarity. Two kinds of vectors are
 combined: word vectors (meaning of whole words) and character vectors (so
 misspellings like "choclate" or "yoghurt" still match).
 
-If the optional `fastembed` package is installed, dense AI embeddings are
-added on top for better meaning-based matching ("something for breakfast").
+On top of that, AI embeddings (the `fastembed` package, installed with the
+requirements) add meaning-based matching: "something for breakfast" finds
+oats, eggs and muffins even without those words. The small model (about
+70 MB) downloads once on first start; without internet the search falls back
+to word and character vectors.
 
 Filters (price, diet, allergens, category, stock) are applied exactly, after
 the vector ranking.
@@ -59,7 +62,8 @@ class Catalog:
         except ImportError:
             return
         try:
-            self.embedder = TextEmbedding("BAAI/bge-small-en-v1.5")
+            # Kept in data/models so it downloads only once.
+            self.embedder = TextEmbedding("BAAI/bge-small-en-v1.5", cache_dir=str(DATA / "models"))
             self.dense = np.array(list(self.embedder.embed(docs)), dtype=np.float32)
             self.dense /= np.linalg.norm(self.dense, axis=1, keepdims=True)
         except Exception as e:  # no internet on first run, etc.: keep the word/character vectors
@@ -76,7 +80,10 @@ class Catalog:
         scores = (self.matrix @ qv.T).toarray().ravel()
         if self.dense is not None:
             e = np.array(list(self.embedder.embed([q])), dtype=np.float32)[0]
-            scores = 0.5 * scores + 0.5 * (self.dense @ (e / np.linalg.norm(e)))
+            meaning = self.dense @ (e / np.linalg.norm(e))
+            # Embedding similarities sit around 0.4-0.5 for unrelated text and 0.65+ for related text;
+            # rescale so only real matches add to the score.
+            scores = 0.6 * scores + 0.4 * np.clip((meaning - 0.5) / 0.4, 0, 1)
         return scores
 
     def search(self, query: str = "", max_price: float | None = None, dietary: list[str] | None = None,

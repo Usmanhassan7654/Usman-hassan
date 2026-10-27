@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import math
+import re
 import time
 import uuid
 from pathlib import Path
@@ -77,12 +78,17 @@ class Shop:
     # --------------------------------------------------------------- budget
 
     def plan_budget(self, budget: float, people: int = 1, days: int = 7, dietary: list[str] | None = None,
-                    exclude_allergens: list[str] | None = None, skip: list[str] | None = None) -> dict:
+                    exclude_allergens: list[str] | None = None, skip: list[str] | None = None,
+                    prefer_brands: list[str] | None = None, avoid_brands: list[str] | None = None) -> dict:
         """Fill a cart with weekly basics without going over the budget.
 
         Pass 1 covers as many basics as possible with the cheapest suitable product.
         Pass 2 spends what is left upgrading to the preferred product of each basic.
+        A brand the customer prefers becomes the preferred product wherever the store has one;
+        brands to avoid are never picked.
         """
+        prefer = {b.lower() for b in prefer_brands or []}
+        shun = {b.lower() for b in avoid_brands or []}
         people, days = max(1, int(people)), max(1, int(days))
         skip_words = {w.lower() for w in skip or []}
         need = {d.lower() for d in dietary or []}
@@ -93,11 +99,21 @@ class Shop:
 
         def suitable(name: str) -> bool:
             p = by_name.get(name)
-            return bool(p) and p["stock"] > 0 and need <= set(p["dietary"]) and not avoid & set(p["allergens"])
+            return (bool(p) and p["stock"] > 0 and need <= set(p["dietary"]) and not avoid & set(p["allergens"])
+                    and p["brand"].lower() not in shun)
+
+        def candidates(names: list[str]) -> list[str]:
+            if not prefer:
+                return names
+            # Same kind of product from a preferred brand (e.g. any milk from Green Valley), placed first.
+            first = by_name[names[0]]
+            similar = [p["name"] for p in self.catalog.search(first["name"], category=first["category"], limit=5)["results"]]
+            branded = [n for n in names + similar if by_name[n]["brand"].lower() in prefer]
+            return list(dict.fromkeys(branded + names))
 
         plan, total, left_out = [], 0.0, []
         for rank, (what, names, per) in enumerate(BUDGET_STAPLES):
-            options = [by_name[n] for n in names if suitable(n)]
+            options = [by_name[n] for n in candidates(names) if suitable(n)]
             taken = {x[1]["id"] for x in plan}
             options = [o for o in options if o["id"] not in taken]
             if what in skip_words or not options:
@@ -128,10 +144,20 @@ class Shop:
 
     # --------------------------------------------------------------- recipe
 
-    def recipe_kit(self, recipe: str, servings: int, ingredients: list[dict], have_at_home: list[str] | None = None) -> dict:
-        """Match each ingredient to a product; skip what the customer already has."""
+    def recipe_kit(self, recipe: str, servings: int, ingredients: list[dict], have_at_home: list[str] | None = None,
+                   include_pantry: bool = False) -> dict:
+        """Match each ingredient to a product and work out how many packs the servings need.
+
+        Quantities: an ingredient can give `amount_per_serving` (or a total `amount`) with a `unit`;
+        the app converts both that and the product's pack size to grams, millilitres or pieces and
+        rounds up to whole packs. Without an amount, the model's `packs` (or 1) is used.
+
+        Pantry check: common staples (salt, oil, spices...) are not added unless the customer said
+        they need them (include_pantry). They are returned separately so the assistant can ask.
+        """
+        servings = max(1, int(servings or 1))
         home = [h.lower() for h in have_at_home or []]
-        items, missing, skipped = [], [], []
+        items, pantry, missing, skipped = [], [], [], []
         for ing in ingredients:
             name = str(ing.get("name", "")).strip()
             if not name:
@@ -143,12 +169,17 @@ class Shop:
             if not p:
                 missing.append(name)
                 continue
-            item = card(p, max(1, int(ing.get("packs") or 1)))
+            needed, unit = _amount(ing, servings)
+            packs = packs_for(needed, unit, p["size"]) if needed else None
+            item = card(p, packs or max(1, int(ing.get("packs") or 1)))
             item["for"] = name
-            items.append(item)
+            if needed:
+                item["needed"] = f"{needed:g} {unit}"
+            staple = bool(ing.get("pantry_staple")) or is_pantry_staple(name)
+            (pantry if staple and not include_pantry else items).append(item)
         total = round(sum(i["line_total"] for i in items), 2)
         return {"kind": "recipe", "title": f"{recipe.title()} for {servings}", "items": items, "total": total,
-                "missing": missing, "already_have": skipped}
+                "pantry_check": pantry, "missing": missing, "already_have": skipped}
 
     # ------------------------------------------------------------- checkout
 
@@ -169,3 +200,60 @@ class Shop:
         self.orders_path.write_text(json.dumps(orders, indent=1))
         self.carts[sid] = {}
         return order
+
+
+# ------------------------------------------------------------------ quantities
+
+PANTRY_WORDS = ("salt", "pepper", "olive oil", "vegetable oil", "cooking oil", "oil", "sugar", "flour", "garlic powder",
+                "italian seasoning", "seasoning", "spice", "oregano", "paprika", "cumin", "vinegar", "soy sauce", "ketchup",
+                "mustard", "mayonnaise", "honey", "baking", "stock cube")
+
+
+def is_pantry_staple(name: str) -> bool:
+    n = name.lower()
+    return any(w == n or n.endswith(" " + w) or n.startswith(w + " ") or w in n.split() for w in PANTRY_WORDS)
+
+
+# size units -> (base unit, factor)
+UNITS = {"g": ("g", 1), "gram": ("g", 1), "grams": ("g", 1), "kg": ("g", 1000), "oz": ("g", 28.35), "lb": ("g", 453.6), "lbs": ("g", 453.6),
+         "ml": ("ml", 1), "l": ("ml", 1000), "liter": ("ml", 1000), "litre": ("ml", 1000), "fl oz": ("ml", 29.57), "cup": ("ml", 240),
+         "cups": ("ml", 240), "tbsp": ("ml", 15), "tsp": ("ml", 5), "gal": ("ml", 3785), "pint": ("ml", 473),
+         "ct": ("pc", 1), "pc": ("pc", 1), "pcs": ("pc", 1), "piece": ("pc", 1), "pieces": ("pc", 1), "each": ("pc", 1),
+         "ears": ("pc", 1), "hearts": ("pc", 1), "head": ("pc", 1), "bunch": ("pc", 1), "dozen": ("pc", 12), "egg": ("pc", 1), "eggs": ("pc", 1)}
+_SIZE = re.compile(r"(?:(\d+)\s*x\s*)?(\d+(?:\.\d+)?)\s*(fl oz|kg|lbs|lb|oz|ml|l|gal|ct|pcs|pc|pieces|ears|hearts|head|bunch|dozen|g)\b", re.I)
+
+
+def to_base(amount: float, unit: str) -> tuple[float, str] | None:
+    u = UNITS.get(unit.strip().lower())
+    return (amount * u[1], u[0]) if u else None
+
+
+def pack_size(size: str) -> tuple[float, str] | None:
+    """'300 g' -> (300, 'g'); '4 x 5.3 oz' -> (601, 'g'); '1 gal' -> (3785, 'ml'); '12 ct' -> (12, 'pc')."""
+    s = size.lower().replace("half gal", "0.5 gal")
+    m = _SIZE.search(s)
+    if not m:
+        return None
+    base = to_base(float(m.group(2)) * int(m.group(1) or 1), m.group(3))
+    return base
+
+
+def packs_for(amount: float, unit: str, size: str) -> int | None:
+    need, pack = to_base(amount, unit), pack_size(size)
+    if not need or not pack:
+        return None
+    if need[1] != pack[1]:
+        if {need[1], pack[1]} == {"g", "ml"}:  # treat 1 ml as about 1 g for cooking amounts
+            need = (need[0], pack[1])
+        else:
+            return None
+    return max(1, math.ceil(need[0] / pack[0] - 1e-9))
+
+
+def _amount(ing: dict, servings: int) -> tuple[float | None, str]:
+    unit = str(ing.get("unit") or "").strip()
+    if ing.get("amount_per_serving") and unit:
+        return round(float(ing["amount_per_serving"]) * servings, 2), unit
+    if ing.get("amount") and unit:
+        return float(ing["amount"]), unit
+    return None, unit

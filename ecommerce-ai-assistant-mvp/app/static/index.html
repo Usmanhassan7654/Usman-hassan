@@ -96,6 +96,9 @@ form#composer { display: flex; gap: 10px; padding-block: 12px calc(14px + env(sa
 .qty button { width: 26px; height: 26px; border-radius: 8px; border: 1px solid var(--line); background: var(--blue-soft); color: var(--blue); font-weight: 700; }
 #cartFoot { padding: 14px 18px calc(18px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; background: #f8fbff; }
 .empty { color: var(--muted); text-align: center; padding: 40px 0; }
+.pantry { border: 1px dashed var(--blue-2); background: var(--blue-soft); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+.pantry-title { font-weight: 700; color: var(--blue-deep); font-size: 13.5px; }
+.add.small { margin-top: 0; padding: 6px 12px; font-size: 13px; }
 @media (prefers-reduced-motion: reduce) { .card { transition: none; } .card:hover { transform: none; } }
 </style>
 </head>
@@ -187,7 +190,7 @@ function bundle(card) {
   const p = el("div", "panel"); p.append(el("h3", "", card.title));
   for (const i of card.items) {
     const row = el("div", "row"); const img = el("img"); img.src = i.image; img.alt = "";
-    const mid = el("div"); mid.append(el("div", "name", i.name), el("div", "meta", `${i.quantity} × ${money(i.price)} · ${i.size}${i.for ? " · for " + i.for : ""}`));
+    const mid = el("div"); mid.append(el("div", "name", i.name), el("div", "meta", `${i.quantity} × ${money(i.price)} · ${i.size}${i.needed ? " · need " + i.needed : ""}${i.for ? " · for " + i.for : ""}`));
     row.append(img, mid, el("div", "amt", money(i.line_total))); p.append(row);
   }
   const t = el("div", "total"); t.append(el("span", "", "Total"), el("span", "", money(card.total))); p.append(t);
@@ -196,7 +199,21 @@ function bundle(card) {
   if (card.missing && card.missing.length) p.append(el("div", "note", "Not in the store: " + card.missing.join(", ")));
   const btn = el("button", "big", `Add all to cart (${money(card.total)})`); btn.type = "button";
   btn.onclick = async () => { btn.disabled = true; await changeCart(card.items.map(i => ({ product_id: i.id, quantity: i.quantity }))); btn.textContent = "Added to cart ✓"; };
-  p.append(btn); return p;
+  p.append(btn);
+  if (card.pantry_check && card.pantry_check.length) p.append(pantry(card.pantry_check));
+  return p;
+}
+function pantry(list) {
+  // Staples the customer may already have: shown separately, added only on request.
+  const box = el("div", "pantry"); box.append(el("div", "pantry-title", "Pantry check: do you already have these?"));
+  for (const i of list) {
+    const row = el("div", "row"); const img = el("img"); img.src = i.image; img.alt = "";
+    const mid = el("div"); mid.append(el("div", "name", i.name), el("div", "meta", `${money(i.price)} · for ${i.for}`));
+    const add = el("button", "add small", "Add"); add.type = "button";
+    add.onclick = async () => { add.disabled = true; await changeCart([{ product_id: i.id, quantity: i.quantity }]); add.textContent = "Added ✓"; };
+    row.append(img, mid, add); box.append(row);
+  }
+  return box;
 }
 function showCheckout() {
   if (!cart.items.length) return;

@@ -2,3 +2,4 @@
 data/orders.json
 __pycache__/
 .pytest_cache/
+data/models/

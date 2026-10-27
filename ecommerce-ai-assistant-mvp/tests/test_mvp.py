@@ -121,3 +121,66 @@ def test_assistant_reports_missing_key(shop, monkeypatch):
     monkeypatch.delenv("LLM_API_KEY", raising=False)
     with pytest.raises(Exception, match="GROQ_API_KEY"):
         Assistant(shop.catalog, shop).chat("s1", "hi")
+
+
+def test_budget_respects_brand_preferences(shop):
+    plain = {i["name"] for i in shop.plan_budget(60)["items"]}
+    liked = shop.plan_budget(60, prefer_brands=["Harvest Farm"])
+    brands = {shop.catalog.by_id[i["id"]]["brand"] for i in liked["items"]}
+    assert "Harvest Farm" in brands and liked["total"] <= 60
+    avoided = shop.plan_budget(60, avoid_brands=["Green Valley", "Harvest Farm"])
+    assert not {"Green Valley", "Harvest Farm"} & {shop.catalog.by_id[i["id"]]["brand"] for i in avoided["items"]}
+    assert plain  # the default plan still works
+
+
+def test_recipe_packs_are_calculated_from_servings(shop):
+    from app.shop import packs_for, pack_size
+    assert pack_size("4 x 5.3 oz") == (601.02, "g") and pack_size("1 gal") == (3785.0, "ml")
+    assert packs_for(600, "g", "300 g") == 2 and packs_for(1, "lb", "500 g") == 1 and packs_for(6, "eggs", "12 ct") == 1
+    kit = shop.recipe_kit("chicken pasta", 4, [
+        {"name": "chicken breast", "search": "chicken breast fillets", "amount_per_serving": 150, "unit": "g"},
+        {"name": "pasta", "search": "artisan pasta", "amount_per_serving": 100, "unit": "g"},
+        {"name": "heavy cream", "amount_per_serving": 60, "unit": "ml"}])
+    got = {i["for"]: (i["quantity"], i["needed"]) for i in kit["items"]}
+    assert got == {"chicken breast": (2, "600 g"), "pasta": (1, "400 g"), "heavy cream": (1, "240 ml")}
+    bigger = shop.recipe_kit("chicken pasta", 8, [{"name": "chicken breast", "search": "chicken breast fillets", "amount_per_serving": 150, "unit": "g"}])
+    assert bigger["items"][0]["quantity"] == 4   # double the servings, double the packs
+
+
+def test_pantry_staples_are_asked_about_not_added(shop):
+    ings = [{"name": "spaghetti"}, {"name": "salt"}, {"name": "olive oil"}, {"name": "black pepper"}, {"name": "garlic"}]
+    kit = shop.recipe_kit("aglio e olio", 2, ings)
+    assert [i["for"] for i in kit["items"]] == ["spaghetti", "garlic"]
+    assert [i["for"] for i in kit["pantry_check"]] == ["salt", "olive oil", "black pepper"]
+    assert kit["total"] == round(sum(i["line_total"] for i in kit["items"]), 2)   # pantry items are not in the total
+    assert [i["for"] for i in shop.recipe_kit("aglio e olio", 2, ings, include_pantry=True)["items"]] == ["spaghetti", "salt", "olive oil", "black pepper", "garlic"]
+    assert shop.recipe_kit("aglio e olio", 2, ings, have_at_home=["salt", "olive oil"])["already_have"] == ["salt", "olive oil"]
+
+
+def test_meaning_search_with_embeddings_and_safe_fallback(monkeypatch):
+    import numpy as np
+    from app import catalog as C
+
+    class FakeEmbedder:  # stands in for the downloaded model: "breakfast" is close to oats, muffins, eggs
+        def embed(self, texts):
+            for t in texts:
+                t = t.lower()
+                yield np.array([1.0 if any(w in t for w in ("breakfast", "oat", "muffin", "egg", "cereal")) else 0.0, 1.0], dtype=np.float32)
+
+    c = C.Catalog()
+    plain = [p["name"] for p in c.search("morning meal ideas")["results"]]
+    c.embedder = FakeEmbedder()
+    c.dense = np.array(list(c.embedder.embed([c._doc(p) for p in c.products])), dtype=np.float32)
+    c.dense /= np.linalg.norm(c.dense, axis=1, keepdims=True)
+    with_meaning = [p["name"] for p in c.search("breakfast")["results"]]
+    assert c.mode.endswith("AI embeddings") and any(w in " ".join(with_meaning) for w in ("Oat", "Muffin", "Egg"))
+    assert isinstance(plain, list)
+    # a model that can't load (no internet on first start) falls back to word + character vectors
+    import fastembed
+
+    def no_internet(*a, **k):
+        raise ConnectionError("no internet")
+    monkeypatch.setattr(fastembed, "TextEmbedding", no_internet)
+    monkeypatch.setenv("USE_EMBEDDINGS", "1")
+    fallback = C.Catalog()
+    assert fallback.mode == "word + character vectors" and fallback.search("milk")["results"]
