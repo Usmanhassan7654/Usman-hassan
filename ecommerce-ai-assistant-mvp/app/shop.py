@@ -50,9 +50,11 @@ class Shop:
 
     def cart(self, sid: str) -> dict:
         lines = []
-        for pid, qty in self.carts.get(sid, {}).items():
-            p = self.catalog.by_id[pid]
-            lines.append(card(p, qty))
+        cart = self.carts.get(sid, {})
+        for pid in [x for x in cart if x not in self.catalog.by_id]:  # removed by a manager since it was added
+            del cart[pid]
+        for pid, qty in cart.items():
+            lines.append(card(self.catalog.by_id[pid], qty))
         total = round(sum(l["line_total"] for l in lines), 2)
         return {"items": lines, "count": sum(l["quantity"] for l in lines), "total": total}
 
@@ -96,6 +98,8 @@ class Shop:
         for a in exclude_allergens or []:
             avoid.update({"nuts": ["tree-nuts", "peanuts"], "dairy": ["milk"], "gluten": ["wheat"]}.get(a.lower(), [a.lower()]))
         by_name = {p["name"]: p for p in self.catalog.products}
+        staples = [(w, [n for n in names if n in by_name], per) for w, names, per in BUDGET_STAPLES]
+        staples = [s for s in staples if s[1]]  # a manager may have renamed or removed some products
 
         def suitable(name: str) -> bool:
             p = by_name.get(name)
@@ -112,7 +116,7 @@ class Shop:
             return list(dict.fromkeys(branded + names))
 
         plan, total, left_out = [], 0.0, []
-        for rank, (what, names, per) in enumerate(BUDGET_STAPLES):
+        for rank, (what, names, per) in enumerate(staples):
             options = [by_name[n] for n in candidates(names) if suitable(n)]
             taken = {x[1]["id"] for x in plan}
             options = [o for o in options if o["id"] not in taken]
@@ -122,7 +126,7 @@ class Shop:
             cheapest = min(options, key=lambda o: o["price"])
             # Core basics: the preferred product if it still leaves room for the cheapest version of the other core items.
             reserve = sum(min((by_name[n]["price"] for n in names_ if suitable(n)), default=0)
-                          for _, names_, _ in BUDGET_STAPLES[rank + 1:CORE])
+                          for _, names_, _ in staples[rank + 1:CORE])
             first = options[0] if rank < CORE and total + options[0]["price"] * qty + reserve <= budget else cheapest
             pick = first
             while qty and total + pick["price"] * qty > budget:

@@ -9,6 +9,7 @@ sys.path.insert(0, str(ROOT))
 
 from app.agent import Assistant  # noqa: E402
 from app.catalog import Catalog  # noqa: E402
+from app.products import read_csv  # noqa: E402
 from app.shop import Shop  # noqa: E402
 
 
@@ -18,12 +19,12 @@ def shop(tmp_path):
 
 
 def test_dataset_has_200_products_with_pictures():
-    products = json.loads((ROOT / "data" / "products.json").read_text())
+    products = read_csv(ROOT / "data" / "products.csv")
     assert len(products) == 200 and len({p["id"] for p in products}) == 200
     import xml.dom.minidom
     for p in products:
         assert p["name"] and p["description"] and p["price"] > 0 and p["size"]
-        xml.dom.minidom.parse(str(ROOT / "data" / p["image"].lstrip("/")))  # every picture is a valid SVG
+        xml.dom.minidom.parse(str(ROOT / "data" / "images" / p["image"]))  # every picture is a valid SVG
 
 
 def test_vector_search_handles_meaning_typos_and_filters(shop):
@@ -184,3 +185,136 @@ def test_meaning_search_with_embeddings_and_safe_fallback(monkeypatch):
     monkeypatch.setenv("USE_EMBEDDINGS", "1")
     fallback = C.Catalog()
     assert fallback.mode == "word + character vectors" and fallback.search("milk")["results"]
+
+
+# ---------------------------------------------------------------- manager dashboard
+
+@pytest.fixture
+def manager_client(tmp_path, monkeypatch):
+    """The real server, but saving products, pictures and orders into a temporary folder."""
+    import shutil
+
+    from fastapi.testclient import TestClient
+
+    from app import products, server
+
+    images = tmp_path / "images"
+    shutil.copytree(ROOT / "data" / "images", images)
+    monkeypatch.setattr(products, "IMAGES", images)
+    monkeypatch.setattr(server.store, "path", tmp_path / "products.csv")
+    monkeypatch.setattr(server.shop, "orders_path", tmp_path / "orders.json")
+    monkeypatch.setenv("MANAGER_PASSWORD", "secret-pass")
+    server._failed.clear()
+    original = [dict(p) for p in server.catalog.products]
+    yield TestClient(server.app), tmp_path
+    server.catalog.reload(original)
+    server._failed.clear()
+
+
+def login(client, password="secret-pass"):
+    return client.post("/manager/api/login", json={"password": password})
+
+
+def test_manager_api_is_locked_for_chat_users(manager_client):
+    client, _ = manager_client
+    assert client.get("/").status_code == 200  # the chat stays open
+    for method, path in [("get", "/manager/api/products"), ("get", "/manager/api/overview"), ("post", "/manager/api/products"),
+                         ("delete", "/manager/api/products/DAI-001"), ("get", "/manager/api/export.csv"), ("get", "/manager/api/orders")]:
+        assert getattr(client, method)(path).status_code == 401
+    client.cookies.set("manager_session", "9999999999.fake")
+    assert client.get("/manager/api/products").status_code == 401
+    assert "/manager" not in client.get("/").text  # the chat page doesn't link to the dashboard
+
+
+def test_manager_login_wrong_password_and_rate_limit(manager_client):
+    client, _ = manager_client
+    for _ in range(5):
+        assert login(client, "nope").status_code == 401
+    assert login(client).status_code == 429  # locked out after 5 wrong tries, even with the right password
+    from app import server
+    server._failed.clear()
+    assert login(client).status_code == 200
+    assert client.get("/manager/api/session").json() == {"configured": True, "logged_in": True}
+    client.post("/manager/api/logout")
+    assert client.get("/manager/api/products").status_code == 401
+
+
+def test_manager_adds_edits_and_deletes_products_live(manager_client):
+    client, tmp = manager_client
+    login(client)
+    bad = client.post("/manager/api/products", json={"name": "", "category": "Snacks", "price": "-1", "size": ""})
+    assert bad.status_code == 400 and "Name is required" in bad.json()["detail"] and "Price must be more than 0" in bad.json()["detail"]
+    new = {"name": "Mango Lassi Drink", "brand": "Desi Dairy", "category": "Beverages", "price": "2.49", "size": "500 ml",
+           "stock": "12", "dietary": ["vegetarian"], "allergens": ["milk"], "keywords": "yogurt mango drink", "description": ""}
+    r = client.post("/manager/api/products", json=new).json()
+    pid = r["product"]["id"]
+    assert pid.startswith("BEV-") and r["product"]["description"]  # auto ID and description
+    assert "Mango Lassi Drink" in (tmp / "products.csv").read_text()
+    from app import server
+    assert server.catalog.search("mango lassi")["results"][0]["id"] == pid  # the chat finds it right away
+    dup = client.post("/manager/api/products", json=new).json()
+    assert dup["warnings"] and "already called" in dup["warnings"][0]
+
+    r = client.put(f"/manager/api/products/{pid}", json={"price": "1.99", "stock": "0"}).json()
+    assert r["product"]["price"] == 1.99 and r["product"]["stock"] == 0
+    assert pid not in [p["id"] for p in server.catalog.search("mango lassi")["results"]]  # out of stock is not offered
+    assert client.put(f"/manager/api/products/{pid}", json={"dietary": ["paleo"]}).status_code == 400
+
+    assert client.delete(f"/manager/api/products/{pid}").json() == {"ok": True}
+    assert pid not in server.catalog.by_id
+    assert client.delete(f"/manager/api/products/{pid}").status_code == 404
+
+
+def test_manager_picture_upload_checks_files(manager_client):
+    client, tmp = manager_client
+    login(client)
+    png = b"\x89PNG\r\n\x1a\n" + b"0" * 100
+    r = client.post("/manager/api/products/DAI-001/image", files={"file": ("milk.png", png, "image/png")})
+    assert r.status_code == 200 and r.json()["product"]["image_url"] == "/images/DAI-001.png"
+    assert (tmp / "images" / "DAI-001.png").exists() and not (tmp / "images" / "DAI-001.svg").exists()
+    fake = client.post("/manager/api/products/DAI-001/image", files={"file": ("x.jpg", b"not a picture", "image/jpeg")})
+    assert fake.status_code == 400
+    exe = client.post("/manager/api/products/DAI-001/image", files={"file": ("x.exe", b"MZ", "application/octet-stream")})
+    assert exe.status_code == 400
+    evil = client.post("/manager/api/products/DAI-001/image", files={"file": ("x.svg", b"<svg><script>alert(1)</script></svg>", "image/svg+xml")})
+    assert evil.status_code == 400
+    url = client.put("/manager/api/products/DAI-002", json={"image": "https://example.com/milk.jpg"}).json()
+    assert url["product"]["image_url"] == "https://example.com/milk.jpg"
+
+
+def test_manager_csv_export_and_import_with_preview(manager_client):
+    client, tmp = manager_client
+    login(client)
+    exported = client.get("/manager/api/export.csv").text
+    assert exported.startswith("id,name,brand,category,price") and exported.count("\n") == 201
+
+    csv_text = ("id,name,brand,category,price,size,stock,dietary\n"
+                "DAI-001,,,,1.11,,,\n"                                       # update just the price
+                ",Dragon Fruit,FreshCo,Produce,4.50,1 pc,8,vegan; gluten-free\n"  # new product
+                ",Broken Row,,Snacks,,100 g,3,\n")                           # price missing
+    files = {"file": ("p.csv", csv_text.encode(), "text/csv")}
+    preview = client.post("/manager/api/import/preview", files=files).json()
+    assert preview["added"] == 1 and preview["updated"] == 1
+    assert preview["errors"] == [{"row": 4, "name": "Broken Row", "error": "Price must be a number, e.g. 3.99."}]
+    assert client.post("/manager/api/import/commit", files=files).status_code == 400  # nothing saved while errors remain
+    from app import server
+    assert server.catalog.by_id["DAI-001"]["price"] != 1.11
+
+    fixed = {"file": ("p.csv", csv_text.replace(",Broken Row,,Snacks,,", ",Broken Row,,Snacks,2.00,").encode(), "text/csv")}
+    done = client.post("/manager/api/import/commit", files=fixed).json()
+    assert done["added"] == 2 and done["updated"] == 1
+    assert server.catalog.by_id["DAI-001"]["price"] == 1.11 and server.catalog.by_id["DAI-001"]["name"]  # other fields kept
+    assert server.catalog.search("dragon fruit")["results"][0]["name"] == "Dragon Fruit"
+    assert client.post("/manager/api/import/preview", files={"file": ("x.csv", b"foo,bar\n1,2\n", "text/csv")}).status_code == 400
+
+
+def test_chat_checkout_shows_up_for_manager(manager_client):
+    client, tmp = manager_client
+    sid = "test-session"
+    client.post("/api/cart", json={"session_id": sid, "items": [{"product_id": "DAI-001", "quantity": 2}]})
+    before = next(p for p in read_csv(ROOT / "data" / "products.csv") if p["id"] == "DAI-001")["stock"]
+    order = client.post("/api/checkout", json={"session_id": sid, "name": "Ali", "address": "Lahore", "payment": "card"}).json()["order"]
+    assert next(p for p in read_csv(tmp / "products.csv") if p["id"] == "DAI-001")["stock"] == before - 2  # stock saved
+    login(client)
+    assert client.get("/manager/api/orders").json()[0]["order_id"] == order["order_id"]
+    assert client.get("/manager/api/overview").json()["orders"] == 1

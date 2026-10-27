@@ -2,12 +2,13 @@
 
     python scripts/make_dataset.py
 
-Writes data/products.json and data/images/<id>.svg. Brands are fictional and
+Writes data/products.csv and data/images/<id>.svg. The CSV can then be
+edited in Excel or from the manager dashboard. Brands are fictional and
 prices are illustrative.
 """
 
-import json
 import random
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -308,10 +309,14 @@ def main():
                 "description": describe(name, brand, cat, size, tags, allergens),
                 "dietary": tags.split(), "allergens": allergens.split(), "keywords": words,
                 "pairs_with": pairs.split(), "stock": 0 if name in OUT_OF_STOCK else rng.randint(6, 80),
-                "rating": round(rng.uniform(3.8, 4.9), 1), "image": f"/images/{pid}.svg",
+                "rating": round(rng.uniform(3.8, 4.9), 1), "image": f"{pid}.svg",
             })
     assert len(products) == 200, len(products)
-    (ROOT / "data" / "products.json").write_text(json.dumps(products, indent=1), encoding="utf-8")
+    sys.path.insert(0, str(ROOT))
+    from app.products import write_csv
+
+    write_csv(products, ROOT / "data" / "products.csv")
+    (images / "placeholder.svg").write_text(svg("No picture", "box", "#e8f0ff"), encoding="utf-8")
     print(f"Wrote {len(products)} products and {len(products)} SVG images.")
 
 

@@ -18,7 +18,6 @@ the vector ranking.
 
 from __future__ import annotations
 
-import json
 import os
 from pathlib import Path
 
@@ -40,14 +39,20 @@ ALLERGEN_GROUPS = {"nuts": ["tree-nuts", "peanuts"], "nut": ["tree-nuts", "peanu
 
 
 class Catalog:
-    def __init__(self, path: Path = DATA / "products.json"):
-        self.products: list[dict] = json.loads(Path(path).read_text(encoding="utf-8"))
+    def __init__(self, path: Path = DATA / "products.csv"):
+        from .products import read_csv
+
+        self.dense, self.embedder = None, None
+        self.reload(read_csv(Path(path)))
+
+    def reload(self, products: list[dict]) -> None:
+        """Use a new product list and rebuild the search vectors (after a manager edits products)."""
+        self.products = products
         self.by_id = {p["id"]: p for p in self.products}
         docs = [self._doc(p) for p in self.products]
         self.words = TfidfVectorizer(ngram_range=(1, 2), sublinear_tf=True, stop_words="english")
         self.chars = TfidfVectorizer(analyzer="char_wb", ngram_range=(3, 5), sublinear_tf=True)
         self.matrix = normalize(hstack([self.words.fit_transform(docs), 0.7 * self.chars.fit_transform(docs)]).tocsr())
-        self.dense, self.embedder = None, None
         if os.environ.get("USE_EMBEDDINGS", "1") != "0":
             self._load_embeddings(docs)
 
@@ -62,8 +67,8 @@ class Catalog:
         except ImportError:
             return
         try:
-            # Kept in data/models so it downloads only once.
-            self.embedder = TextEmbedding("BAAI/bge-small-en-v1.5", cache_dir=str(DATA / "models"))
+            if self.embedder is None:  # kept in data/models so it downloads only once
+                self.embedder = TextEmbedding("BAAI/bge-small-en-v1.5", cache_dir=str(DATA / "models"))
             self.dense = np.array(list(self.embedder.embed(docs)), dtype=np.float32)
             self.dense /= np.linalg.norm(self.dense, axis=1, keepdims=True)
         except Exception as e:  # no internet on first run, etc.: keep the word/character vectors
@@ -133,7 +138,10 @@ class Catalog:
 
 def card(p: dict, quantity: int | None = None) -> dict:
     """What the chat UI shows for a product."""
-    out = {k: p[k] for k in ("id", "name", "brand", "price", "size", "image", "rating", "dietary")}
+    from .products import image_url
+
+    out = {k: p[k] for k in ("id", "name", "brand", "price", "size", "rating", "dietary")}
+    out["image"] = image_url(p)
     out["in_stock"] = p["stock"] > 0
     if quantity:
         out["quantity"] = quantity
