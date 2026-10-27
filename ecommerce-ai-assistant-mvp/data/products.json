@@ -1,0 +1,4333 @@
+[
+ {
+  "id": "DAI-001",
+  "name": "Organic Whole Milk",
+  "brand": "Green Valley",
+  "category": "Dairy & Eggs",
+  "price": 4.0,
+  "size": "1 gal",
+  "description": "Organic Whole Milk from Green Valley (1 gal). It is gluten free, organic. Contains milk.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free",
+   "organic",
+   "nut-free"
+  ],
+  "allergens": [
+   "milk"
+  ],
+  "keywords": "dairy milk",
+  "pairs_with": [
+   "cereal",
+   "cookies"
+  ],
+  "stock": 47,
+  "rating": 4.8,
+  "image": "/images/DAI-001.svg"
+ },
+ {
+  "id": "DAI-002",
+  "name": "2% Reduced Fat Milk",
+  "brand": "Green Valley",
+  "category": "Dairy & Eggs",
+  "price": 3.49,
+  "size": "1 gal",
+  "description": "2% Reduced Fat Milk from Green Valley (1 gal). It is gluten free. Contains milk.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free",
+   "nut-free"
+  ],
+  "allergens": [
+   "milk"
+  ],
+  "keywords": "dairy milk low fat",
+  "pairs_with": [
+   "cereal"
+  ],
+  "stock": 56,
+  "rating": 4.5,
+  "image": "/images/DAI-002.svg"
+ },
+ {
+  "id": "DAI-003",
+  "name": "Unsweetened Almond Milk",
+  "brand": "Nature's Basket",
+  "category": "Dairy & Eggs",
+  "price": 3.29,
+  "size": "64 fl oz",
+  "description": "Unsweetened Almond Milk from Nature's Basket (64 fl oz). It is vegan, dairy free, gluten free, low sugar. Contains tree nuts.",
+  "dietary": [
+   "vegan",
+   "dairy-free",
+   "gluten-free",
+   "low-sugar"
+  ],
+  "allergens": [
+   "tree-nuts"
+  ],
+  "keywords": "plant milk non-dairy",
+  "pairs_with": [
+   "oats",
+   "granola"
+  ],
+  "stock": 15,
+  "rating": 4.7,
+  "image": "/images/DAI-003.svg"
+ },
+ {
+  "id": "DAI-004",
+  "name": "Oat Milk Original",
+  "brand": "Nature's Basket",
+  "category": "Dairy & Eggs",
+  "price": 4.29,
+  "size": "64 fl oz",
+  "description": "Oat Milk Original from Nature's Basket (64 fl oz). It is vegan, dairy free.",
+  "dietary": [
+   "vegan",
+   "dairy-free",
+   "nut-free"
+  ],
+  "allergens": [],
+  "keywords": "plant milk non-dairy",
+  "pairs_with": [
+   "coffee",
+   "cereal"
+  ],
+  "stock": 18,
+  "rating": 4.2,
+  "image": "/images/DAI-004.svg"
+ },
+ {
+  "id": "DAI-005",
+  "name": "Pasture-Raised Eggs",
+  "brand": "Harvest Farm",
+  "category": "Dairy & Eggs",
+  "price": 5.0,
+  "size": "12 ct",
+  "description": "Pasture-Raised Eggs from Harvest Farm (12 ct). It is gluten free, high protein, keto. Contains eggs.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free",
+   "high-protein",
+   "keto"
+  ],
+  "allergens": [
+   "eggs"
+  ],
+  "keywords": "eggs dozen breakfast",
+  "pairs_with": [
+   "bread",
+   "bacon"
+  ],
+  "stock": 13,
+  "rating": 4.8,
+  "image": "/images/DAI-005.svg"
+ },
+ {
+  "id": "DAI-006",
+  "name": "Large White Eggs",
+  "brand": "Sunny Fields",
+  "category": "Dairy & Eggs",
+  "price": 3.29,
+  "size": "12 ct",
+  "description": "Large White Eggs from Sunny Fields (12 ct). It is gluten free, high protein, keto. Contains eggs.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free",
+   "high-protein",
+   "keto"
+  ],
+  "allergens": [
+   "eggs"
+  ],
+  "keywords": "eggs dozen",
+  "pairs_with": [
+   "bread"
+  ],
+  "stock": 33,
+  "rating": 3.8,
+  "image": "/images/DAI-006.svg"
+ },
+ {
+  "id": "DAI-007",
+  "name": "Greek Yogurt Plain",
+  "brand": "Green Valley",
+  "category": "Dairy & Eggs",
+  "price": 5.49,
+  "size": "32 oz",
+  "description": "Greek Yogurt Plain from Green Valley (32 oz). It is gluten free, high protein. Contains milk.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free",
+   "high-protein"
+  ],
+  "allergens": [
+   "milk"
+  ],
+  "keywords": "yogurt yoghurt protein",
+  "pairs_with": [
+   "granola",
+   "berries",
+   "honey"
+  ],
+  "stock": 61,
+  "rating": 4.3,
+  "image": "/images/DAI-007.svg"
+ },
+ {
+  "id": "DAI-008",
+  "name": "Strawberry Yogurt Cups",
+  "brand": "Green Valley",
+  "category": "Dairy & Eggs",
+  "price": 4.99,
+  "size": "4 x 5.3 oz",
+  "description": "Strawberry Yogurt Cups from Green Valley (4 x 5.3 oz). It is gluten free. Contains milk.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free"
+  ],
+  "allergens": [
+   "milk"
+  ],
+  "keywords": "yogurt kids snack",
+  "pairs_with": [
+   "granola"
+  ],
+  "stock": 36,
+  "rating": 3.9,
+  "image": "/images/DAI-008.svg"
+ },
+ {
+  "id": "DAI-009",
+  "name": "Unsalted Butter",
+  "brand": "Harvest Farm",
+  "category": "Dairy & Eggs",
+  "price": 4.79,
+  "size": "1 lb",
+  "description": "Unsalted Butter from Harvest Farm (1 lb). It is gluten free, keto. Contains milk.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [
+   "milk"
+  ],
+  "keywords": "butter baking",
+  "pairs_with": [
+   "bread",
+   "flour"
+  ],
+  "stock": 60,
+  "rating": 3.9,
+  "image": "/images/DAI-009.svg"
+ },
+ {
+  "id": "DAI-010",
+  "name": "Aged Parmesan",
+  "brand": "Bella Cucina",
+  "category": "Dairy & Eggs",
+  "price": 5.4,
+  "size": "200 g",
+  "description": "Aged Parmesan from Bella Cucina (200 g). It is gluten free, keto. Contains milk.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [
+   "milk"
+  ],
+  "keywords": "parmesan cheese italian",
+  "pairs_with": [
+   "pasta",
+   "alfredo"
+  ],
+  "stock": 78,
+  "rating": 3.9,
+  "image": "/images/DAI-010.svg"
+ },
+ {
+  "id": "DAI-011",
+  "name": "Sharp Cheddar Cheese",
+  "brand": "Harvest Farm",
+  "category": "Dairy & Eggs",
+  "price": 4.49,
+  "size": "8 oz",
+  "description": "Sharp Cheddar Cheese from Harvest Farm (8 oz). It is gluten free, keto. Contains milk.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [
+   "milk"
+  ],
+  "keywords": "cheddar cheese sandwich",
+  "pairs_with": [
+   "bread",
+   "crackers"
+  ],
+  "stock": 34,
+  "rating": 4.5,
+  "image": "/images/DAI-011.svg"
+ },
+ {
+  "id": "DAI-012",
+  "name": "Fresh Mozzarella",
+  "brand": "Bella Cucina",
+  "category": "Dairy & Eggs",
+  "price": 4.99,
+  "size": "8 oz",
+  "description": "Fresh Mozzarella from Bella Cucina (8 oz). It is gluten free, keto. Contains milk.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [
+   "milk"
+  ],
+  "keywords": "mozzarella cheese pizza lasagna",
+  "pairs_with": [
+   "tomatoes",
+   "basil"
+  ],
+  "stock": 80,
+  "rating": 4.8,
+  "image": "/images/DAI-012.svg"
+ },
+ {
+  "id": "DAI-013",
+  "name": "Ricotta Cheese",
+  "brand": "Bella Cucina",
+  "category": "Dairy & Eggs",
+  "price": 3.99,
+  "size": "15 oz",
+  "description": "Ricotta Cheese from Bella Cucina (15 oz). It is gluten free. Contains milk.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free"
+  ],
+  "allergens": [
+   "milk"
+  ],
+  "keywords": "ricotta cheese lasagna",
+  "pairs_with": [
+   "lasagna",
+   "sheets"
+  ],
+  "stock": 79,
+  "rating": 4.4,
+  "image": "/images/DAI-013.svg"
+ },
+ {
+  "id": "DAI-014",
+  "name": "Gourmet Heavy Cream",
+  "brand": "Green Valley",
+  "category": "Dairy & Eggs",
+  "price": 3.2,
+  "size": "250 ml",
+  "description": "Gourmet Heavy Cream from Green Valley (250 ml). It is gluten free, keto. Contains milk.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [
+   "milk"
+  ],
+  "keywords": "heavy cream whipping alfredo",
+  "pairs_with": [
+   "pasta"
+  ],
+  "stock": 12,
+  "rating": 4.9,
+  "image": "/images/DAI-014.svg"
+ },
+ {
+  "id": "DAI-015",
+  "name": "Sour Cream",
+  "brand": "Green Valley",
+  "category": "Dairy & Eggs",
+  "price": 2.49,
+  "size": "16 oz",
+  "description": "Sour Cream from Green Valley (16 oz). It is gluten free, keto. Contains milk.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [
+   "milk"
+  ],
+  "keywords": "sour cream tacos",
+  "pairs_with": [
+   "tortillas"
+  ],
+  "stock": 11,
+  "rating": 4.4,
+  "image": "/images/DAI-015.svg"
+ },
+ {
+  "id": "DAI-016",
+  "name": "Cream Cheese",
+  "brand": "Green Valley",
+  "category": "Dairy & Eggs",
+  "price": 2.99,
+  "size": "8 oz",
+  "description": "Cream Cheese from Green Valley (8 oz). It is gluten free, keto. Contains milk.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [
+   "milk"
+  ],
+  "keywords": "cream cheese bagel",
+  "pairs_with": [
+   "bagels"
+  ],
+  "stock": 23,
+  "rating": 4.1,
+  "image": "/images/DAI-016.svg"
+ },
+ {
+  "id": "DAI-017",
+  "name": "Vegan Cheddar Shreds",
+  "brand": "Nature's Basket",
+  "category": "Dairy & Eggs",
+  "price": 5.29,
+  "size": "7 oz",
+  "description": "Vegan Cheddar Shreds from Nature's Basket (7 oz). It is vegan, dairy free, gluten free.",
+  "dietary": [
+   "vegan",
+   "dairy-free",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "dairy-free cheese plant",
+  "pairs_with": [
+   "tortillas"
+  ],
+  "stock": 24,
+  "rating": 4.4,
+  "image": "/images/DAI-017.svg"
+ },
+ {
+  "id": "DAI-018",
+  "name": "Cottage Cheese",
+  "brand": "Sunny Fields",
+  "category": "Dairy & Eggs",
+  "price": 3.79,
+  "size": "16 oz",
+  "description": "Cottage Cheese from Sunny Fields (16 oz). It is gluten free, high protein. Contains milk.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free",
+   "high-protein"
+  ],
+  "allergens": [
+   "milk"
+  ],
+  "keywords": "cottage cheese protein",
+  "pairs_with": [
+   "fruit"
+  ],
+  "stock": 79,
+  "rating": 4.1,
+  "image": "/images/DAI-018.svg"
+ },
+ {
+  "id": "BAK-001",
+  "name": "Whole Wheat Sandwich Bread",
+  "brand": "Baker's Choice",
+  "category": "Bakery",
+  "price": 3.49,
+  "size": "20 oz",
+  "description": "Whole Wheat Sandwich Bread from Baker's Choice (20 oz). It is vegan. Contains wheat.",
+  "dietary": [
+   "vegan"
+  ],
+  "allergens": [
+   "wheat"
+  ],
+  "keywords": "bread loaf toast",
+  "pairs_with": [
+   "peanut",
+   "butter",
+   "jam"
+  ],
+  "stock": 29,
+  "rating": 3.9,
+  "image": "/images/BAK-001.svg"
+ },
+ {
+  "id": "BAK-002",
+  "name": "White Sandwich Bread",
+  "brand": "Baker's Choice",
+  "category": "Bakery",
+  "price": 2.79,
+  "size": "20 oz",
+  "description": "White Sandwich Bread from Baker's Choice (20 oz). Contains wheat, milk.",
+  "dietary": [
+   "vegetarian"
+  ],
+  "allergens": [
+   "wheat",
+   "milk"
+  ],
+  "keywords": "bread loaf toast",
+  "pairs_with": [
+   "butter",
+   "jam"
+  ],
+  "stock": 79,
+  "rating": 4.5,
+  "image": "/images/BAK-002.svg"
+ },
+ {
+  "id": "BAK-003",
+  "name": "Gluten-Free Bread",
+  "brand": "Nature's Basket",
+  "category": "Bakery",
+  "price": 5.99,
+  "size": "16 oz",
+  "description": "Gluten-Free Bread from Nature's Basket (16 oz). It is gluten free. Contains eggs.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free"
+  ],
+  "allergens": [
+   "eggs"
+  ],
+  "keywords": "bread gluten free celiac",
+  "pairs_with": [
+   "butter"
+  ],
+  "stock": 53,
+  "rating": 3.9,
+  "image": "/images/BAK-003.svg"
+ },
+ {
+  "id": "BAK-004",
+  "name": "Sourdough Loaf",
+  "brand": "Baker's Choice",
+  "category": "Bakery",
+  "price": 4.99,
+  "size": "24 oz",
+  "description": "Sourdough Loaf from Baker's Choice (24 oz). It is vegan. Contains wheat.",
+  "dietary": [
+   "vegan"
+  ],
+  "allergens": [
+   "wheat"
+  ],
+  "keywords": "sourdough artisan bread",
+  "pairs_with": [
+   "olive",
+   "oil"
+  ],
+  "stock": 14,
+  "rating": 4.4,
+  "image": "/images/BAK-004.svg"
+ },
+ {
+  "id": "BAK-005",
+  "name": "Plain Bagels",
+  "brand": "Baker's Choice",
+  "category": "Bakery",
+  "price": 3.99,
+  "size": "6 ct",
+  "description": "Plain Bagels from Baker's Choice (6 ct). It is vegan. Contains wheat.",
+  "dietary": [
+   "vegan"
+  ],
+  "allergens": [
+   "wheat"
+  ],
+  "keywords": "bagels breakfast",
+  "pairs_with": [
+   "cream",
+   "cheese"
+  ],
+  "stock": 32,
+  "rating": 4.3,
+  "image": "/images/BAK-005.svg"
+ },
+ {
+  "id": "BAK-006",
+  "name": "Butter Croissants",
+  "brand": "Baker's Choice",
+  "category": "Bakery",
+  "price": 4.49,
+  "size": "4 ct",
+  "description": "Butter Croissants from Baker's Choice (4 ct). Contains wheat, milk, eggs.",
+  "dietary": [
+   "vegetarian"
+  ],
+  "allergens": [
+   "wheat",
+   "milk",
+   "eggs"
+  ],
+  "keywords": "croissant pastry breakfast",
+  "pairs_with": [
+   "jam",
+   "coffee"
+  ],
+  "stock": 74,
+  "rating": 4.3,
+  "image": "/images/BAK-006.svg"
+ },
+ {
+  "id": "BAK-007",
+  "name": "Flour Tortillas",
+  "brand": "Sol Cocina",
+  "category": "Bakery",
+  "price": 2.99,
+  "size": "10 ct",
+  "description": "Flour Tortillas from Sol Cocina (10 ct). It is vegan. Contains wheat.",
+  "dietary": [
+   "vegan"
+  ],
+  "allergens": [
+   "wheat"
+  ],
+  "keywords": "tortilla wraps tacos burritos",
+  "pairs_with": [
+   "salsa",
+   "beans"
+  ],
+  "stock": 46,
+  "rating": 4.3,
+  "image": "/images/BAK-007.svg"
+ },
+ {
+  "id": "BAK-008",
+  "name": "Corn Tortillas",
+  "brand": "Sol Cocina",
+  "category": "Bakery",
+  "price": 2.49,
+  "size": "30 ct",
+  "description": "Corn Tortillas from Sol Cocina (30 ct). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "corn tortilla tacos gluten free",
+  "pairs_with": [
+   "salsa"
+  ],
+  "stock": 64,
+  "rating": 4.2,
+  "image": "/images/BAK-008.svg"
+ },
+ {
+  "id": "BAK-009",
+  "name": "Hamburger Buns",
+  "brand": "Baker's Choice",
+  "category": "Bakery",
+  "price": 2.99,
+  "size": "8 ct",
+  "description": "Hamburger Buns from Baker's Choice (8 ct). Contains wheat.",
+  "dietary": [
+   "vegetarian"
+  ],
+  "allergens": [
+   "wheat"
+  ],
+  "keywords": "burger buns",
+  "pairs_with": [
+   "ground",
+   "beef"
+  ],
+  "stock": 37,
+  "rating": 4.7,
+  "image": "/images/BAK-009.svg"
+ },
+ {
+  "id": "BAK-010",
+  "name": "Garlic Bread",
+  "brand": "Bella Cucina",
+  "category": "Bakery",
+  "price": 3.49,
+  "size": "16 oz",
+  "description": "Garlic Bread from Bella Cucina (16 oz). Contains wheat, milk.",
+  "dietary": [
+   "vegetarian"
+  ],
+  "allergens": [
+   "wheat",
+   "milk"
+  ],
+  "keywords": "garlic bread italian side",
+  "pairs_with": [
+   "pasta"
+  ],
+  "stock": 37,
+  "rating": 3.9,
+  "image": "/images/BAK-010.svg"
+ },
+ {
+  "id": "BAK-011",
+  "name": "Blueberry Muffins",
+  "brand": "Baker's Choice",
+  "category": "Bakery",
+  "price": 4.99,
+  "size": "4 ct",
+  "description": "Blueberry Muffins from Baker's Choice (4 ct). Contains wheat, milk, eggs.",
+  "dietary": [
+   "vegetarian"
+  ],
+  "allergens": [
+   "wheat",
+   "milk",
+   "eggs"
+  ],
+  "keywords": "muffins breakfast bakery",
+  "pairs_with": [
+   "coffee"
+  ],
+  "stock": 44,
+  "rating": 4.4,
+  "image": "/images/BAK-011.svg"
+ },
+ {
+  "id": "BAK-012",
+  "name": "Pita Bread",
+  "brand": "Baker's Choice",
+  "category": "Bakery",
+  "price": 2.79,
+  "size": "6 ct",
+  "description": "Pita Bread from Baker's Choice (6 ct). It is vegan. Contains wheat.",
+  "dietary": [
+   "vegan"
+  ],
+  "allergens": [
+   "wheat"
+  ],
+  "keywords": "pita flatbread",
+  "pairs_with": [
+   "hummus"
+  ],
+  "stock": 49,
+  "rating": 4.6,
+  "image": "/images/BAK-012.svg"
+ },
+ {
+  "id": "FRU-001",
+  "name": "Bananas",
+  "brand": "Fresh",
+  "category": "Fruits",
+  "price": 1.49,
+  "size": "6 ct",
+  "description": "Fresh bananas (6 ct). It is vegan, gluten free, organic.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "organic"
+  ],
+  "allergens": [],
+  "keywords": "banana fruit",
+  "pairs_with": [
+   "oats",
+   "yogurt"
+  ],
+  "stock": 42,
+  "rating": 4.5,
+  "image": "/images/FRU-001.svg"
+ },
+ {
+  "id": "FRU-002",
+  "name": "Gala Apples",
+  "brand": "Fresh",
+  "category": "Fruits",
+  "price": 3.99,
+  "size": "3 lb bag",
+  "description": "Fresh gala apples (3 lb bag). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "apple fruit snack",
+  "pairs_with": [
+   "peanut",
+   "butter"
+  ],
+  "stock": 15,
+  "rating": 3.9,
+  "image": "/images/FRU-002.svg"
+ },
+ {
+  "id": "FRU-003",
+  "name": "Strawberries",
+  "brand": "Fresh",
+  "category": "Fruits",
+  "price": 3.99,
+  "size": "1 lb",
+  "description": "Fresh strawberries (1 lb). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "strawberry berries",
+  "pairs_with": [
+   "yogurt",
+   "cream"
+  ],
+  "stock": 59,
+  "rating": 4.0,
+  "image": "/images/FRU-003.svg"
+ },
+ {
+  "id": "FRU-004",
+  "name": "Blueberries",
+  "brand": "Fresh",
+  "category": "Fruits",
+  "price": 4.49,
+  "size": "1 pint",
+  "description": "Fresh blueberries (1 pint). It is vegan, gluten free, organic.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "organic"
+  ],
+  "allergens": [],
+  "keywords": "blueberry berries",
+  "pairs_with": [
+   "yogurt",
+   "oats"
+  ],
+  "stock": 49,
+  "rating": 4.0,
+  "image": "/images/FRU-004.svg"
+ },
+ {
+  "id": "FRU-005",
+  "name": "Seasonal Fruit Medley",
+  "brand": "Fresh",
+  "category": "Fruits",
+  "price": 9.0,
+  "size": "2 lb",
+  "description": "Fresh seasonal fruit medley (2 lb). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "fruit mix assorted fresh fruit",
+  "pairs_with": [
+   "yogurt"
+  ],
+  "stock": 68,
+  "rating": 4.3,
+  "image": "/images/FRU-005.svg"
+ },
+ {
+  "id": "FRU-006",
+  "name": "Navel Oranges",
+  "brand": "Fresh",
+  "category": "Fruits",
+  "price": 4.99,
+  "size": "4 lb bag",
+  "description": "Fresh navel oranges (4 lb bag). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "orange citrus vitamin c",
+  "pairs_with": [],
+  "stock": 15,
+  "rating": 4.6,
+  "image": "/images/FRU-006.svg"
+ },
+ {
+  "id": "FRU-007",
+  "name": "Lemons",
+  "brand": "Fresh",
+  "category": "Fruits",
+  "price": 2.99,
+  "size": "2 lb bag",
+  "description": "Fresh lemons (2 lb bag). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "lemon citrus",
+  "pairs_with": [
+   "chicken",
+   "fish"
+  ],
+  "stock": 79,
+  "rating": 4.7,
+  "image": "/images/FRU-007.svg"
+ },
+ {
+  "id": "FRU-008",
+  "name": "Limes",
+  "brand": "Fresh",
+  "category": "Fruits",
+  "price": 2.49,
+  "size": "1 lb bag",
+  "description": "Fresh limes (1 lb bag). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "lime citrus tacos",
+  "pairs_with": [
+   "avocado"
+  ],
+  "stock": 46,
+  "rating": 4.2,
+  "image": "/images/FRU-008.svg"
+ },
+ {
+  "id": "FRU-009",
+  "name": "Hass Avocados",
+  "brand": "Fresh",
+  "category": "Fruits",
+  "price": 4.99,
+  "size": "4 ct",
+  "description": "Fresh hass avocados (4 ct). It is vegan, gluten free, keto.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [],
+  "keywords": "avocado guacamole",
+  "pairs_with": [
+   "tortilla",
+   "chips",
+   "limes"
+  ],
+  "stock": 50,
+  "rating": 4.5,
+  "image": "/images/FRU-009.svg"
+ },
+ {
+  "id": "FRU-010",
+  "name": "Red Grapes",
+  "brand": "Fresh",
+  "category": "Fruits",
+  "price": 3.99,
+  "size": "2 lb",
+  "description": "Fresh red grapes (2 lb). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "grapes fruit snack",
+  "pairs_with": [
+   "cheese"
+  ],
+  "stock": 80,
+  "rating": 4.7,
+  "image": "/images/FRU-010.svg"
+ },
+ {
+  "id": "FRU-011",
+  "name": "Pineapple",
+  "brand": "Fresh",
+  "category": "Fruits",
+  "price": 3.49,
+  "size": "1 ct",
+  "description": "Fresh pineapple (1 ct). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "pineapple tropical",
+  "pairs_with": [],
+  "stock": 14,
+  "rating": 4.7,
+  "image": "/images/FRU-011.svg"
+ },
+ {
+  "id": "FRU-012",
+  "name": "Watermelon Chunks",
+  "brand": "Fresh",
+  "category": "Fruits",
+  "price": 5.99,
+  "size": "2 lb",
+  "description": "Fresh watermelon chunks (2 lb). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "watermelon melon",
+  "pairs_with": [],
+  "stock": 40,
+  "rating": 4.3,
+  "image": "/images/FRU-012.svg"
+ },
+ {
+  "id": "FRU-013",
+  "name": "Mango",
+  "brand": "Fresh",
+  "category": "Fruits",
+  "price": 1.29,
+  "size": "1 ct",
+  "description": "Fresh mango (1 ct). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "mango tropical",
+  "pairs_with": [
+   "yogurt"
+  ],
+  "stock": 14,
+  "rating": 3.9,
+  "image": "/images/FRU-013.svg"
+ },
+ {
+  "id": "FRU-014",
+  "name": "Pears",
+  "brand": "Fresh",
+  "category": "Fruits",
+  "price": 3.49,
+  "size": "2 lb",
+  "description": "Fresh pears (2 lb). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "pear fruit",
+  "pairs_with": [
+   "cheese"
+  ],
+  "stock": 45,
+  "rating": 4.5,
+  "image": "/images/FRU-014.svg"
+ },
+ {
+  "id": "FRU-015",
+  "name": "Raspberries",
+  "brand": "Fresh",
+  "category": "Fruits",
+  "price": 4.99,
+  "size": "6 oz",
+  "description": "Fresh raspberries (6 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "raspberry berries",
+  "pairs_with": [
+   "yogurt"
+  ],
+  "stock": 0,
+  "rating": 4.9,
+  "image": "/images/FRU-015.svg"
+ },
+ {
+  "id": "FRU-016",
+  "name": "Organic Baby Spinach",
+  "brand": "Fresh",
+  "category": "Fruits",
+  "price": 3.99,
+  "size": "5 oz",
+  "description": "Fresh organic baby spinach (5 oz). It is vegan, gluten free, organic, keto.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "organic",
+   "keto"
+  ],
+  "allergens": [],
+  "keywords": "spinach salad greens leafy",
+  "pairs_with": [
+   "eggs",
+   "pasta"
+  ],
+  "stock": 63,
+  "rating": 4.1,
+  "image": "/images/FRU-016.svg"
+ },
+ {
+  "id": "VEG-001",
+  "name": "Farm Fresh Vegetables Bundle",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 10.0,
+  "size": "assorted 3 lb",
+  "description": "Fresh farm fresh vegetables bundle (assorted 3 lb). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "vegetables veggies mix assorted",
+  "pairs_with": [
+   "chicken",
+   "rice"
+  ],
+  "stock": 55,
+  "rating": 4.8,
+  "image": "/images/VEG-001.svg"
+ },
+ {
+  "id": "VEG-002",
+  "name": "Yellow Onions",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 2.99,
+  "size": "3 lb bag",
+  "description": "Fresh yellow onions (3 lb bag). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "onion",
+  "pairs_with": [
+   "garlic"
+  ],
+  "stock": 50,
+  "rating": 3.8,
+  "image": "/images/VEG-002.svg"
+ },
+ {
+  "id": "VEG-003",
+  "name": "Fresh Garlic",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 0.99,
+  "size": "3 ct",
+  "description": "Fresh fresh garlic (3 ct). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "garlic",
+  "pairs_with": [
+   "onion",
+   "pasta"
+  ],
+  "stock": 65,
+  "rating": 4.2,
+  "image": "/images/VEG-003.svg"
+ },
+ {
+  "id": "VEG-004",
+  "name": "Fresh Parsley & Garlic",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 2.1,
+  "size": "bundle",
+  "description": "Fresh fresh parsley & garlic (bundle). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "parsley garlic herbs fresh bundle",
+  "pairs_with": [
+   "pasta",
+   "chicken"
+  ],
+  "stock": 20,
+  "rating": 4.3,
+  "image": "/images/VEG-004.svg"
+ },
+ {
+  "id": "VEG-005",
+  "name": "Roma Tomatoes",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 2.49,
+  "size": "2 lb",
+  "description": "Fresh roma tomatoes (2 lb). It is vegan, gluten free, keto.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [],
+  "keywords": "tomato tomatoes",
+  "pairs_with": [
+   "mozzarella",
+   "basil"
+  ],
+  "stock": 33,
+  "rating": 4.6,
+  "image": "/images/VEG-005.svg"
+ },
+ {
+  "id": "VEG-006",
+  "name": "Russet Potatoes",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 4.49,
+  "size": "5 lb bag",
+  "description": "Fresh russet potatoes (5 lb bag). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "potato potatoes",
+  "pairs_with": [
+   "butter",
+   "sour",
+   "cream"
+  ],
+  "stock": 22,
+  "rating": 4.6,
+  "image": "/images/VEG-006.svg"
+ },
+ {
+  "id": "VEG-007",
+  "name": "Sweet Potatoes",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 2.99,
+  "size": "2 lb",
+  "description": "Fresh sweet potatoes (2 lb). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "sweet potato yam",
+  "pairs_with": [],
+  "stock": 56,
+  "rating": 4.2,
+  "image": "/images/VEG-007.svg"
+ },
+ {
+  "id": "VEG-008",
+  "name": "Carrots",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 1.99,
+  "size": "2 lb bag",
+  "description": "Fresh carrots (2 lb bag). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "carrot carrots",
+  "pairs_with": [
+   "hummus"
+  ],
+  "stock": 69,
+  "rating": 3.9,
+  "image": "/images/VEG-008.svg"
+ },
+ {
+  "id": "VEG-009",
+  "name": "Broccoli Crowns",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 2.99,
+  "size": "1 lb",
+  "description": "Fresh broccoli crowns (1 lb). It is vegan, gluten free, keto.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [],
+  "keywords": "broccoli green vegetable",
+  "pairs_with": [
+   "chicken",
+   "rice"
+  ],
+  "stock": 63,
+  "rating": 4.2,
+  "image": "/images/VEG-009.svg"
+ },
+ {
+  "id": "VEG-010",
+  "name": "Red Bell Peppers",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 3.49,
+  "size": "3 ct",
+  "description": "Fresh red bell peppers (3 ct). It is vegan, gluten free, keto.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [],
+  "keywords": "bell pepper capsicum",
+  "pairs_with": [
+   "chicken",
+   "fajitas"
+  ],
+  "stock": 41,
+  "rating": 4.8,
+  "image": "/images/VEG-010.svg"
+ },
+ {
+  "id": "VEG-011",
+  "name": "Cucumbers",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 1.79,
+  "size": "2 ct",
+  "description": "Fresh cucumbers (2 ct). It is vegan, gluten free, keto.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [],
+  "keywords": "cucumber salad",
+  "pairs_with": [
+   "tomatoes"
+  ],
+  "stock": 61,
+  "rating": 4.8,
+  "image": "/images/VEG-011.svg"
+ },
+ {
+  "id": "VEG-012",
+  "name": "Romaine Lettuce",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 2.99,
+  "size": "3 hearts",
+  "description": "Fresh romaine lettuce (3 hearts). It is vegan, gluten free, keto.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [],
+  "keywords": "lettuce salad romaine",
+  "pairs_with": [
+   "dressing"
+  ],
+  "stock": 41,
+  "rating": 4.6,
+  "image": "/images/VEG-012.svg"
+ },
+ {
+  "id": "VEG-013",
+  "name": "Zucchini",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 1.99,
+  "size": "1 lb",
+  "description": "Fresh zucchini (1 lb). It is vegan, gluten free, keto.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [],
+  "keywords": "zucchini courgette squash",
+  "pairs_with": [],
+  "stock": 51,
+  "rating": 4.6,
+  "image": "/images/VEG-013.svg"
+ },
+ {
+  "id": "VEG-014",
+  "name": "White Mushrooms",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 2.79,
+  "size": "8 oz",
+  "description": "Fresh white mushrooms (8 oz). It is vegan, gluten free, keto.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [],
+  "keywords": "mushrooms",
+  "pairs_with": [
+   "pasta"
+  ],
+  "stock": 54,
+  "rating": 4.9,
+  "image": "/images/VEG-014.svg"
+ },
+ {
+  "id": "VEG-015",
+  "name": "Fresh Basil",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 2.49,
+  "size": "0.75 oz",
+  "description": "Fresh fresh basil (0.75 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "basil herbs italian",
+  "pairs_with": [
+   "tomatoes",
+   "mozzarella"
+  ],
+  "stock": 25,
+  "rating": 3.9,
+  "image": "/images/VEG-015.svg"
+ },
+ {
+  "id": "VEG-016",
+  "name": "Cilantro",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 0.99,
+  "size": "1 bunch",
+  "description": "Fresh cilantro (1 bunch). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "cilantro coriander herbs",
+  "pairs_with": [
+   "limes",
+   "tacos"
+  ],
+  "stock": 25,
+  "rating": 4.1,
+  "image": "/images/VEG-016.svg"
+ },
+ {
+  "id": "VEG-017",
+  "name": "Green Beans",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 2.99,
+  "size": "1 lb",
+  "description": "Fresh green beans (1 lb). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "green beans",
+  "pairs_with": [],
+  "stock": 35,
+  "rating": 3.8,
+  "image": "/images/VEG-017.svg"
+ },
+ {
+  "id": "VEG-018",
+  "name": "Sweet Corn",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 2.0,
+  "size": "4 ears",
+  "description": "Fresh sweet corn (4 ears). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "corn on the cob",
+  "pairs_with": [
+   "butter"
+  ],
+  "stock": 29,
+  "rating": 4.1,
+  "image": "/images/VEG-018.svg"
+ },
+ {
+  "id": "VEG-019",
+  "name": "Celery",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 1.99,
+  "size": "1 bunch",
+  "description": "Fresh celery (1 bunch). It is vegan, gluten free, keto.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [],
+  "keywords": "celery",
+  "pairs_with": [
+   "peanut",
+   "butter"
+  ],
+  "stock": 6,
+  "rating": 4.0,
+  "image": "/images/VEG-019.svg"
+ },
+ {
+  "id": "VEG-020",
+  "name": "Cauliflower",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 3.49,
+  "size": "1 head",
+  "description": "Fresh cauliflower (1 head). It is vegan, gluten free, keto.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [],
+  "keywords": "cauliflower low carb",
+  "pairs_with": [],
+  "stock": 74,
+  "rating": 4.2,
+  "image": "/images/VEG-020.svg"
+ },
+ {
+  "id": "VEG-021",
+  "name": "Ginger Root",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 1.49,
+  "size": "4 oz",
+  "description": "Fresh ginger root (4 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "ginger",
+  "pairs_with": [
+   "garlic"
+  ],
+  "stock": 78,
+  "rating": 4.2,
+  "image": "/images/VEG-021.svg"
+ },
+ {
+  "id": "VEG-022",
+  "name": "Sweet Green Peas",
+  "brand": "Fresh",
+  "category": "Vegetables",
+  "price": 2.49,
+  "size": "12 oz",
+  "description": "Fresh sweet green peas (12 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "peas green",
+  "pairs_with": [
+   "rice"
+  ],
+  "stock": 22,
+  "rating": 4.6,
+  "image": "/images/VEG-022.svg"
+ },
+ {
+  "id": "MEA-001",
+  "name": "Fresh Chicken Breasts",
+  "brand": "Harvest Farm",
+  "category": "Meat & Seafood",
+  "price": 12.0,
+  "size": "1.5 lb",
+  "description": "Fresh Chicken Breasts from Harvest Farm (1.5 lb). It is gluten free, high protein, keto, dairy free.",
+  "dietary": [
+   "gluten-free",
+   "high-protein",
+   "keto",
+   "dairy-free"
+  ],
+  "allergens": [],
+  "keywords": "chicken breast boneless skinless poultry",
+  "pairs_with": [
+   "rice",
+   "vegetables"
+  ],
+  "stock": 71,
+  "rating": 4.8,
+  "image": "/images/MEA-001.svg"
+ },
+ {
+  "id": "MEA-002",
+  "name": "Fresh Chicken Breast Fillets",
+  "brand": "Harvest Farm",
+  "category": "Meat & Seafood",
+  "price": 9.5,
+  "size": "300 g",
+  "description": "Fresh Chicken Breast Fillets from Harvest Farm (300 g). It is gluten free, high protein, keto, dairy free.",
+  "dietary": [
+   "gluten-free",
+   "high-protein",
+   "keto",
+   "dairy-free"
+  ],
+  "allergens": [],
+  "keywords": "chicken breast fillet poultry small pack",
+  "pairs_with": [
+   "pasta",
+   "cream"
+  ],
+  "stock": 12,
+  "rating": 4.3,
+  "image": "/images/MEA-002.svg"
+ },
+ {
+  "id": "MEA-003",
+  "name": "Chicken Thighs Boneless",
+  "brand": "Harvest Farm",
+  "category": "Meat & Seafood",
+  "price": 7.99,
+  "size": "1.5 lb",
+  "description": "Chicken Thighs Boneless from Harvest Farm (1.5 lb). It is gluten free, high protein, keto, dairy free.",
+  "dietary": [
+   "gluten-free",
+   "high-protein",
+   "keto",
+   "dairy-free"
+  ],
+  "allergens": [],
+  "keywords": "chicken thighs poultry",
+  "pairs_with": [
+   "rice"
+  ],
+  "stock": 77,
+  "rating": 4.2,
+  "image": "/images/MEA-003.svg"
+ },
+ {
+  "id": "MEA-004",
+  "name": "Whole Chicken",
+  "brand": "Harvest Farm",
+  "category": "Meat & Seafood",
+  "price": 9.99,
+  "size": "4 lb",
+  "description": "Whole Chicken from Harvest Farm (4 lb). It is gluten free, high protein, keto, dairy free.",
+  "dietary": [
+   "gluten-free",
+   "high-protein",
+   "keto",
+   "dairy-free"
+  ],
+  "allergens": [],
+  "keywords": "whole chicken roast",
+  "pairs_with": [
+   "potatoes"
+  ],
+  "stock": 57,
+  "rating": 4.2,
+  "image": "/images/MEA-004.svg"
+ },
+ {
+  "id": "MEA-005",
+  "name": "Lean Ground Beef 90/10",
+  "brand": "Prairie Ranch",
+  "category": "Meat & Seafood",
+  "price": 6.99,
+  "size": "1 lb",
+  "description": "Lean Ground Beef 90/10 from Prairie Ranch (1 lb). It is gluten free, high protein, keto, dairy free.",
+  "dietary": [
+   "gluten-free",
+   "high-protein",
+   "keto",
+   "dairy-free"
+  ],
+  "allergens": [],
+  "keywords": "ground beef mince burger",
+  "pairs_with": [
+   "buns",
+   "lasagna",
+   "tacos"
+  ],
+  "stock": 67,
+  "rating": 4.5,
+  "image": "/images/MEA-005.svg"
+ },
+ {
+  "id": "MEA-006",
+  "name": "Ground Turkey",
+  "brand": "Prairie Ranch",
+  "category": "Meat & Seafood",
+  "price": 5.99,
+  "size": "1 lb",
+  "description": "Ground Turkey from Prairie Ranch (1 lb). It is gluten free, high protein, keto, dairy free.",
+  "dietary": [
+   "gluten-free",
+   "high-protein",
+   "keto",
+   "dairy-free"
+  ],
+  "allergens": [],
+  "keywords": "ground turkey lean",
+  "pairs_with": [
+   "tacos"
+  ],
+  "stock": 13,
+  "rating": 4.0,
+  "image": "/images/MEA-006.svg"
+ },
+ {
+  "id": "MEA-007",
+  "name": "Beef Sirloin Steak",
+  "brand": "Prairie Ranch",
+  "category": "Meat & Seafood",
+  "price": 11.99,
+  "size": "1 lb",
+  "description": "Beef Sirloin Steak from Prairie Ranch (1 lb). It is gluten free, high protein, keto, dairy free.",
+  "dietary": [
+   "gluten-free",
+   "high-protein",
+   "keto",
+   "dairy-free"
+  ],
+  "allergens": [],
+  "keywords": "steak beef sirloin",
+  "pairs_with": [
+   "potatoes"
+  ],
+  "stock": 32,
+  "rating": 4.3,
+  "image": "/images/MEA-007.svg"
+ },
+ {
+  "id": "MEA-008",
+  "name": "Pork Chops",
+  "brand": "Prairie Ranch",
+  "category": "Meat & Seafood",
+  "price": 7.49,
+  "size": "1.25 lb",
+  "description": "Pork Chops from Prairie Ranch (1.25 lb). It is gluten free, high protein, keto, dairy free.",
+  "dietary": [
+   "gluten-free",
+   "high-protein",
+   "keto",
+   "dairy-free"
+  ],
+  "allergens": [],
+  "keywords": "pork chops",
+  "pairs_with": [
+   "apples"
+  ],
+  "stock": 20,
+  "rating": 4.2,
+  "image": "/images/MEA-008.svg"
+ },
+ {
+  "id": "MEA-009",
+  "name": "Thick-Cut Bacon",
+  "brand": "Prairie Ranch",
+  "category": "Meat & Seafood",
+  "price": 6.49,
+  "size": "12 oz",
+  "description": "Thick-Cut Bacon from Prairie Ranch (12 oz). It is gluten free, keto, dairy free.",
+  "dietary": [
+   "gluten-free",
+   "keto",
+   "dairy-free"
+  ],
+  "allergens": [],
+  "keywords": "bacon breakfast pork",
+  "pairs_with": [
+   "eggs"
+  ],
+  "stock": 12,
+  "rating": 3.9,
+  "image": "/images/MEA-009.svg"
+ },
+ {
+  "id": "MEA-010",
+  "name": "Italian Sausage",
+  "brand": "Bella Cucina",
+  "category": "Meat & Seafood",
+  "price": 5.99,
+  "size": "1 lb",
+  "description": "Italian Sausage from Bella Cucina (1 lb). It is gluten free, high protein, dairy free.",
+  "dietary": [
+   "gluten-free",
+   "high-protein",
+   "dairy-free"
+  ],
+  "allergens": [],
+  "keywords": "sausage italian pork",
+  "pairs_with": [
+   "pasta",
+   "peppers"
+  ],
+  "stock": 78,
+  "rating": 4.0,
+  "image": "/images/MEA-010.svg"
+ },
+ {
+  "id": "MEA-011",
+  "name": "Atlantic Salmon Fillets",
+  "brand": "Ocean Catch",
+  "category": "Meat & Seafood",
+  "price": 12.99,
+  "size": "1 lb",
+  "description": "Atlantic Salmon Fillets from Ocean Catch (1 lb). It is gluten free, high protein, keto, dairy free. Contains fish.",
+  "dietary": [
+   "gluten-free",
+   "high-protein",
+   "keto",
+   "dairy-free"
+  ],
+  "allergens": [
+   "fish"
+  ],
+  "keywords": "salmon fish seafood omega-3",
+  "pairs_with": [
+   "lemons",
+   "rice"
+  ],
+  "stock": 18,
+  "rating": 4.8,
+  "image": "/images/MEA-011.svg"
+ },
+ {
+  "id": "MEA-012",
+  "name": "Raw Shrimp",
+  "brand": "Ocean Catch",
+  "category": "Meat & Seafood",
+  "price": 10.99,
+  "size": "1 lb",
+  "description": "Raw Shrimp from Ocean Catch (1 lb). It is gluten free, high protein, keto, dairy free. Contains shellfish.",
+  "dietary": [
+   "gluten-free",
+   "high-protein",
+   "keto",
+   "dairy-free"
+  ],
+  "allergens": [
+   "shellfish"
+  ],
+  "keywords": "shrimp prawns seafood",
+  "pairs_with": [
+   "garlic",
+   "pasta"
+  ],
+  "stock": 9,
+  "rating": 3.9,
+  "image": "/images/MEA-012.svg"
+ },
+ {
+  "id": "MEA-013",
+  "name": "Tilapia Fillets",
+  "brand": "Ocean Catch",
+  "category": "Meat & Seafood",
+  "price": 8.49,
+  "size": "1 lb",
+  "description": "Tilapia Fillets from Ocean Catch (1 lb). It is gluten free, high protein, keto, dairy free. Contains fish.",
+  "dietary": [
+   "gluten-free",
+   "high-protein",
+   "keto",
+   "dairy-free"
+  ],
+  "allergens": [
+   "fish"
+  ],
+  "keywords": "tilapia white fish",
+  "pairs_with": [
+   "lemons"
+  ],
+  "stock": 32,
+  "rating": 4.5,
+  "image": "/images/MEA-013.svg"
+ },
+ {
+  "id": "MEA-014",
+  "name": "Canned Tuna in Water",
+  "brand": "Ocean Catch",
+  "category": "Meat & Seafood",
+  "price": 1.49,
+  "size": "5 oz",
+  "description": "Canned Tuna in Water from Ocean Catch (5 oz). It is gluten free, high protein, dairy free. Contains fish.",
+  "dietary": [
+   "gluten-free",
+   "high-protein",
+   "dairy-free"
+  ],
+  "allergens": [
+   "fish"
+  ],
+  "keywords": "tuna canned fish",
+  "pairs_with": [
+   "bread",
+   "mayo"
+  ],
+  "stock": 25,
+  "rating": 4.5,
+  "image": "/images/MEA-014.svg"
+ },
+ {
+  "id": "MEA-015",
+  "name": "Deli Sliced Turkey",
+  "brand": "Harvest Farm",
+  "category": "Meat & Seafood",
+  "price": 4.99,
+  "size": "8 oz",
+  "description": "Deli Sliced Turkey from Harvest Farm (8 oz). It is gluten free, high protein, dairy free.",
+  "dietary": [
+   "gluten-free",
+   "high-protein",
+   "dairy-free"
+  ],
+  "allergens": [],
+  "keywords": "turkey slices deli sandwich",
+  "pairs_with": [
+   "bread",
+   "cheese"
+  ],
+  "stock": 50,
+  "rating": 4.5,
+  "image": "/images/MEA-015.svg"
+ },
+ {
+  "id": "MEA-016",
+  "name": "Plant-Based Burger Patties",
+  "brand": "Nature's Basket",
+  "category": "Meat & Seafood",
+  "price": 6.99,
+  "size": "2 ct",
+  "description": "Plant-Based Burger Patties from Nature's Basket (2 ct). It is vegan, dairy free, high protein. Contains soy.",
+  "dietary": [
+   "vegan",
+   "dairy-free",
+   "high-protein"
+  ],
+  "allergens": [
+   "soy"
+  ],
+  "keywords": "veggie burger meatless plant protein",
+  "pairs_with": [
+   "buns"
+  ],
+  "stock": 66,
+  "rating": 3.9,
+  "image": "/images/MEA-016.svg"
+ },
+ {
+  "id": "GRA-001",
+  "name": "Artisan Pasta",
+  "brand": "Bella Cucina",
+  "category": "Pasta, Rice & Grains",
+  "price": 3.8,
+  "size": "500 g",
+  "description": "Artisan Pasta from Bella Cucina (500 g). It is vegan. Contains wheat.",
+  "dietary": [
+   "vegan"
+  ],
+  "allergens": [
+   "wheat"
+  ],
+  "keywords": "pasta penne italian",
+  "pairs_with": [
+   "parmesan",
+   "sauce"
+  ],
+  "stock": 68,
+  "rating": 4.9,
+  "image": "/images/GRA-001.svg"
+ },
+ {
+  "id": "GRA-002",
+  "name": "Spaghetti",
+  "brand": "Bella Cucina",
+  "category": "Pasta, Rice & Grains",
+  "price": 1.99,
+  "size": "1 lb",
+  "description": "Spaghetti from Bella Cucina (1 lb). It is vegan. Contains wheat.",
+  "dietary": [
+   "vegan"
+  ],
+  "allergens": [
+   "wheat"
+  ],
+  "keywords": "spaghetti pasta noodles",
+  "pairs_with": [
+   "marinara",
+   "meatballs"
+  ],
+  "stock": 65,
+  "rating": 4.3,
+  "image": "/images/GRA-002.svg"
+ },
+ {
+  "id": "GRA-003",
+  "name": "Fettuccine",
+  "brand": "Bella Cucina",
+  "category": "Pasta, Rice & Grains",
+  "price": 2.29,
+  "size": "1 lb",
+  "description": "Fettuccine from Bella Cucina (1 lb). It is vegan. Contains wheat.",
+  "dietary": [
+   "vegan"
+  ],
+  "allergens": [
+   "wheat"
+  ],
+  "keywords": "fettuccine pasta alfredo",
+  "pairs_with": [
+   "heavy",
+   "cream",
+   "parmesan"
+  ],
+  "stock": 45,
+  "rating": 3.9,
+  "image": "/images/GRA-003.svg"
+ },
+ {
+  "id": "GRA-004",
+  "name": "Lasagna Sheets",
+  "brand": "Bella Cucina",
+  "category": "Pasta, Rice & Grains",
+  "price": 2.99,
+  "size": "1 lb",
+  "description": "Lasagna Sheets from Bella Cucina (1 lb). It is vegan. Contains wheat.",
+  "dietary": [
+   "vegan"
+  ],
+  "allergens": [
+   "wheat"
+  ],
+  "keywords": "lasagna noodles pasta",
+  "pairs_with": [
+   "ricotta",
+   "mozzarella",
+   "beef"
+  ],
+  "stock": 19,
+  "rating": 4.6,
+  "image": "/images/GRA-004.svg"
+ },
+ {
+  "id": "GRA-005",
+  "name": "Gluten-Free Penne",
+  "brand": "Nature's Basket",
+  "category": "Pasta, Rice & Grains",
+  "price": 3.49,
+  "size": "12 oz",
+  "description": "Gluten-Free Penne from Nature's Basket (12 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "gluten free pasta penne rice pasta",
+  "pairs_with": [
+   "sauce"
+  ],
+  "stock": 39,
+  "rating": 4.3,
+  "image": "/images/GRA-005.svg"
+ },
+ {
+  "id": "GRA-006",
+  "name": "Whole Wheat Rotini",
+  "brand": "Bella Cucina",
+  "category": "Pasta, Rice & Grains",
+  "price": 2.49,
+  "size": "1 lb",
+  "description": "Whole Wheat Rotini from Bella Cucina (1 lb). It is vegan. Contains wheat.",
+  "dietary": [
+   "vegan"
+  ],
+  "allergens": [
+   "wheat"
+  ],
+  "keywords": "rotini whole wheat pasta",
+  "pairs_with": [],
+  "stock": 26,
+  "rating": 4.4,
+  "image": "/images/GRA-006.svg"
+ },
+ {
+  "id": "GRA-007",
+  "name": "Jasmine Rice",
+  "brand": "Golden Mill",
+  "category": "Pasta, Rice & Grains",
+  "price": 8.0,
+  "size": "2 kg",
+  "description": "Jasmine Rice from Golden Mill (2 kg). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "jasmine rice",
+  "pairs_with": [
+   "chicken",
+   "vegetables"
+  ],
+  "stock": 32,
+  "rating": 4.8,
+  "image": "/images/GRA-007.svg"
+ },
+ {
+  "id": "GRA-008",
+  "name": "Long Grain White Rice",
+  "brand": "Golden Mill",
+  "category": "Pasta, Rice & Grains",
+  "price": 3.49,
+  "size": "2 lb",
+  "description": "Long Grain White Rice from Golden Mill (2 lb). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "white rice",
+  "pairs_with": [
+   "beans"
+  ],
+  "stock": 73,
+  "rating": 4.2,
+  "image": "/images/GRA-008.svg"
+ },
+ {
+  "id": "GRA-009",
+  "name": "Brown Rice",
+  "brand": "Golden Mill",
+  "category": "Pasta, Rice & Grains",
+  "price": 3.99,
+  "size": "2 lb",
+  "description": "Brown Rice from Golden Mill (2 lb). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "brown rice whole grain",
+  "pairs_with": [],
+  "stock": 75,
+  "rating": 4.8,
+  "image": "/images/GRA-009.svg"
+ },
+ {
+  "id": "GRA-010",
+  "name": "Basmati Rice",
+  "brand": "Golden Mill",
+  "category": "Pasta, Rice & Grains",
+  "price": 6.99,
+  "size": "4 lb",
+  "description": "Basmati Rice from Golden Mill (4 lb). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "basmati rice",
+  "pairs_with": [
+   "curry"
+  ],
+  "stock": 0,
+  "rating": 4.6,
+  "image": "/images/GRA-010.svg"
+ },
+ {
+  "id": "GRA-011",
+  "name": "Quinoa",
+  "brand": "Nature's Basket",
+  "category": "Pasta, Rice & Grains",
+  "price": 5.49,
+  "size": "16 oz",
+  "description": "Quinoa from Nature's Basket (16 oz). It is vegan, gluten free, high protein.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "high-protein"
+  ],
+  "allergens": [],
+  "keywords": "quinoa grain protein",
+  "pairs_with": [
+   "vegetables"
+  ],
+  "stock": 44,
+  "rating": 4.9,
+  "image": "/images/GRA-011.svg"
+ },
+ {
+  "id": "GRA-012",
+  "name": "Rolled Oats",
+  "brand": "Morning Glow",
+  "category": "Pasta, Rice & Grains",
+  "price": 3.99,
+  "size": "42 oz",
+  "description": "Rolled Oats from Morning Glow (42 oz). It is vegan.",
+  "dietary": [
+   "vegan"
+  ],
+  "allergens": [],
+  "keywords": "oats oatmeal porridge",
+  "pairs_with": [
+   "bananas",
+   "berries"
+  ],
+  "stock": 17,
+  "rating": 4.6,
+  "image": "/images/GRA-012.svg"
+ },
+ {
+  "id": "GRA-013",
+  "name": "Couscous",
+  "brand": "Golden Mill",
+  "category": "Pasta, Rice & Grains",
+  "price": 2.99,
+  "size": "10 oz",
+  "description": "Couscous from Golden Mill (10 oz). It is vegan. Contains wheat.",
+  "dietary": [
+   "vegan"
+  ],
+  "allergens": [
+   "wheat"
+  ],
+  "keywords": "couscous",
+  "pairs_with": [],
+  "stock": 39,
+  "rating": 4.4,
+  "image": "/images/GRA-013.svg"
+ },
+ {
+  "id": "GRA-014",
+  "name": "Egg Noodles",
+  "brand": "Golden Mill",
+  "category": "Pasta, Rice & Grains",
+  "price": 2.49,
+  "size": "12 oz",
+  "description": "Egg Noodles from Golden Mill (12 oz). Contains wheat, eggs.",
+  "dietary": [
+   "vegetarian"
+  ],
+  "allergens": [
+   "wheat",
+   "eggs"
+  ],
+  "keywords": "egg noodles soup",
+  "pairs_with": [
+   "chicken"
+  ],
+  "stock": 27,
+  "rating": 4.2,
+  "image": "/images/GRA-014.svg"
+ },
+ {
+  "id": "GRA-015",
+  "name": "Ramen Noodles",
+  "brand": "Golden Mill",
+  "category": "Pasta, Rice & Grains",
+  "price": 0.69,
+  "size": "3 oz",
+  "description": "Ramen Noodles from Golden Mill (3 oz). It is vegan. Contains wheat, soy.",
+  "dietary": [
+   "vegan"
+  ],
+  "allergens": [
+   "wheat",
+   "soy"
+  ],
+  "keywords": "ramen instant noodles",
+  "pairs_with": [
+   "eggs"
+  ],
+  "stock": 34,
+  "rating": 4.4,
+  "image": "/images/GRA-015.svg"
+ },
+ {
+  "id": "GRA-016",
+  "name": "All-Purpose Flour",
+  "brand": "Golden Mill",
+  "category": "Pasta, Rice & Grains",
+  "price": 3.29,
+  "size": "5 lb",
+  "description": "All-Purpose Flour from Golden Mill (5 lb). It is vegan. Contains wheat.",
+  "dietary": [
+   "vegan"
+  ],
+  "allergens": [
+   "wheat"
+  ],
+  "keywords": "flour baking",
+  "pairs_with": [
+   "sugar",
+   "butter",
+   "eggs"
+  ],
+  "stock": 70,
+  "rating": 4.2,
+  "image": "/images/GRA-016.svg"
+ },
+ {
+  "id": "PAN-001",
+  "name": "Marinara Sauce",
+  "brand": "Bella Cucina",
+  "category": "Pantry",
+  "price": 3.99,
+  "size": "24 oz",
+  "description": "Marinara Sauce from Bella Cucina (24 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "marinara pasta sauce tomato sauce",
+  "pairs_with": [
+   "spaghetti"
+  ],
+  "stock": 34,
+  "rating": 4.5,
+  "image": "/images/PAN-001.svg"
+ },
+ {
+  "id": "PAN-002",
+  "name": "Alfredo Sauce",
+  "brand": "Bella Cucina",
+  "category": "Pantry",
+  "price": 3.79,
+  "size": "15 oz",
+  "description": "Alfredo Sauce from Bella Cucina (15 oz). It is gluten free. Contains milk.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free"
+  ],
+  "allergens": [
+   "milk"
+  ],
+  "keywords": "alfredo sauce white sauce",
+  "pairs_with": [
+   "fettuccine",
+   "chicken"
+  ],
+  "stock": 30,
+  "rating": 4.7,
+  "image": "/images/PAN-002.svg"
+ },
+ {
+  "id": "PAN-003",
+  "name": "Basil Pesto",
+  "brand": "Bella Cucina",
+  "category": "Pantry",
+  "price": 4.99,
+  "size": "6 oz",
+  "description": "Basil Pesto from Bella Cucina (6 oz). It is gluten free. Contains milk, tree nuts.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free"
+  ],
+  "allergens": [
+   "milk",
+   "tree-nuts"
+  ],
+  "keywords": "pesto basil sauce",
+  "pairs_with": [
+   "pasta"
+  ],
+  "stock": 57,
+  "rating": 4.6,
+  "image": "/images/PAN-003.svg"
+ },
+ {
+  "id": "PAN-004",
+  "name": "Crushed Tomatoes",
+  "brand": "Bella Cucina",
+  "category": "Pantry",
+  "price": 1.99,
+  "size": "28 oz",
+  "description": "Crushed Tomatoes from Bella Cucina (28 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "crushed tomatoes canned",
+  "pairs_with": [
+   "lasagna",
+   "pasta"
+  ],
+  "stock": 35,
+  "rating": 4.0,
+  "image": "/images/PAN-004.svg"
+ },
+ {
+  "id": "PAN-005",
+  "name": "Tomato Paste",
+  "brand": "Bella Cucina",
+  "category": "Pantry",
+  "price": 0.99,
+  "size": "6 oz",
+  "description": "Tomato Paste from Bella Cucina (6 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "tomato paste",
+  "pairs_with": [],
+  "stock": 69,
+  "rating": 4.2,
+  "image": "/images/PAN-005.svg"
+ },
+ {
+  "id": "PAN-006",
+  "name": "Extra Virgin Olive Oil",
+  "brand": "Bella Cucina",
+  "category": "Pantry",
+  "price": 8.99,
+  "size": "500 ml",
+  "description": "Extra Virgin Olive Oil from Bella Cucina (500 ml). It is vegan, gluten free, keto.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [],
+  "keywords": "olive oil cooking oil",
+  "pairs_with": [
+   "pasta",
+   "salad"
+  ],
+  "stock": 9,
+  "rating": 4.9,
+  "image": "/images/PAN-006.svg"
+ },
+ {
+  "id": "PAN-007",
+  "name": "Vegetable Oil",
+  "brand": "Golden Mill",
+  "category": "Pantry",
+  "price": 4.49,
+  "size": "48 fl oz",
+  "description": "Vegetable Oil from Golden Mill (48 fl oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "vegetable oil cooking oil frying",
+  "pairs_with": [],
+  "stock": 41,
+  "rating": 4.3,
+  "image": "/images/PAN-007.svg"
+ },
+ {
+  "id": "PAN-008",
+  "name": "Black Beans",
+  "brand": "Sol Cocina",
+  "category": "Pantry",
+  "price": 1.19,
+  "size": "15 oz",
+  "description": "Black Beans from Sol Cocina (15 oz). It is vegan, gluten free, high protein.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "high-protein"
+  ],
+  "allergens": [],
+  "keywords": "black beans canned",
+  "pairs_with": [
+   "rice",
+   "tortillas"
+  ],
+  "stock": 30,
+  "rating": 4.6,
+  "image": "/images/PAN-008.svg"
+ },
+ {
+  "id": "PAN-009",
+  "name": "Chickpeas",
+  "brand": "Nature's Basket",
+  "category": "Pantry",
+  "price": 1.29,
+  "size": "15 oz",
+  "description": "Chickpeas from Nature's Basket (15 oz). It is vegan, gluten free, high protein.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "high-protein"
+  ],
+  "allergens": [],
+  "keywords": "chickpeas garbanzo canned",
+  "pairs_with": [],
+  "stock": 50,
+  "rating": 4.3,
+  "image": "/images/PAN-009.svg"
+ },
+ {
+  "id": "PAN-010",
+  "name": "Chunky Salsa",
+  "brand": "Sol Cocina",
+  "category": "Pantry",
+  "price": 3.49,
+  "size": "16 oz",
+  "description": "Chunky Salsa from Sol Cocina (16 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "salsa dip",
+  "pairs_with": [
+   "tortilla",
+   "chips"
+  ],
+  "stock": 50,
+  "rating": 4.9,
+  "image": "/images/PAN-010.svg"
+ },
+ {
+  "id": "PAN-011",
+  "name": "Taco Seasoning",
+  "brand": "Spice Route",
+  "category": "Pantry",
+  "price": 1.29,
+  "size": "1 oz",
+  "description": "Taco Seasoning from Spice Route (1 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "taco seasoning spice mix",
+  "pairs_with": [
+   "ground",
+   "beef",
+   "tortillas"
+  ],
+  "stock": 52,
+  "rating": 3.9,
+  "image": "/images/PAN-011.svg"
+ },
+ {
+  "id": "PAN-012",
+  "name": "Sea Salt",
+  "brand": "Spice Route",
+  "category": "Pantry",
+  "price": 2.49,
+  "size": "26 oz",
+  "description": "Sea Salt from Spice Route (26 oz). It is vegan, gluten free, keto.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [],
+  "keywords": "salt",
+  "pairs_with": [],
+  "stock": 19,
+  "rating": 4.0,
+  "image": "/images/PAN-012.svg"
+ },
+ {
+  "id": "PAN-013",
+  "name": "Black Pepper",
+  "brand": "Spice Route",
+  "category": "Pantry",
+  "price": 3.99,
+  "size": "4 oz",
+  "description": "Black Pepper from Spice Route (4 oz). It is vegan, gluten free, keto.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [],
+  "keywords": "pepper ground black pepper spice",
+  "pairs_with": [],
+  "stock": 31,
+  "rating": 4.2,
+  "image": "/images/PAN-013.svg"
+ },
+ {
+  "id": "PAN-014",
+  "name": "Italian Seasoning",
+  "brand": "Spice Route",
+  "category": "Pantry",
+  "price": 2.99,
+  "size": "1 oz",
+  "description": "Italian Seasoning from Spice Route (1 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "italian herbs oregano seasoning",
+  "pairs_with": [
+   "pasta"
+  ],
+  "stock": 67,
+  "rating": 4.5,
+  "image": "/images/PAN-014.svg"
+ },
+ {
+  "id": "PAN-015",
+  "name": "Garlic Powder",
+  "brand": "Spice Route",
+  "category": "Pantry",
+  "price": 2.79,
+  "size": "3 oz",
+  "description": "Garlic Powder from Spice Route (3 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "garlic powder spice",
+  "pairs_with": [],
+  "stock": 6,
+  "rating": 4.3,
+  "image": "/images/PAN-015.svg"
+ },
+ {
+  "id": "PAN-016",
+  "name": "Chicken Broth",
+  "brand": "Harvest Farm",
+  "category": "Pantry",
+  "price": 2.49,
+  "size": "32 oz",
+  "description": "Chicken Broth from Harvest Farm (32 oz). It is gluten free, dairy free.",
+  "dietary": [
+   "gluten-free",
+   "dairy-free"
+  ],
+  "allergens": [],
+  "keywords": "chicken stock broth soup",
+  "pairs_with": [
+   "noodles"
+  ],
+  "stock": 50,
+  "rating": 4.7,
+  "image": "/images/PAN-016.svg"
+ },
+ {
+  "id": "PAN-017",
+  "name": "Vegetable Broth",
+  "brand": "Nature's Basket",
+  "category": "Pantry",
+  "price": 2.49,
+  "size": "32 oz",
+  "description": "Vegetable Broth from Nature's Basket (32 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "vegetable stock broth soup",
+  "pairs_with": [],
+  "stock": 16,
+  "rating": 4.7,
+  "image": "/images/PAN-017.svg"
+ },
+ {
+  "id": "PAN-018",
+  "name": "Granulated Sugar",
+  "brand": "Golden Mill",
+  "category": "Pantry",
+  "price": 3.49,
+  "size": "4 lb",
+  "description": "Granulated Sugar from Golden Mill (4 lb). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "sugar baking",
+  "pairs_with": [
+   "flour"
+  ],
+  "stock": 21,
+  "rating": 4.8,
+  "image": "/images/PAN-018.svg"
+ },
+ {
+  "id": "PAN-019",
+  "name": "Pure Honey",
+  "brand": "Morning Glow",
+  "category": "Pantry",
+  "price": 6.99,
+  "size": "12 oz",
+  "description": "Pure Honey from Morning Glow (12 oz). It is gluten free.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "honey sweetener",
+  "pairs_with": [
+   "yogurt",
+   "tea"
+  ],
+  "stock": 31,
+  "rating": 4.3,
+  "image": "/images/PAN-019.svg"
+ },
+ {
+  "id": "PAN-020",
+  "name": "Creamy Peanut Butter",
+  "brand": "Morning Glow",
+  "category": "Pantry",
+  "price": 3.49,
+  "size": "16 oz",
+  "description": "Creamy Peanut Butter from Morning Glow (16 oz). It is vegan, gluten free, high protein. Contains peanuts.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "high-protein"
+  ],
+  "allergens": [
+   "peanuts"
+  ],
+  "keywords": "peanut butter",
+  "pairs_with": [
+   "bread",
+   "bananas"
+  ],
+  "stock": 28,
+  "rating": 4.3,
+  "image": "/images/PAN-020.svg"
+ },
+ {
+  "id": "PAN-021",
+  "name": "Strawberry Jam",
+  "brand": "Morning Glow",
+  "category": "Pantry",
+  "price": 3.29,
+  "size": "18 oz",
+  "description": "Strawberry Jam from Morning Glow (18 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "jam jelly preserves",
+  "pairs_with": [
+   "bread",
+   "peanut",
+   "butter"
+  ],
+  "stock": 48,
+  "rating": 3.9,
+  "image": "/images/PAN-021.svg"
+ },
+ {
+  "id": "PAN-022",
+  "name": "Soy Sauce",
+  "brand": "Spice Route",
+  "category": "Pantry",
+  "price": 2.99,
+  "size": "15 fl oz",
+  "description": "Soy Sauce from Spice Route (15 fl oz). It is vegan, dairy free. Contains soy, wheat.",
+  "dietary": [
+   "vegan",
+   "dairy-free"
+  ],
+  "allergens": [
+   "soy",
+   "wheat"
+  ],
+  "keywords": "soy sauce asian",
+  "pairs_with": [
+   "rice"
+  ],
+  "stock": 56,
+  "rating": 4.3,
+  "image": "/images/PAN-022.svg"
+ },
+ {
+  "id": "PAN-023",
+  "name": "Coconut Milk",
+  "brand": "Nature's Basket",
+  "category": "Pantry",
+  "price": 2.29,
+  "size": "13.5 oz",
+  "description": "Coconut Milk from Nature's Basket (13.5 oz). It is vegan, gluten free, dairy free, keto.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "dairy-free",
+   "keto"
+  ],
+  "allergens": [],
+  "keywords": "coconut milk curry",
+  "pairs_with": [
+   "rice"
+  ],
+  "stock": 16,
+  "rating": 4.6,
+  "image": "/images/PAN-023.svg"
+ },
+ {
+  "id": "PAN-024",
+  "name": "Mayonnaise",
+  "brand": "Harvest Farm",
+  "category": "Pantry",
+  "price": 3.99,
+  "size": "30 oz",
+  "description": "Mayonnaise from Harvest Farm (30 oz). It is gluten free. Contains eggs.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free"
+  ],
+  "allergens": [
+   "eggs"
+  ],
+  "keywords": "mayo mayonnaise",
+  "pairs_with": [
+   "bread",
+   "tuna"
+  ],
+  "stock": 27,
+  "rating": 4.9,
+  "image": "/images/PAN-024.svg"
+ },
+ {
+  "id": "PAN-025",
+  "name": "Yellow Mustard",
+  "brand": "Harvest Farm",
+  "category": "Pantry",
+  "price": 1.49,
+  "size": "14 oz",
+  "description": "Yellow Mustard from Harvest Farm (14 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "mustard condiment",
+  "pairs_with": [
+   "hot",
+   "dogs"
+  ],
+  "stock": 9,
+  "rating": 4.0,
+  "image": "/images/PAN-025.svg"
+ },
+ {
+  "id": "PAN-026",
+  "name": "Tomato Ketchup",
+  "brand": "Harvest Farm",
+  "category": "Pantry",
+  "price": 2.79,
+  "size": "32 oz",
+  "description": "Tomato Ketchup from Harvest Farm (32 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "ketchup condiment",
+  "pairs_with": [
+   "fries",
+   "burgers"
+  ],
+  "stock": 65,
+  "rating": 4.7,
+  "image": "/images/PAN-026.svg"
+ },
+ {
+  "id": "BRK-001",
+  "name": "Honey Oat Granola",
+  "brand": "Morning Glow",
+  "category": "Breakfast",
+  "price": 4.49,
+  "size": "12 oz",
+  "description": "Honey Oat Granola from Morning Glow (12 oz). Contains wheat, tree nuts.",
+  "dietary": [
+   "vegetarian"
+  ],
+  "allergens": [
+   "wheat",
+   "tree-nuts"
+  ],
+  "keywords": "granola cereal",
+  "pairs_with": [
+   "yogurt",
+   "milk"
+  ],
+  "stock": 24,
+  "rating": 4.5,
+  "image": "/images/BRK-001.svg"
+ },
+ {
+  "id": "BRK-002",
+  "name": "Gluten-Free Granola",
+  "brand": "Nature's Basket",
+  "category": "Breakfast",
+  "price": 5.99,
+  "size": "11 oz",
+  "description": "Gluten-Free Granola from Nature's Basket (11 oz). It is vegan, gluten free. Contains tree nuts.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [
+   "tree-nuts"
+  ],
+  "keywords": "granola gluten free cereal",
+  "pairs_with": [
+   "yogurt"
+  ],
+  "stock": 66,
+  "rating": 4.5,
+  "image": "/images/BRK-002.svg"
+ },
+ {
+  "id": "BRK-003",
+  "name": "Corn Flakes Cereal",
+  "brand": "Morning Glow",
+  "category": "Breakfast",
+  "price": 3.99,
+  "size": "18 oz",
+  "description": "Corn Flakes Cereal from Morning Glow (18 oz). It is vegan.",
+  "dietary": [
+   "vegan"
+  ],
+  "allergens": [],
+  "keywords": "cereal corn flakes",
+  "pairs_with": [
+   "milk",
+   "bananas"
+  ],
+  "stock": 50,
+  "rating": 4.0,
+  "image": "/images/BRK-003.svg"
+ },
+ {
+  "id": "BRK-004",
+  "name": "Whole Grain O's Cereal",
+  "brand": "Morning Glow",
+  "category": "Breakfast",
+  "price": 4.29,
+  "size": "18 oz",
+  "description": "Whole Grain O's Cereal from Morning Glow (18 oz). It is vegan, low sugar.",
+  "dietary": [
+   "vegan",
+   "low-sugar"
+  ],
+  "allergens": [],
+  "keywords": "cereal oats whole grain",
+  "pairs_with": [
+   "milk"
+  ],
+  "stock": 76,
+  "rating": 3.9,
+  "image": "/images/BRK-004.svg"
+ },
+ {
+  "id": "BRK-005",
+  "name": "Pancake & Waffle Mix",
+  "brand": "Morning Glow",
+  "category": "Breakfast",
+  "price": 3.29,
+  "size": "32 oz",
+  "description": "Pancake & Waffle Mix from Morning Glow (32 oz). Contains wheat, milk.",
+  "dietary": [
+   "vegetarian"
+  ],
+  "allergens": [
+   "wheat",
+   "milk"
+  ],
+  "keywords": "pancake mix waffle",
+  "pairs_with": [
+   "maple",
+   "syrup",
+   "eggs"
+  ],
+  "stock": 7,
+  "rating": 4.7,
+  "image": "/images/BRK-005.svg"
+ },
+ {
+  "id": "BRK-006",
+  "name": "Pure Maple Syrup",
+  "brand": "Morning Glow",
+  "category": "Breakfast",
+  "price": 7.99,
+  "size": "12 fl oz",
+  "description": "Pure Maple Syrup from Morning Glow (12 fl oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "maple syrup",
+  "pairs_with": [
+   "pancake",
+   "mix"
+  ],
+  "stock": 19,
+  "rating": 4.4,
+  "image": "/images/BRK-006.svg"
+ },
+ {
+  "id": "BRK-007",
+  "name": "Instant Oatmeal Variety",
+  "brand": "Morning Glow",
+  "category": "Breakfast",
+  "price": 3.99,
+  "size": "10 ct",
+  "description": "Instant Oatmeal Variety from Morning Glow (10 ct).",
+  "dietary": [
+   "vegetarian"
+  ],
+  "allergens": [],
+  "keywords": "oatmeal instant breakfast",
+  "pairs_with": [
+   "bananas"
+  ],
+  "stock": 23,
+  "rating": 4.3,
+  "image": "/images/BRK-007.svg"
+ },
+ {
+  "id": "BRK-008",
+  "name": "Ground Coffee Medium Roast",
+  "brand": "Bean & Brew",
+  "category": "Breakfast",
+  "price": 8.99,
+  "size": "12 oz",
+  "description": "Ground Coffee Medium Roast from Bean & Brew (12 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "coffee ground",
+  "pairs_with": [
+   "milk",
+   "cream"
+  ],
+  "stock": 30,
+  "rating": 4.7,
+  "image": "/images/BRK-008.svg"
+ },
+ {
+  "id": "BRK-009",
+  "name": "Coffee Pods Dark Roast",
+  "brand": "Bean & Brew",
+  "category": "Breakfast",
+  "price": 9.99,
+  "size": "24 ct",
+  "description": "Coffee Pods Dark Roast from Bean & Brew (24 ct). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "coffee pods capsules",
+  "pairs_with": [],
+  "stock": 33,
+  "rating": 3.8,
+  "image": "/images/BRK-009.svg"
+ },
+ {
+  "id": "BRK-010",
+  "name": "Black Tea Bags",
+  "brand": "Bean & Brew",
+  "category": "Breakfast",
+  "price": 3.49,
+  "size": "100 ct",
+  "description": "Black Tea Bags from Bean & Brew (100 ct). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "tea black tea bags",
+  "pairs_with": [
+   "honey",
+   "milk"
+  ],
+  "stock": 33,
+  "rating": 4.1,
+  "image": "/images/BRK-010.svg"
+ },
+ {
+  "id": "BRK-011",
+  "name": "Green Tea Bags",
+  "brand": "Bean & Brew",
+  "category": "Breakfast",
+  "price": 3.99,
+  "size": "40 ct",
+  "description": "Green Tea Bags from Bean & Brew (40 ct). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "green tea",
+  "pairs_with": [
+   "honey"
+  ],
+  "stock": 36,
+  "rating": 4.6,
+  "image": "/images/BRK-011.svg"
+ },
+ {
+  "id": "BRK-012",
+  "name": "Protein Pancake Mix",
+  "brand": "Morning Glow",
+  "category": "Breakfast",
+  "price": 6.49,
+  "size": "20 oz",
+  "description": "Protein Pancake Mix from Morning Glow (20 oz). It is high protein. Contains wheat, milk, eggs.",
+  "dietary": [
+   "vegetarian",
+   "high-protein"
+  ],
+  "allergens": [
+   "wheat",
+   "milk",
+   "eggs"
+  ],
+  "keywords": "protein pancakes",
+  "pairs_with": [
+   "maple",
+   "syrup"
+  ],
+  "stock": 47,
+  "rating": 4.1,
+  "image": "/images/BRK-012.svg"
+ },
+ {
+  "id": "SNK-001",
+  "name": "Gluten-Free Pretzels",
+  "brand": "Crunch Co.",
+  "category": "Snacks",
+  "price": 4.29,
+  "size": "8 oz",
+  "description": "Gluten-Free Pretzels from Crunch Co. (8 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "pretzels gluten free snack",
+  "pairs_with": [
+   "hummus"
+  ],
+  "stock": 59,
+  "rating": 4.7,
+  "image": "/images/SNK-001.svg"
+ },
+ {
+  "id": "SNK-002",
+  "name": "Sea Salt Potato Chips",
+  "brand": "Crunch Co.",
+  "category": "Snacks",
+  "price": 3.99,
+  "size": "8 oz",
+  "description": "Sea Salt Potato Chips from Crunch Co. (8 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "potato chips crisps snack",
+  "pairs_with": [
+   "salsa"
+  ],
+  "stock": 13,
+  "rating": 4.8,
+  "image": "/images/SNK-002.svg"
+ },
+ {
+  "id": "SNK-003",
+  "name": "Tortilla Chips",
+  "brand": "Sol Cocina",
+  "category": "Snacks",
+  "price": 3.49,
+  "size": "13 oz",
+  "description": "Tortilla Chips from Sol Cocina (13 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "tortilla chips nachos",
+  "pairs_with": [
+   "salsa",
+   "guacamole"
+  ],
+  "stock": 51,
+  "rating": 4.8,
+  "image": "/images/SNK-003.svg"
+ },
+ {
+  "id": "SNK-004",
+  "name": "Rice Cakes Lightly Salted",
+  "brand": "Crunch Co.",
+  "category": "Snacks",
+  "price": 2.99,
+  "size": "4.5 oz",
+  "description": "Rice Cakes Lightly Salted from Crunch Co. (4.5 oz). It is vegan, gluten free, low sugar.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "low-sugar"
+  ],
+  "allergens": [],
+  "keywords": "rice cakes gluten free snack",
+  "pairs_with": [
+   "peanut",
+   "butter"
+  ],
+  "stock": 80,
+  "rating": 4.7,
+  "image": "/images/SNK-004.svg"
+ },
+ {
+  "id": "SNK-005",
+  "name": "Mixed Nuts Unsalted",
+  "brand": "Crunch Co.",
+  "category": "Snacks",
+  "price": 8.99,
+  "size": "16 oz",
+  "description": "Mixed Nuts Unsalted from Crunch Co. (16 oz). It is vegan, gluten free, keto, high protein. Contains tree nuts, peanuts.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "keto",
+   "high-protein"
+  ],
+  "allergens": [
+   "tree-nuts",
+   "peanuts"
+  ],
+  "keywords": "nuts mixed almonds cashews snack",
+  "pairs_with": [],
+  "stock": 72,
+  "rating": 4.3,
+  "image": "/images/SNK-005.svg"
+ },
+ {
+  "id": "SNK-006",
+  "name": "Roasted Almonds",
+  "brand": "Crunch Co.",
+  "category": "Snacks",
+  "price": 6.99,
+  "size": "12 oz",
+  "description": "Roasted Almonds from Crunch Co. (12 oz). It is vegan, gluten free, keto, high protein. Contains tree nuts.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "keto",
+   "high-protein"
+  ],
+  "allergens": [
+   "tree-nuts"
+  ],
+  "keywords": "almonds nuts snack",
+  "pairs_with": [],
+  "stock": 70,
+  "rating": 3.9,
+  "image": "/images/SNK-006.svg"
+ },
+ {
+  "id": "SNK-007",
+  "name": "Classic Hummus",
+  "brand": "Nature's Basket",
+  "category": "Snacks",
+  "price": 3.99,
+  "size": "10 oz",
+  "description": "Classic Hummus from Nature's Basket (10 oz). It is vegan, gluten free. Contains sesame.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [
+   "sesame"
+  ],
+  "keywords": "hummus dip",
+  "pairs_with": [
+   "pita",
+   "carrots"
+  ],
+  "stock": 25,
+  "rating": 4.4,
+  "image": "/images/SNK-007.svg"
+ },
+ {
+  "id": "SNK-008",
+  "name": "Dark Chocolate Bar 70%",
+  "brand": "Cocoa Lane",
+  "category": "Snacks",
+  "price": 3.49,
+  "size": "3.5 oz",
+  "description": "Dark Chocolate Bar 70% from Cocoa Lane (3.5 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "dark chocolate",
+  "pairs_with": [],
+  "stock": 8,
+  "rating": 4.8,
+  "image": "/images/SNK-008.svg"
+ },
+ {
+  "id": "SNK-009",
+  "name": "Milk Chocolate Bar",
+  "brand": "Cocoa Lane",
+  "category": "Snacks",
+  "price": 2.49,
+  "size": "3.5 oz",
+  "description": "Milk Chocolate Bar from Cocoa Lane (3.5 oz). Contains milk, soy.",
+  "dietary": [
+   "vegetarian"
+  ],
+  "allergens": [
+   "milk",
+   "soy"
+  ],
+  "keywords": "milk chocolate candy",
+  "pairs_with": [],
+  "stock": 29,
+  "rating": 4.5,
+  "image": "/images/SNK-009.svg"
+ },
+ {
+  "id": "SNK-010",
+  "name": "Chocolate Chip Cookies",
+  "brand": "Baker's Choice",
+  "category": "Snacks",
+  "price": 3.99,
+  "size": "13 oz",
+  "description": "Chocolate Chip Cookies from Baker's Choice (13 oz). Contains wheat, milk, eggs, soy.",
+  "dietary": [
+   "vegetarian"
+  ],
+  "allergens": [
+   "wheat",
+   "milk",
+   "eggs",
+   "soy"
+  ],
+  "keywords": "cookies chocolate chip",
+  "pairs_with": [
+   "milk"
+  ],
+  "stock": 25,
+  "rating": 4.0,
+  "image": "/images/SNK-010.svg"
+ },
+ {
+  "id": "SNK-011",
+  "name": "Gluten-Free Oat Cookies",
+  "brand": "Nature's Basket",
+  "category": "Snacks",
+  "price": 4.99,
+  "size": "8 oz",
+  "description": "Gluten-Free Oat Cookies from Nature's Basket (8 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "cookies gluten free",
+  "pairs_with": [],
+  "stock": 66,
+  "rating": 4.5,
+  "image": "/images/SNK-011.svg"
+ },
+ {
+  "id": "SNK-012",
+  "name": "Popcorn Sea Salt",
+  "brand": "Crunch Co.",
+  "category": "Snacks",
+  "price": 3.29,
+  "size": "6 oz",
+  "description": "Popcorn Sea Salt from Crunch Co. (6 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "popcorn snack",
+  "pairs_with": [],
+  "stock": 21,
+  "rating": 4.4,
+  "image": "/images/SNK-012.svg"
+ },
+ {
+  "id": "SNK-013",
+  "name": "Protein Bars Variety",
+  "brand": "Fit Fuel",
+  "category": "Snacks",
+  "price": 9.99,
+  "size": "6 ct",
+  "description": "Protein Bars Variety from Fit Fuel (6 ct). It is gluten free, high protein. Contains milk, peanuts.",
+  "dietary": [
+   "gluten-free",
+   "high-protein"
+  ],
+  "allergens": [
+   "milk",
+   "peanuts"
+  ],
+  "keywords": "protein bars snack",
+  "pairs_with": [],
+  "stock": 47,
+  "rating": 4.6,
+  "image": "/images/SNK-013.svg"
+ },
+ {
+  "id": "SNK-014",
+  "name": "Fruit Snacks",
+  "brand": "Crunch Co.",
+  "category": "Snacks",
+  "price": 2.99,
+  "size": "10 ct",
+  "description": "Fruit Snacks from Crunch Co. (10 ct). It is gluten free.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "fruit snacks gummies kids",
+  "pairs_with": [],
+  "stock": 73,
+  "rating": 4.4,
+  "image": "/images/SNK-014.svg"
+ },
+ {
+  "id": "SNK-015",
+  "name": "Cheese Crackers",
+  "brand": "Crunch Co.",
+  "category": "Snacks",
+  "price": 3.49,
+  "size": "7 oz",
+  "description": "Cheese Crackers from Crunch Co. (7 oz). Contains wheat, milk.",
+  "dietary": [
+   "vegetarian"
+  ],
+  "allergens": [
+   "wheat",
+   "milk"
+  ],
+  "keywords": "crackers cheese snack",
+  "pairs_with": [],
+  "stock": 19,
+  "rating": 4.8,
+  "image": "/images/SNK-015.svg"
+ },
+ {
+  "id": "SNK-016",
+  "name": "Whole Grain Crackers",
+  "brand": "Crunch Co.",
+  "category": "Snacks",
+  "price": 3.29,
+  "size": "9 oz",
+  "description": "Whole Grain Crackers from Crunch Co. (9 oz). It is vegan. Contains wheat.",
+  "dietary": [
+   "vegan"
+  ],
+  "allergens": [
+   "wheat"
+  ],
+  "keywords": "crackers whole grain",
+  "pairs_with": [
+   "cheese"
+  ],
+  "stock": 13,
+  "rating": 4.1,
+  "image": "/images/SNK-016.svg"
+ },
+ {
+  "id": "SNK-017",
+  "name": "Trail Mix",
+  "brand": "Crunch Co.",
+  "category": "Snacks",
+  "price": 5.99,
+  "size": "14 oz",
+  "description": "Trail Mix from Crunch Co. (14 oz). It is gluten free. Contains tree nuts, peanuts, milk.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free"
+  ],
+  "allergens": [
+   "tree-nuts",
+   "peanuts",
+   "milk"
+  ],
+  "keywords": "trail mix nuts raisins",
+  "pairs_with": [],
+  "stock": 41,
+  "rating": 3.8,
+  "image": "/images/SNK-017.svg"
+ },
+ {
+  "id": "SNK-018",
+  "name": "Seaweed Snacks",
+  "brand": "Nature's Basket",
+  "category": "Snacks",
+  "price": 3.99,
+  "size": "6 ct",
+  "description": "Seaweed Snacks from Nature's Basket (6 ct). It is vegan, gluten free, keto.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [],
+  "keywords": "seaweed snack low calorie",
+  "pairs_with": [],
+  "stock": 18,
+  "rating": 4.4,
+  "image": "/images/SNK-018.svg"
+ },
+ {
+  "id": "BEV-001",
+  "name": "Spring Water",
+  "brand": "Pure Spring",
+  "category": "Beverages",
+  "price": 4.99,
+  "size": "24 x 16.9 oz",
+  "description": "Spring Water from Pure Spring (24 x 16.9 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "water bottled",
+  "pairs_with": [],
+  "stock": 77,
+  "rating": 3.8,
+  "image": "/images/BEV-001.svg"
+ },
+ {
+  "id": "BEV-002",
+  "name": "Sparkling Water Lime",
+  "brand": "Pure Spring",
+  "category": "Beverages",
+  "price": 4.49,
+  "size": "8 x 12 oz",
+  "description": "Sparkling Water Lime from Pure Spring (8 x 12 oz). It is vegan, gluten free, keto, low sugar.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "keto",
+   "low-sugar"
+  ],
+  "allergens": [],
+  "keywords": "sparkling water seltzer",
+  "pairs_with": [],
+  "stock": 14,
+  "rating": 4.3,
+  "image": "/images/BEV-002.svg"
+ },
+ {
+  "id": "BEV-003",
+  "name": "Orange Juice No Pulp",
+  "brand": "Sunny Fields",
+  "category": "Beverages",
+  "price": 4.49,
+  "size": "52 fl oz",
+  "description": "Orange Juice No Pulp from Sunny Fields (52 fl oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "orange juice oj",
+  "pairs_with": [
+   "breakfast"
+  ],
+  "stock": 70,
+  "rating": 4.5,
+  "image": "/images/BEV-003.svg"
+ },
+ {
+  "id": "BEV-004",
+  "name": "Apple Juice",
+  "brand": "Sunny Fields",
+  "category": "Beverages",
+  "price": 3.49,
+  "size": "64 fl oz",
+  "description": "Apple Juice from Sunny Fields (64 fl oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "apple juice",
+  "pairs_with": [],
+  "stock": 31,
+  "rating": 4.6,
+  "image": "/images/BEV-004.svg"
+ },
+ {
+  "id": "BEV-005",
+  "name": "Cola",
+  "brand": "Fizz",
+  "category": "Beverages",
+  "price": 6.49,
+  "size": "12 x 12 oz",
+  "description": "Cola from Fizz (12 x 12 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "cola soda soft drink",
+  "pairs_with": [
+   "pizza"
+  ],
+  "stock": 63,
+  "rating": 4.4,
+  "image": "/images/BEV-005.svg"
+ },
+ {
+  "id": "BEV-006",
+  "name": "Diet Cola",
+  "brand": "Fizz",
+  "category": "Beverages",
+  "price": 6.49,
+  "size": "12 x 12 oz",
+  "description": "Diet Cola from Fizz (12 x 12 oz). It is vegan, gluten free, keto, low sugar.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "keto",
+   "low-sugar"
+  ],
+  "allergens": [],
+  "keywords": "diet cola soda zero sugar",
+  "pairs_with": [],
+  "stock": 67,
+  "rating": 4.4,
+  "image": "/images/BEV-006.svg"
+ },
+ {
+  "id": "BEV-007",
+  "name": "Lemon-Lime Soda",
+  "brand": "Fizz",
+  "category": "Beverages",
+  "price": 6.49,
+  "size": "12 x 12 oz",
+  "description": "Lemon-Lime Soda from Fizz (12 x 12 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "lemon lime soda",
+  "pairs_with": [],
+  "stock": 37,
+  "rating": 4.6,
+  "image": "/images/BEV-007.svg"
+ },
+ {
+  "id": "BEV-008",
+  "name": "Iced Tea Unsweetened",
+  "brand": "Bean & Brew",
+  "category": "Beverages",
+  "price": 2.99,
+  "size": "64 fl oz",
+  "description": "Iced Tea Unsweetened from Bean & Brew (64 fl oz). It is vegan, gluten free, low sugar.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "low-sugar"
+  ],
+  "allergens": [],
+  "keywords": "iced tea",
+  "pairs_with": [
+   "lemons"
+  ],
+  "stock": 39,
+  "rating": 4.8,
+  "image": "/images/BEV-008.svg"
+ },
+ {
+  "id": "BEV-009",
+  "name": "Cold Brew Coffee",
+  "brand": "Bean & Brew",
+  "category": "Beverages",
+  "price": 4.99,
+  "size": "32 fl oz",
+  "description": "Cold Brew Coffee from Bean & Brew (32 fl oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "cold brew iced coffee",
+  "pairs_with": [
+   "oat",
+   "milk"
+  ],
+  "stock": 0,
+  "rating": 4.8,
+  "image": "/images/BEV-009.svg"
+ },
+ {
+  "id": "BEV-010",
+  "name": "Sports Drink Variety",
+  "brand": "Fit Fuel",
+  "category": "Beverages",
+  "price": 7.99,
+  "size": "12 x 20 oz",
+  "description": "Sports Drink Variety from Fit Fuel (12 x 20 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "sports drink electrolytes",
+  "pairs_with": [],
+  "stock": 31,
+  "rating": 4.7,
+  "image": "/images/BEV-010.svg"
+ },
+ {
+  "id": "BEV-011",
+  "name": "Coconut Water",
+  "brand": "Nature's Basket",
+  "category": "Beverages",
+  "price": 3.99,
+  "size": "33.8 fl oz",
+  "description": "Coconut Water from Nature's Basket (33.8 fl oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "coconut water hydration",
+  "pairs_with": [],
+  "stock": 23,
+  "rating": 4.3,
+  "image": "/images/BEV-011.svg"
+ },
+ {
+  "id": "BEV-012",
+  "name": "Kombucha Ginger",
+  "brand": "Nature's Basket",
+  "category": "Beverages",
+  "price": 3.49,
+  "size": "16 fl oz",
+  "description": "Kombucha Ginger from Nature's Basket (16 fl oz). It is vegan, gluten free, organic.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "organic"
+  ],
+  "allergens": [],
+  "keywords": "kombucha probiotic",
+  "pairs_with": [],
+  "stock": 0,
+  "rating": 4.2,
+  "image": "/images/BEV-012.svg"
+ },
+ {
+  "id": "BEV-013",
+  "name": "Protein Shake Chocolate",
+  "brand": "Fit Fuel",
+  "category": "Beverages",
+  "price": 8.99,
+  "size": "4 x 11 fl oz",
+  "description": "Protein Shake Chocolate from Fit Fuel (4 x 11 fl oz). It is gluten free, high protein. Contains milk.",
+  "dietary": [
+   "gluten-free",
+   "high-protein"
+  ],
+  "allergens": [
+   "milk"
+  ],
+  "keywords": "protein shake",
+  "pairs_with": [],
+  "stock": 46,
+  "rating": 3.9,
+  "image": "/images/BEV-013.svg"
+ },
+ {
+  "id": "BEV-014",
+  "name": "Lemonade",
+  "brand": "Sunny Fields",
+  "category": "Beverages",
+  "price": 3.29,
+  "size": "52 fl oz",
+  "description": "Lemonade from Sunny Fields (52 fl oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "lemonade",
+  "pairs_with": [],
+  "stock": 36,
+  "rating": 4.3,
+  "image": "/images/BEV-014.svg"
+ },
+ {
+  "id": "BEV-015",
+  "name": "Energy Drink",
+  "brand": "Fit Fuel",
+  "category": "Beverages",
+  "price": 2.79,
+  "size": "16 fl oz",
+  "description": "Energy Drink from Fit Fuel (16 fl oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "energy drink caffeine",
+  "pairs_with": [],
+  "stock": 33,
+  "rating": 4.5,
+  "image": "/images/BEV-015.svg"
+ },
+ {
+  "id": "BEV-016",
+  "name": "Chocolate Milk",
+  "brand": "Green Valley",
+  "category": "Beverages",
+  "price": 2.99,
+  "size": "half gal",
+  "description": "Chocolate Milk from Green Valley (half gal). It is gluten free. Contains milk.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free"
+  ],
+  "allergens": [
+   "milk"
+  ],
+  "keywords": "chocolate milk kids",
+  "pairs_with": [],
+  "stock": 21,
+  "rating": 4.8,
+  "image": "/images/BEV-016.svg"
+ },
+ {
+  "id": "FRZ-001",
+  "name": "Frozen Mixed Vegetables",
+  "brand": "Frosty Farms",
+  "category": "Frozen",
+  "price": 2.49,
+  "size": "16 oz",
+  "description": "Frozen Mixed Vegetables from Frosty Farms (16 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "frozen vegetables peas carrots corn",
+  "pairs_with": [
+   "rice"
+  ],
+  "stock": 25,
+  "rating": 4.8,
+  "image": "/images/FRZ-001.svg"
+ },
+ {
+  "id": "FRZ-002",
+  "name": "Frozen Broccoli Florets",
+  "brand": "Frosty Farms",
+  "category": "Frozen",
+  "price": 2.29,
+  "size": "12 oz",
+  "description": "Frozen Broccoli Florets from Frosty Farms (12 oz). It is vegan, gluten free, keto.",
+  "dietary": [
+   "vegan",
+   "gluten-free",
+   "keto"
+  ],
+  "allergens": [],
+  "keywords": "frozen broccoli",
+  "pairs_with": [],
+  "stock": 52,
+  "rating": 4.0,
+  "image": "/images/FRZ-002.svg"
+ },
+ {
+  "id": "FRZ-003",
+  "name": "Frozen Mixed Berries",
+  "brand": "Frosty Farms",
+  "category": "Frozen",
+  "price": 4.99,
+  "size": "32 oz",
+  "description": "Frozen Mixed Berries from Frosty Farms (32 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "frozen berries smoothie",
+  "pairs_with": [
+   "yogurt"
+  ],
+  "stock": 23,
+  "rating": 4.9,
+  "image": "/images/FRZ-003.svg"
+ },
+ {
+  "id": "FRZ-004",
+  "name": "Margherita Pizza",
+  "brand": "Bella Cucina",
+  "category": "Frozen",
+  "price": 6.99,
+  "size": "16 oz",
+  "description": "Margherita Pizza from Bella Cucina (16 oz). Contains wheat, milk.",
+  "dietary": [
+   "vegetarian"
+  ],
+  "allergens": [
+   "wheat",
+   "milk"
+  ],
+  "keywords": "frozen pizza margherita",
+  "pairs_with": [
+   "cola"
+  ],
+  "stock": 34,
+  "rating": 4.6,
+  "image": "/images/FRZ-004.svg"
+ },
+ {
+  "id": "FRZ-005",
+  "name": "Gluten-Free Cheese Pizza",
+  "brand": "Nature's Basket",
+  "category": "Frozen",
+  "price": 8.99,
+  "size": "14 oz",
+  "description": "Gluten-Free Cheese Pizza from Nature's Basket (14 oz). It is gluten free. Contains milk, eggs.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free"
+  ],
+  "allergens": [
+   "milk",
+   "eggs"
+  ],
+  "keywords": "gluten free pizza frozen",
+  "pairs_with": [],
+  "stock": 0,
+  "rating": 3.9,
+  "image": "/images/FRZ-005.svg"
+ },
+ {
+  "id": "FRZ-006",
+  "name": "Vanilla Ice Cream",
+  "brand": "Frosty Farms",
+  "category": "Frozen",
+  "price": 4.99,
+  "size": "48 oz",
+  "description": "Vanilla Ice Cream from Frosty Farms (48 oz). It is gluten free. Contains milk.",
+  "dietary": [
+   "vegetarian",
+   "gluten-free"
+  ],
+  "allergens": [
+   "milk"
+  ],
+  "keywords": "ice cream dessert vanilla",
+  "pairs_with": [
+   "berries"
+  ],
+  "stock": 68,
+  "rating": 4.0,
+  "image": "/images/FRZ-006.svg"
+ },
+ {
+  "id": "FRZ-007",
+  "name": "Dairy-Free Chocolate Frozen Dessert",
+  "brand": "Nature's Basket",
+  "category": "Frozen",
+  "price": 5.99,
+  "size": "16 oz",
+  "description": "Dairy-Free Chocolate Frozen Dessert from Nature's Basket (16 oz). It is vegan, dairy free, gluten free.",
+  "dietary": [
+   "vegan",
+   "dairy-free",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "vegan ice cream dairy free dessert",
+  "pairs_with": [],
+  "stock": 34,
+  "rating": 4.0,
+  "image": "/images/FRZ-007.svg"
+ },
+ {
+  "id": "FRZ-008",
+  "name": "Frozen French Fries",
+  "brand": "Frosty Farms",
+  "category": "Frozen",
+  "price": 3.49,
+  "size": "32 oz",
+  "description": "Frozen French Fries from Frosty Farms (32 oz). It is vegan, gluten free.",
+  "dietary": [
+   "vegan",
+   "gluten-free"
+  ],
+  "allergens": [],
+  "keywords": "fries french fries frozen potatoes",
+  "pairs_with": [
+   "ketchup",
+   "burgers"
+  ],
+  "stock": 61,
+  "rating": 4.9,
+  "image": "/images/FRZ-008.svg"
+ },
+ {
+  "id": "FRZ-009",
+  "name": "Chicken Nuggets",
+  "brand": "Frosty Farms",
+  "category": "Frozen",
+  "price": 7.99,
+  "size": "29 oz",
+  "description": "Chicken Nuggets from Frosty Farms (29 oz). It is high protein. Contains wheat.",
+  "dietary": [
+   "high-protein"
+  ],
+  "allergens": [
+   "wheat"
+  ],
+  "keywords": "chicken nuggets kids frozen",
+  "pairs_with": [
+   "ketchup"
+  ],
+  "stock": 57,
+  "rating": 4.2,
+  "image": "/images/FRZ-009.svg"
+ },
+ {
+  "id": "FRZ-010",
+  "name": "Veggie Fried Rice",
+  "brand": "Frosty Farms",
+  "category": "Frozen",
+  "price": 3.99,
+  "size": "20 oz",
+  "description": "Veggie Fried Rice from Frosty Farms (20 oz). It is vegan. Contains soy, wheat.",
+  "dietary": [
+   "vegan"
+  ],
+  "allergens": [
+   "soy",
+   "wheat"
+  ],
+  "keywords": "fried rice frozen meal",
+  "pairs_with": [],
+  "stock": 31,
+  "rating": 4.2,
+  "image": "/images/FRZ-010.svg"
+ },
+ {
+  "id": "HOM-001",
+  "name": "Dish Soap Lemon",
+  "brand": "CleanHome",
+  "category": "Household",
+  "price": 3.49,
+  "size": "24 fl oz",
+  "description": "Dish Soap Lemon from CleanHome (24 fl oz).",
+  "dietary": [],
+  "allergens": [],
+  "keywords": "dish soap washing up liquid",
+  "pairs_with": [
+   "sponges"
+  ],
+  "stock": 17,
+  "rating": 4.6,
+  "image": "/images/HOM-001.svg"
+ },
+ {
+  "id": "HOM-002",
+  "name": "Laundry Detergent",
+  "brand": "CleanHome",
+  "category": "Household",
+  "price": 11.99,
+  "size": "64 loads",
+  "description": "Laundry Detergent from CleanHome (64 loads).",
+  "dietary": [],
+  "allergens": [],
+  "keywords": "laundry detergent",
+  "pairs_with": [],
+  "stock": 8,
+  "rating": 4.2,
+  "image": "/images/HOM-002.svg"
+ },
+ {
+  "id": "HOM-003",
+  "name": "All-Purpose Cleaner",
+  "brand": "CleanHome",
+  "category": "Household",
+  "price": 3.99,
+  "size": "32 fl oz",
+  "description": "All-Purpose Cleaner from CleanHome (32 fl oz).",
+  "dietary": [],
+  "allergens": [],
+  "keywords": "cleaner spray kitchen bathroom",
+  "pairs_with": [
+   "paper",
+   "towels"
+  ],
+  "stock": 64,
+  "rating": 4.3,
+  "image": "/images/HOM-003.svg"
+ },
+ {
+  "id": "HOM-004",
+  "name": "Paper Towels",
+  "brand": "CleanHome",
+  "category": "Household",
+  "price": 8.99,
+  "size": "6 rolls",
+  "description": "Paper Towels from CleanHome (6 rolls).",
+  "dietary": [],
+  "allergens": [],
+  "keywords": "paper towels kitchen roll",
+  "pairs_with": [],
+  "stock": 8,
+  "rating": 4.2,
+  "image": "/images/HOM-004.svg"
+ },
+ {
+  "id": "HOM-005",
+  "name": "Toilet Paper",
+  "brand": "CleanHome",
+  "category": "Household",
+  "price": 9.99,
+  "size": "12 rolls",
+  "description": "Toilet Paper from CleanHome (12 rolls).",
+  "dietary": [],
+  "allergens": [],
+  "keywords": "toilet paper tissue",
+  "pairs_with": [],
+  "stock": 72,
+  "rating": 4.5,
+  "image": "/images/HOM-005.svg"
+ },
+ {
+  "id": "HOM-006",
+  "name": "Trash Bags 13 Gal",
+  "brand": "CleanHome",
+  "category": "Household",
+  "price": 7.99,
+  "size": "40 ct",
+  "description": "Trash Bags 13 Gal from CleanHome (40 ct).",
+  "dietary": [],
+  "allergens": [],
+  "keywords": "trash bags garbage bags",
+  "pairs_with": [],
+  "stock": 71,
+  "rating": 4.9,
+  "image": "/images/HOM-006.svg"
+ },
+ {
+  "id": "HOM-007",
+  "name": "Sponges",
+  "brand": "CleanHome",
+  "category": "Household",
+  "price": 2.99,
+  "size": "6 ct",
+  "description": "Sponges from CleanHome (6 ct).",
+  "dietary": [],
+  "allergens": [],
+  "keywords": "sponges scrub",
+  "pairs_with": [
+   "dish",
+   "soap"
+  ],
+  "stock": 20,
+  "rating": 4.9,
+  "image": "/images/HOM-007.svg"
+ },
+ {
+  "id": "HOM-008",
+  "name": "Aluminum Foil",
+  "brand": "CleanHome",
+  "category": "Household",
+  "price": 4.49,
+  "size": "75 sq ft",
+  "description": "Aluminum Foil from CleanHome (75 sq ft).",
+  "dietary": [],
+  "allergens": [],
+  "keywords": "foil aluminium",
+  "pairs_with": [],
+  "stock": 35,
+  "rating": 4.9,
+  "image": "/images/HOM-008.svg"
+ },
+ {
+  "id": "HOM-009",
+  "name": "Dishwasher Pods",
+  "brand": "CleanHome",
+  "category": "Household",
+  "price": 12.99,
+  "size": "45 ct",
+  "description": "Dishwasher Pods from CleanHome (45 ct).",
+  "dietary": [],
+  "allergens": [],
+  "keywords": "dishwasher tablets pods",
+  "pairs_with": [],
+  "stock": 19,
+  "rating": 3.9,
+  "image": "/images/HOM-009.svg"
+ },
+ {
+  "id": "HOM-010",
+  "name": "Zip Storage Bags",
+  "brand": "CleanHome",
+  "category": "Household",
+  "price": 3.99,
+  "size": "40 ct",
+  "description": "Zip Storage Bags from CleanHome (40 ct).",
+  "dietary": [],
+  "allergens": [],
+  "keywords": "storage bags sandwich bags",
+  "pairs_with": [],
+  "stock": 40,
+  "rating": 3.8,
+  "image": "/images/HOM-010.svg"
+ },
+ {
+  "id": "PER-001",
+  "name": "Fluoride Toothpaste",
+  "brand": "FreshCare",
+  "category": "Personal Care",
+  "price": 3.49,
+  "size": "4.8 oz",
+  "description": "Fluoride Toothpaste from FreshCare (4.8 oz).",
+  "dietary": [],
+  "allergens": [],
+  "keywords": "toothpaste",
+  "pairs_with": [
+   "toothbrush"
+  ],
+  "stock": 29,
+  "rating": 4.1,
+  "image": "/images/PER-001.svg"
+ },
+ {
+  "id": "PER-002",
+  "name": "Soft Toothbrushes",
+  "brand": "FreshCare",
+  "category": "Personal Care",
+  "price": 3.99,
+  "size": "2 ct",
+  "description": "Soft Toothbrushes from FreshCare (2 ct).",
+  "dietary": [],
+  "allergens": [],
+  "keywords": "toothbrush",
+  "pairs_with": [
+   "toothpaste"
+  ],
+  "stock": 22,
+  "rating": 4.7,
+  "image": "/images/PER-002.svg"
+ },
+ {
+  "id": "PER-003",
+  "name": "Moisturizing Body Wash",
+  "brand": "FreshCare",
+  "category": "Personal Care",
+  "price": 5.99,
+  "size": "18 fl oz",
+  "description": "Moisturizing Body Wash from FreshCare (18 fl oz).",
+  "dietary": [],
+  "allergens": [],
+  "keywords": "body wash shower gel",
+  "pairs_with": [],
+  "stock": 39,
+  "rating": 4.2,
+  "image": "/images/PER-003.svg"
+ },
+ {
+  "id": "PER-004",
+  "name": "Bar Soap",
+  "brand": "FreshCare",
+  "category": "Personal Care",
+  "price": 4.49,
+  "size": "4 ct",
+  "description": "Bar Soap from FreshCare (4 ct).",
+  "dietary": [],
+  "allergens": [],
+  "keywords": "soap bar",
+  "pairs_with": [],
+  "stock": 74,
+  "rating": 4.8,
+  "image": "/images/PER-004.svg"
+ },
+ {
+  "id": "PER-005",
+  "name": "Shampoo Daily Care",
+  "brand": "FreshCare",
+  "category": "Personal Care",
+  "price": 6.49,
+  "size": "13.5 fl oz",
+  "description": "Shampoo Daily Care from FreshCare (13.5 fl oz).",
+  "dietary": [],
+  "allergens": [],
+  "keywords": "shampoo hair",
+  "pairs_with": [
+   "conditioner"
+  ],
+  "stock": 79,
+  "rating": 4.3,
+  "image": "/images/PER-005.svg"
+ },
+ {
+  "id": "PER-006",
+  "name": "Conditioner Daily Care",
+  "brand": "FreshCare",
+  "category": "Personal Care",
+  "price": 6.49,
+  "size": "13.5 fl oz",
+  "description": "Conditioner Daily Care from FreshCare (13.5 fl oz).",
+  "dietary": [],
+  "allergens": [],
+  "keywords": "conditioner hair",
+  "pairs_with": [
+   "shampoo"
+  ],
+  "stock": 47,
+  "rating": 3.9,
+  "image": "/images/PER-006.svg"
+ },
+ {
+  "id": "PER-007",
+  "name": "Hand Soap Refill",
+  "brand": "FreshCare",
+  "category": "Personal Care",
+  "price": 4.99,
+  "size": "34 fl oz",
+  "description": "Hand Soap Refill from FreshCare (34 fl oz).",
+  "dietary": [],
+  "allergens": [],
+  "keywords": "hand soap",
+  "pairs_with": [],
+  "stock": 13,
+  "rating": 4.7,
+  "image": "/images/PER-007.svg"
+ },
+ {
+  "id": "PER-008",
+  "name": "Deodorant Fresh Scent",
+  "brand": "FreshCare",
+  "category": "Personal Care",
+  "price": 4.99,
+  "size": "2.6 oz",
+  "description": "Deodorant Fresh Scent from FreshCare (2.6 oz).",
+  "dietary": [],
+  "allergens": [],
+  "keywords": "deodorant",
+  "pairs_with": [],
+  "stock": 29,
+  "rating": 4.3,
+  "image": "/images/PER-008.svg"
+ }
+]
