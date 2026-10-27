@@ -46,7 +46,6 @@ Sauda runs on several providers through one adapter layer (`sauda/llm.py`). All 
 
 | Provider | Key variable | Default model | Cost |
 |---|---|---|---|
-| Ollama (local) | none | `qwen2.5:7b` | free, no limits; runs on your machine or a Colab GPU |
 | Groq | `GROQ_API_KEY` | `openai/gpt-oss-20b` | free tier with per-minute/day limits |
 | Cerebras | `CEREBRAS_API_KEY` | `gpt-oss-120b` | free tier |
 | Gemini | `GEMINI_API_KEY` | `gemini-flash-latest` | free tier |
@@ -57,7 +56,7 @@ Sauda runs on several providers through one adapter layer (`sauda/llm.py`). All 
 `SAUDA_LLM` sets the order, with an optional model per provider. When a call hits a limit, fails or is rejected, the next provider takes it; a provider that just failed is tried last for a minute. A used-up daily quota hands over at once:
 
 ```bash
-export SAUDA_LLM="groq:openai/gpt-oss-120b,cerebras,gemini,ollama"
+export SAUDA_LLM="groq:openai/gpt-oss-120b,cerebras,gemini"
 python -m sauda.cli models groq        # model ids a key can use (free-tier names change often)
 ```
 
@@ -65,11 +64,11 @@ Without `SAUDA_LLM`, every cloud provider with a key is used. Model names and fr
 
 **No model needed for simple messages.** Clear product lists ("doodh aur double roti", "2 kg aloo, 1 kg pyaz", "eggs, bread and milk", "چینی اور چائے") and a "yes" to "Shall I add these to your basket?" are handled by the app itself (`sauda/fastpath.py`). They use no quota. Anything more (a recipe, a budget, a question, a correction, an unknown word, a broad product type) goes to the model. Set `SAUDA_FASTPATH=0` to send everything to the model.
 
-The application rules don't depend on the model: suitability, totals, basket changes and the grounding check work the same everywhere. The quality of understanding does depend on the model. Smaller local models make more mistakes, so run the live journeys on whatever you plan to use.
+The application rules don't depend on the model: suitability, totals, basket changes and the grounding check work the same everywhere. The quality of understanding does depend on the model. Smaller models make more mistakes, so run the live journeys on whatever you plan to use.
 
 ## Try it in Google Colab (free, nothing to install)
 
-Open [Sauda_Colab.ipynb](https://colab.research.google.com/github/Usmanhassan7654/Usman-hassan/blob/claude/ecommerce-ai-assistant-t27kqw/sauda-assistant/Sauda_Colab.ipynb). Either add free keys under the key icon (Secrets), or switch the runtime to a T4 GPU and run the Ollama step for a local model with no key and no limits. Then run the cells top to bottom: tests, a provider check, chat, the live customer journeys and the chat website.
+Open [Sauda_Colab.ipynb](https://colab.research.google.com/github/Usmanhassan7654/Usman-hassan/blob/claude/ecommerce-ai-assistant-t27kqw/sauda-assistant/Sauda_Colab.ipynb). Add free keys under the key icon (Secrets) and run the cells top to bottom: tests, a provider check, chat, the live customer journeys and the chat website.
 
 ## Run it
 

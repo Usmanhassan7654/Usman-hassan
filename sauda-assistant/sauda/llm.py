@@ -14,7 +14,6 @@ Providers:
     cerebras    api.cerebras.ai (free tier)                    CEREBRAS_API_KEY
     openrouter  openrouter.ai (":free" models)                 OPENROUTER_API_KEY
     mistral     api.mistral.ai (free tier)                     MISTRAL_API_KEY
-    ollama      a model running on this machine, no key, no quota (OLLAMA_URL, default http://localhost:11434/v1)
     claude      Anthropic Messages API                         ANTHROPIC_API_KEY
 
 Free tiers and their model names change often: `python -m sauda.cli models <provider>` lists what a key can use.
@@ -37,15 +36,14 @@ from typing import Any
 import requests
 
 DEFAULT_MODELS = {"groq": "openai/gpt-oss-20b", "gemini": "gemini-flash-latest", "cerebras": "gpt-oss-120b",
-                  "openrouter": "openai/gpt-oss-20b:free", "mistral": "mistral-small-latest", "ollama": "qwen2.5:7b",
+                  "openrouter": "openai/gpt-oss-20b:free", "mistral": "mistral-small-latest",
                   "claude": "claude-opus-5-5"}
 BASE_URLS = {"groq": "https://api.groq.com/openai/v1", "gemini": "https://generativelanguage.googleapis.com/v1beta/openai",
-             "cerebras": "https://api.cerebras.ai/v1", "openrouter": "https://openrouter.ai/api/v1", "mistral": "https://api.mistral.ai/v1",
-             "ollama": "http://localhost:11434/v1"}
+             "cerebras": "https://api.cerebras.ai/v1", "openrouter": "https://openrouter.ai/api/v1", "mistral": "https://api.mistral.ai/v1"}
 CLOUD_ORDER = ("groq", "cerebras", "gemini", "openrouter", "mistral")
 GEMINI_SKIP_SIGNATURE = "skip_thought_signature_validator"
 KEY_VARS = {"groq": ("GROQ_API_KEY",), "gemini": ("GEMINI_API_KEY", "GOOGLE_API_KEY"), "cerebras": ("CEREBRAS_API_KEY",),
-            "openrouter": ("OPENROUTER_API_KEY",), "mistral": ("MISTRAL_API_KEY",), "ollama": (), "claude": ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN")}
+            "openrouter": ("OPENROUTER_API_KEY",), "mistral": ("MISTRAL_API_KEY",), "claude": ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN")}
 
 
 class LLMError(Exception):
@@ -304,8 +302,6 @@ def build(spec: str | None = None, effort: str = "medium") -> ChatModel:
         model = model.strip() or DEFAULT_MODELS[provider]
         if provider == "claude":
             models.append(AnthropicModel(model, effort))
-        elif provider == "ollama":  # local: no key, no quota, but slower on small machines
-            models.append(OpenAICompatModel("ollama", model, "ollama", base_url=os.environ.get("OLLAMA_URL"), timeout=300, max_retries=1))
         else:
             key = _key(provider)
             if not key:
@@ -313,12 +309,12 @@ def build(spec: str | None = None, effort: str = "medium") -> ChatModel:
             models.append(OpenAICompatModel(provider, model, key))
     if not models:
         raise ValueError("No model provider configured. Set a key (GROQ_API_KEY, GEMINI_API_KEY, CEREBRAS_API_KEY, OPENROUTER_API_KEY, "
-                         "MISTRAL_API_KEY) or SAUDA_LLM=ollama for a local model.")
+                         "MISTRAL_API_KEY).")
     return models[0] if len(models) == 1 else FallbackModel(models)
 
 
 def configured() -> bool:
-    return any(_key(p) for p in KEY_VARS if KEY_VARS[p]) or "ollama" in os.environ.get("SAUDA_LLM", "")
+    return any(_key(p) for p in KEY_VARS)
 
 
 # ------------------------------------------------------------------ helpers
