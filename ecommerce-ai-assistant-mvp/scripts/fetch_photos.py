@@ -175,7 +175,7 @@ def main(ids: list[str]) -> None:
     credits = load_credits()
     todo = [p for p in products if p["id"] in ids] if ids else [p for p in products if p["image"].endswith(".svg") or not p["image"]]
     print(f"Finding photos for {len(todo)} products. This takes about {max(1, len(todo) * 3 // 60)} minutes...")
-    found = 0
+    found, failures = 0, 0
     for n, p in enumerate(todo, 1):
         photo, r = None, None
         try:
@@ -186,8 +186,15 @@ def main(ids: list[str]) -> None:
             if photo:
                 r = get(photo["url"])
         except requests.RequestException as e:
-            print(f"[{n}/{len(todo)}] {p['name']}: internet problem ({type(e).__name__}), skipped. Run the script again later.")
+            failures += 1
+            print(f"[{n}/{len(todo)}] {p['name']}: internet problem, skipped.")
+            if failures >= 3:
+                print(f"\nStopped: can't reach Wikimedia Commons from this computer.\nError: {e}\n"
+                      "Check that https://commons.wikimedia.org opens in your browser, and try turning off a VPN or "
+                      "antivirus web shield. Then run this script again; it continues where it stopped.")
+                break
             continue
+        failures = 0
         if not photo:
             print(f"[{n}/{len(todo)}] {p['name']}: no photo found, keeping the vector picture")
             continue
