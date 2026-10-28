@@ -9,7 +9,7 @@ sys.path.insert(0, str(ROOT))
 
 from app.agent import Assistant  # noqa: E402
 from app.catalog import Catalog  # noqa: E402
-from app.products import read_csv  # noqa: E402
+from app.products import check_image, read_csv  # noqa: E402
 from app.shop import Shop  # noqa: E402
 
 
@@ -24,7 +24,13 @@ def test_dataset_has_200_products_with_pictures():
     import xml.dom.minidom
     for p in products:
         assert p["name"] and p["description"] and p["price"] > 0 and p["size"]
-        xml.dom.minidom.parse(str(ROOT / "data" / "images" / p["image"]))  # every picture is a valid SVG
+        if p["image"].startswith("http"):
+            continue
+        picture = ROOT / "data" / "images" / p["image"]
+        if picture.suffix == ".svg":
+            xml.dom.minidom.parse(str(picture))  # vector pictures are valid SVG
+        else:
+            check_image(picture.name, picture.read_bytes())  # photos are real JPG/PNG/WEBP files
 
 
 def test_vector_search_handles_meaning_typos_and_filters(shop):
