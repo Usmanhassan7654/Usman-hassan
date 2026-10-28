@@ -28,6 +28,7 @@ import sys
 import time
 import webbrowser
 from pathlib import Path
+from urllib.parse import unquote
 
 import requests
 
@@ -44,7 +45,7 @@ REVIEW = ROOT / "data" / "photo_review.html"
 # Licenses that allow commercial use.
 FREE = re.compile(r"^\s*(cc0|public domain|pd\b|cc by(-sa)?\b)", re.I)
 # Titles that are usually not a photo of the food or product itself.
-NOT_PRODUCT = re.compile(r"map|logo|label|poster|painting|drawing|diagram|chart|stamp|coat of arms|advert|museum|"
+NOT_PRODUCT = re.compile(r"milk glass|map|logo|label|poster|painting|drawing|diagram|chart|stamp|coat of arms|advert|museum|"
                          r"church|portrait|menu|sign\b|plant|tree|flower|field|farm|market|factory|festival", re.I)
 # Words in our product names that don't help a photo search.
 FILLER = {"fresh", "organic", "pure", "classic", "gourmet", "artisan", "original", "variety", "premium", "farm", "large",
@@ -52,8 +53,8 @@ FILLER = {"fresh", "organic", "pure", "classic", "gourmet", "artisan", "original
           "boneless", "lean", "90/10", "13", "gal", "70%", "medium", "roast", "dark", "gluten-free", "refill", "scent"}
 # Better searches for names that are hard to find as written.
 QUERIES = {
-    "Organic Whole Milk": "milk bottle", "2% Reduced Fat Milk": "glass of milk", "Unsweetened Almond Milk": "almond milk",
-    "Oat Milk Original": "oat milk", "Pasture-Raised Eggs": "brown eggs", "Large White Eggs": "white eggs",
+    "Organic Whole Milk": "milk bottle", "2% Reduced Fat Milk": "milk carton", "Unsweetened Almond Milk": "almond milk",
+    "Oat Milk Original": "oat milk", "Pasture-Raised Eggs": "brown eggs", "Large White Eggs": "white chicken eggs",
     "Strawberry Yogurt Cups": "strawberry yogurt", "Gourmet Heavy Cream": "whipped cream", "Vegan Cheddar Shreds": "grated cheese",
     "Aged Parmesan": "parmesan cheese", "Fresh Mozzarella": "mozzarella", "Gluten-Free Bread": "bread loaf",
     "Butter Croissants": "croissants", "Seasonal Fruit Medley": "fruit salad", "Navel Oranges": "oranges",
@@ -107,7 +108,7 @@ def get(url: str, **params) -> requests.Response:
     return r
 
 
-def find_photo(query: str) -> dict | None:
+def find_photo(query: str, used: set) -> dict | None:
     data = get(API, action="query", format="json", generator="search", gsrsearch=f"{query} filetype:bitmap", gsrnamespace=6,
                gsrlimit=25, prop="imageinfo", iiprop="url|size|mime|extmetadata", iiurlwidth=500,
                iiextmetadatafilter="LicenseShortName|Artist").json()
@@ -118,6 +119,8 @@ def find_photo(query: str) -> dict | None:
         info = page["imageinfo"][0]
         meta = info.get("extmetadata", {})
         license_ = meta.get("LicenseShortName", {}).get("value", "")
+        if page["title"] in used:
+            continue
         if info["mime"] not in ("image/jpeg", "image/png") or not FREE.match(license_) or NOT_PRODUCT.search(page["title"]):
             continue
         if info["width"] < 500 or not 0.6 < info["width"] / info["height"] < 1.8:
@@ -175,12 +178,13 @@ def main(ids: list[str]) -> None:
     credits = load_credits()
     todo = [p for p in products if p["id"] in ids] if ids else [p for p in products if p["image"].endswith(".svg") or not p["image"]]
     print(f"Finding photos for {len(todo)} products. This takes about {max(1, len(todo) * 3 // 60)} minutes...")
+    used = {unquote(c["photo_page"].rsplit("/", 1)[-1]).replace("_", " ") for c in credits.values()}
     found, failures = 0, 0
     for n, p in enumerate(todo, 1):
         photo, r = None, None
         try:
             for q in searches(p["name"]):
-                photo = find_photo(q)
+                photo = find_photo(q, used)
                 if photo:
                     break
             if photo:
@@ -211,6 +215,7 @@ def main(ids: list[str]) -> None:
                             "license": photo["license"]}
         write_csv(products, CSV_PATH)  # save progress after every product
         save_credits(credits)
+        used.add(photo["title"])
         found += 1
         print(f"[{n}/{len(todo)}] {p['name']}: {photo['title']}")
     write_review(products, credits)
