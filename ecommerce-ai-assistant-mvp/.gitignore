@@ -1,0 +1,6 @@
+.env
+data/orders.json
+__pycache__/
+.pytest_cache/
+data/models/
+data/photo_review.html

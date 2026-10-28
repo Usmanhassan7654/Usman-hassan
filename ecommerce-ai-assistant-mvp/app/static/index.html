@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Shopping Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap">
+<style>
+/* Layout: conversation column with inline product cards; the cart is a side panel on wide screens and a sheet on phones.
+   Look: blue and white, a deep blue header band, white cards that lift slightly on hover. */
+:root {
+  --bg: #f3f7ff; --panel: #ffffff; --ink: #0f1e3d; --muted: #5a6a8a; --line: #dbe4f4;
+  --blue: #1d4ed8; --blue-2: #3b82f6; --blue-deep: #1e3a8a; --blue-soft: #e8f0ff; --on-blue: #ffffff;
+  --good: #15803d; --bad: #b42318;
+  --shadow: 0 6px 18px rgba(29, 78, 216, .08); --shadow-hover: 0 10px 24px rgba(29, 78, 216, .16);
+  --display: "Manrope", "Segoe UI", system-ui, sans-serif;
+  --body: "Figtree", "Inter", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--body); }
+button { font: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--blue-2); outline-offset: 2px; }
+.app { display: grid; grid-template-columns: minmax(0, 1fr) 350px; grid-template-rows: minmax(0, 1fr); height: 100%; }
+@media (max-width: 880px) { .app { grid-template-columns: 1fr; } #cartPanel, aside { display: none; } #cartPanel.open, aside.open { display: flex; position: fixed; inset: 0; z-index: 20; } }
+main { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+
+header { display: flex; align-items: center; gap: 12px; padding-block: 14px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  background: linear-gradient(120deg, var(--blue-deep), var(--blue) 55%, var(--blue-2)); color: var(--on-blue); }
+.logo { width: 38px; height: 38px; border-radius: 12px; background: var(--on-blue); color: var(--blue); display: grid; place-items: center; font: 800 15px var(--display); flex: none;
+  box-shadow: 0 4px 12px rgba(15, 30, 61, .25); }
+header h1 { font: 800 18px/1.2 var(--display); margin: 0; letter-spacing: -.01em; }
+header small { color: rgba(255, 255, 255, .82); font-size: 12px; display: block; }
+.live { margin-left: auto; font-size: 12px; color: var(--on-blue); display: flex; align-items: center; gap: 6px; white-space: nowrap;
+  background: rgba(255, 255, 255, .16); border: 1px solid rgba(255, 255, 255, .3); border-radius: 999px; padding: 4px 10px; }
+.live::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #86efac; box-shadow: 0 0 0 3px rgba(134, 239, 172, .3); }
+#cartBtn { display: none; border: 1px solid rgba(255, 255, 255, .6); background: var(--on-blue); color: var(--blue); border-radius: 999px; padding: 5px 12px; font-weight: 700; white-space: nowrap; }
+@media (max-width: 880px) { #cartBtn { display: block; } }
+
+#log { flex: 1; overflow-y: auto; padding-block: 22px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 14px; }
+.msg { max-width: min(640px, 88%); padding: 11px 15px; border-radius: 18px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.user { align-self: flex-end; background: linear-gradient(135deg, var(--blue), var(--blue-2)); color: var(--on-blue); border-bottom-right-radius: 5px; box-shadow: var(--shadow); }
+.bot { align-self: flex-start; background: var(--panel); border: 1px solid var(--line); border-bottom-left-radius: 5px; box-shadow: var(--shadow); }
+.thinking, .typing { align-self: flex-start; color: var(--blue); font-size: 13px; font-weight: 600; }
+.err { align-self: flex-start; color: var(--bad); background: var(--panel); border: 1px solid var(--bad); border-radius: 12px; padding: 8px 12px; font-size: 14px; max-width: 88%; }
+
+.block { align-self: stretch; max-width: 800px; min-width: 0; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow);
+  transition: transform .15s ease, box-shadow .15s ease; }
+.card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+.card img { width: 100%; max-width: 100%; aspect-ratio: 5 / 6; object-fit: contain; background: linear-gradient(180deg, #ffffff, var(--blue-soft)); display: block; }
+.card .b { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 3px; flex: 1; }
+.name { font-weight: 600; font-size: 13.5px; line-height: 1.3; }
+.meta { color: var(--muted); font-size: 12px; }
+.tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.tag { font-size: 10.5px; background: var(--blue-soft); color: var(--blue); border-radius: 999px; padding: 1px 8px; font-weight: 600; }
+.price { font: 800 16px var(--display); color: var(--blue); margin-top: auto; padding-top: 4px; font-variant-numeric: tabular-nums; }
+.add { margin-top: 6px; border: 0; border-radius: 10px; background: linear-gradient(135deg, var(--blue), var(--blue-2)); color: var(--on-blue); padding: 8px; font-weight: 700; }
+.add:hover { filter: brightness(1.05); }
+.add.in { background: var(--blue-soft); color: var(--blue); }
+
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 0 16px 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow); overflow: hidden; }
+.panel h3 { margin: 0 -16px 4px; padding: 12px 16px; font: 800 15px var(--display); color: var(--blue-deep); background: var(--blue-soft); border-bottom: 1px solid var(--line); text-wrap: balance; }
+.row { display: grid; grid-template-columns: 42px minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+.row img { width: 42px; height: 50px; object-fit: contain; background: #ffffff; border-radius: 8px; border: 1px solid var(--line); }
+.amt { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.total { display: flex; justify-content: space-between; font: 800 17px var(--display); border-top: 1px dashed var(--line); padding-top: 10px; font-variant-numeric: tabular-nums; }
+.total span:last-child { color: var(--blue); }
+.note { font-size: 13px; color: var(--muted); }
+.good, .ok { align-self: flex-start; color: var(--good); background: #eaf7ee; border-radius: 999px; padding: 3px 10px; font-weight: 700; font-size: 13px; }
+.big { border: 0; border-radius: 12px; background: linear-gradient(135deg, var(--blue), var(--blue-2)); color: var(--on-blue); padding: 12px 16px; font-weight: 800; box-shadow: var(--shadow); }
+.big:hover { filter: brightness(1.05); }
+.big:disabled { background: var(--blue-soft); color: var(--blue); box-shadow: none; cursor: default; filter: none; }
+input, select { font: inherit; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: #f8fbff; color: var(--ink); width: 100%; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 12px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.chip { border: 1px solid var(--line); background: var(--panel); color: var(--blue-deep); border-radius: 999px; padding: 8px 14px; font-size: 13px; font-weight: 600; text-align: left; box-shadow: var(--shadow); }
+.chip:hover { background: var(--blue-soft); border-color: var(--blue-2); }
+form#composer { display: flex; gap: 10px; padding-block: 12px calc(14px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px)); background: var(--panel); border-top: 1px solid var(--line); }
+#input { flex: 1; min-width: 0; padding: 13px 15px; border-radius: 14px; }
+#send { border: 0; border-radius: 14px; background: linear-gradient(135deg, var(--blue), var(--blue-2)); color: var(--on-blue); padding: 0 22px; font-weight: 800; box-shadow: var(--shadow); }
+#send:disabled { opacity: .55; }
+
+#cartPanel, aside { background: var(--panel); border-left: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; }
+#cartPanel h2, aside h2 { margin: 0; padding: 18px; font: 800 17px var(--display); color: var(--blue-deep); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+#closeCart { border: 0; background: none; color: var(--muted); font-size: 22px; line-height: 1; }
+#cartLines { flex: 1; overflow-y: auto; padding: 12px 18px; display: flex; flex-direction: column; gap: 12px; }
+.qty { display: inline-flex; align-items: center; gap: 8px; margin-top: 4px; }
+.qty button { width: 26px; height: 26px; border-radius: 8px; border: 1px solid var(--line); background: var(--blue-soft); color: var(--blue); font-weight: 700; }
+#cartFoot { padding: 14px 18px calc(18px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; background: #f8fbff; }
+.empty { color: var(--muted); text-align: center; padding: 40px 0; }
+.pantry { border: 1px dashed var(--blue-2); background: var(--blue-soft); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+.pantry-title { font-weight: 700; color: var(--blue-deep); font-size: 13.5px; }
+.add.small { margin-top: 0; padding: 6px 12px; font-size: 13px; }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } .card:hover { transform: none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <main>
+    <header>
+      <div class="logo">AI</div>
+      <div><h1>AI Shopping Assistant</h1><small id="info">Loading store…</small></div>
+      <span class="live">Live</span>
+      <button id="cartBtn" type="button">Cart · <span id="cartCount">0</span></button>
+    </header>
+    <div id="log" aria-live="polite">
+      <div class="msg bot">Hi! Tell me what you need. I can build a cart within your budget, get everything for a recipe, find products like "gluten-free snacks under $10", and check you out right here.</div>
+    </div>
+    <div class="chips" id="chips">
+      <button class="chip" type="button">I have $50. Suggest groceries for the week.</button>
+      <button class="chip" type="button">What ingredients do I need for lasagna?</button>
+      <button class="chip" type="button">Show me gluten-free snacks under $10.</button>
+      <button class="chip" type="button">I want to cook chicken pasta for four people. What should I buy?</button>
+    </div>
+    <form id="composer">
+      <input id="input" autocomplete="off" maxlength="1000" placeholder="Type a recipe, budget, dietary filter or question…">
+      <button id="send" type="submit">Send</button>
+    </form>
+  </main>
+  <aside id="cartPanel" aria-label="Cart">
+    <h2>Your cart <button id="closeCart" type="button" aria-label="Close cart">×</button></h2>
+    <div id="cartLines"><div class="empty">Your cart is empty</div></div>
+    <div id="cartFoot"></div>
+  </aside>
+</div>
+<script>
+const $ = (id) => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const money = (n) => "$" + Number(n).toFixed(2);
+let sid = null; try { sid = localStorage.getItem("shop-sid"); } catch {}
+if (!sid) { sid = Math.random().toString(36).slice(2) + Date.now().toString(36); try { localStorage.setItem("shop-sid", sid); } catch {} }
+let cart = { items: [], count: 0, total: 0 };
+const addButtons = [];
+
+function scroll() { $("log").scrollTop = $("log").scrollHeight; }
+function say(cls, text) { const m = el("div", "msg " + cls, text); $("log").append(m); scroll(); return m; }
+async function api(path, body) {
+  const r = await fetch(path, body ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) } : {});
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.detail || "Something went wrong.");
+  return data;
+}
+
+// ---------- cart
+async function changeCart(items, mode = "add") {
+  try { renderCart(await api("/api/cart", { session_id: sid, items, mode })); }
+  catch (e) { say("err", e.message); }
+}
+function inCart(id) { return (cart.items.find(i => i.id === id) || {}).quantity || 0; }
+function renderCart(c) {
+  cart = c; $("cartCount").textContent = c.count;
+  const box = $("cartLines"); box.replaceChildren();
+  if (!c.items.length) box.append(el("div", "empty", "Your cart is empty"));
+  for (const i of c.items) {
+    const row = el("div", "row"); const img = el("img"); img.src = i.image; img.alt = "";
+    const mid = el("div"); mid.append(el("div", "name", i.name), el("div", "meta", `${i.size} · ${money(i.price)}`));
+    const q = el("div", "qty"); const minus = el("button", "", "−"); const plus = el("button", "", "+");
+    minus.onclick = () => changeCart([{ product_id: i.id, quantity: i.quantity - 1 }], "set");
+    plus.onclick = () => changeCart([{ product_id: i.id, quantity: i.quantity + 1 }], "set");
+    q.append(minus, el("span", "", String(i.quantity)), plus); mid.append(q);
+    row.append(img, mid, el("div", "amt", money(i.line_total))); box.append(row);
+  }
+  const foot = $("cartFoot"); foot.replaceChildren();
+  const t = el("div", "total"); t.append(el("span", "", `Total (${c.count} items)`), el("span", "", money(c.total)));
+  const go = el("button", "big", "Checkout"); go.disabled = !c.items.length; go.onclick = () => showCheckout();
+  foot.append(t, go);
+  addButtons.forEach(fn => fn());
+}
+
+// ---------- cards
+function productCard(p) {
+  const c = el("div", "card"); const img = el("img"); img.src = p.image; img.alt = p.name; c.append(img);
+  const b = el("div", "b"); b.append(el("div", "name", p.name), el("div", "meta", `${p.brand} · ${p.size} · ★ ${p.rating}`));
+  const tags = el("div", "tags"); (p.dietary || []).slice(0, 3).forEach(t => tags.append(el("span", "tag", t))); b.append(tags);
+  b.append(el("div", "price", money(p.price)));
+  const btn = el("button", "add"); btn.type = "button";
+  const draw = () => { const q = inCart(p.id); btn.textContent = q ? `In cart (${q}) · add 1` : "Add to cart"; btn.classList.toggle("in", !!q); };
+  btn.onclick = () => changeCart([{ product_id: p.id, quantity: 1 }]); draw(); addButtons.push(draw);
+  b.append(btn); c.append(b); return c;
+}
+function bundle(card) {
+  const p = el("div", "panel"); p.append(el("h3", "", card.title));
+  for (const i of card.items) {
+    const row = el("div", "row"); const img = el("img"); img.src = i.image; img.alt = "";
+    const mid = el("div"); mid.append(el("div", "name", i.name), el("div", "meta", `${i.quantity} × ${money(i.price)} · ${i.size}${i.needed ? " · need " + i.needed : ""}${i.for ? " · for " + i.for : ""}`));
+    row.append(img, mid, el("div", "amt", money(i.line_total))); p.append(row);
+  }
+  const t = el("div", "total"); t.append(el("span", "", "Total"), el("span", "", money(card.total))); p.append(t);
+  if (card.kind === "budget") p.append(el("div", card.remaining >= 0 ? "ok" : "note", `✓ ${money(card.remaining)} under your ${money(card.budget)} budget`));
+  if (card.already_have && card.already_have.length) p.append(el("div", "note", "Skipped (you have them): " + card.already_have.join(", ")));
+  if (card.missing && card.missing.length) p.append(el("div", "note", "Not in the store: " + card.missing.join(", ")));
+  const btn = el("button", "big", `Add all to cart (${money(card.total)})`); btn.type = "button";
+  btn.onclick = async () => { btn.disabled = true; await changeCart(card.items.map(i => ({ product_id: i.id, quantity: i.quantity }))); btn.textContent = "Added to cart ✓"; };
+  p.append(btn);
+  if (card.pantry_check && card.pantry_check.length) p.append(pantry(card.pantry_check));
+  return p;
+}
+function pantry(list) {
+  // Staples the customer may already have: shown separately, added only on request.
+  const box = el("div", "pantry"); box.append(el("div", "pantry-title", "Pantry check: do you already have these?"));
+  for (const i of list) {
+    const row = el("div", "row"); const img = el("img"); img.src = i.image; img.alt = "";
+    const mid = el("div"); mid.append(el("div", "name", i.name), el("div", "meta", `${money(i.price)} · for ${i.for}`));
+    const add = el("button", "add small", "Add"); add.type = "button";
+    add.onclick = async () => { add.disabled = true; await changeCart([{ product_id: i.id, quantity: i.quantity }]); add.textContent = "Added ✓"; };
+    row.append(img, mid, add); box.append(row);
+  }
+  return box;
+}
+function showCheckout() {
+  if (!cart.items.length) return;
+  $("cartPanel").classList.remove("open");
+  const p = el("div", "panel"); p.append(el("h3", "", "Checkout"));
+  for (const i of cart.items) { const r = el("div", "row"); const img = el("img"); img.src = i.image; img.alt = ""; r.append(img, el("div", "name", `${i.quantity} × ${i.name}`), el("div", "amt", money(i.line_total))); p.append(r); }
+  const t = el("div", "total"); t.append(el("span", "", "Total payable"), el("span", "", money(cart.total))); p.append(t);
+  const name = el("input"); name.placeholder = "Full name"; const addr = el("input"); addr.placeholder = "Delivery address";
+  const pay = el("select"); [["card", "Card (demo)"], ["apple_pay", "Apple Pay (demo)"], ["cash", "Cash on delivery"]].forEach(([v, l]) => { const o = el("option", "", l); o.value = v; pay.append(o); });
+  const btn = el("button", "big", `Pay ${money(cart.total)}`); btn.type = "button";
+  btn.onclick = async () => {
+    btn.disabled = true;
+    try {
+      const r = await api("/api/checkout", { session_id: sid, name: name.value, address: addr.value, payment: pay.value });
+      p.replaceChildren(el("h3", "", "Order confirmed ✓"), el("div", "", `Order ${r.order.order_id} · ${money(r.order.total)} · delivery in about ${r.order.eta}.`),
+                        el("div", "note", "Demo order: no real payment was taken."));
+      renderCart(r.cart);
+    } catch (e) { btn.disabled = false; say("err", e.message); }
+  };
+  p.append(name, addr, pay, btn, el("div", "note", "Demo checkout: no real payment is taken."));
+  const block = el("div", "block"); block.append(p); $("log").append(block); scroll();
+}
+function render(cards) {
+  for (const c of cards || []) {
+    if (c.type === "products") { const g = el("div", "grid"); c.items.forEach(p => g.append(productCard(p))); const b = el("div", "block"); b.append(g); $("log").append(b); }
+    else if (c.type === "bundle") { const b = el("div", "block"); b.append(bundle(c)); $("log").append(b); }
+    else if (c.type === "checkout") showCheckout();
+  }
+  scroll();
+}
+
+// ---------- chat
+async function send(text) {
+  text = text.trim(); if (!text) return;
+  $("chips").hidden = true; $("send").disabled = true; $("input").value = "";
+  say("user", text); const typing = el("div", "typing", "Assistant is thinking…"); $("log").append(typing); scroll();
+  try {
+    const r = await api("/api/chat", { session_id: sid, message: text });
+    typing.remove(); say("bot", r.reply); render(r.cards); renderCart(r.cart);
+  } catch (e) { typing.remove(); say("err", e.message); }
+  $("send").disabled = false; $("input").focus();
+}
+$("composer").onsubmit = (e) => { e.preventDefault(); send($("input").value); };
+$("chips").onclick = (e) => { if (e.target.classList.contains("chip")) send(e.target.textContent); };
+$("cartBtn").onclick = () => $("cartPanel").classList.add("open");
+$("closeCart").onclick = () => $("cartPanel").classList.remove("open");
+api("/api/info").then(i => { $("info").textContent = `${i.products} products · vector search${i.ai_ready ? "" : " · add your Groq key to .env"}`; }).catch(() => {});
+api("/api/cart/" + sid).then(renderCart).catch(() => {});
+</script>
+</body>
+</html>

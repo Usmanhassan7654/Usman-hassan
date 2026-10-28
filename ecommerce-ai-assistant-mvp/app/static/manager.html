@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Store Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap">
+<style>
+/* Layout: blue top bar with tabs; each tab is one working view (overview tiles, product table, product form, import, orders). */
+:root {
+  --bg: #f3f7ff; --panel: #ffffff; --ink: #0f1e3d; --muted: #5a6a8a; --line: #dbe4f4;
+  --blue: #1d4ed8; --blue-2: #3b82f6; --blue-deep: #1e3a8a; --blue-soft: #e8f0ff; --on-blue: #ffffff;
+  --good: #15803d; --good-soft: #eaf7ee; --warn: #b45309; --warn-soft: #fff4e5; --bad: #b42318; --bad-soft: #fdecea;
+  --shadow: 0 6px 18px rgba(29, 78, 216, .08);
+  --display: "Manrope", "Segoe UI", system-ui, sans-serif; --body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14.5px/1.5 var(--body); }
+button { font: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--blue-2); outline-offset: 2px; }
+.top { background: linear-gradient(120deg, var(--blue-deep), var(--blue) 55%, var(--blue-2)); color: var(--on-blue); }
+.bar { max-width: 1240px; margin: 0 auto; padding: 14px 20px 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.logo { width: 36px; height: 36px; border-radius: 11px; background: var(--on-blue); color: var(--blue); display: grid; place-items: center; font: 800 14px var(--display); }
+.bar h1 { margin: 0; font: 800 18px var(--display); }
+.bar small { display: block; color: rgba(255, 255, 255, .8); font-size: 12px; }
+.bar .right { margin-left: auto; display: flex; gap: 8px; }
+.ghost { border: 1px solid rgba(255, 255, 255, .5); background: rgba(255, 255, 255, .12); color: var(--on-blue); border-radius: 999px; padding: 6px 14px; font-weight: 600; text-decoration: none; font-size: 13px; }
+.tabs { max-width: 1240px; margin: 0 auto; padding: 12px 20px 0; display: flex; gap: 4px; overflow-x: auto; }
+.tab { border: 0; background: transparent; color: rgba(255, 255, 255, .85); padding: 10px 16px; border-radius: 12px 12px 0 0; font-weight: 700; white-space: nowrap; }
+.tab.on { background: var(--bg); color: var(--blue-deep); }
+main { max-width: 1240px; margin: 0 auto; padding: 22px 20px 60px; }
+h2 { font: 800 20px var(--display); margin: 0 0 14px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: var(--shadow); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 18px; }
+.tile { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; box-shadow: var(--shadow); }
+.tile b { display: block; font: 800 26px var(--display); color: var(--blue-deep); font-variant-numeric: tabular-nums; }
+.tile span { color: var(--muted); font-size: 13px; }
+.tile.warn b { color: var(--warn); } .tile.bad b { color: var(--bad); }
+.tools { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; align-items: center; }
+input, select, textarea { font: inherit; padding: 9px 11px; border: 1px solid var(--line); border-radius: 10px; background: #f8fbff; color: var(--ink); }
+textarea { width: 100%; min-height: 80px; resize: vertical; }
+.tools input[type=search] { flex: 1; min-width: 200px; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); box-shadow: var(--shadow); }
+table { border-collapse: collapse; width: 100%; min-width: 860px; }
+th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); background: #f8fbff; padding: 10px 12px; border-bottom: 1px solid var(--line); position: sticky; top: 0; }
+td { padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+tr:last-child td { border-bottom: 0; }
+td img { width: 40px; height: 48px; object-fit: contain; background: #fff; border: 1px solid var(--line); border-radius: 8px; display: block; }
+td .n { font-weight: 600; } td .m { color: var(--muted); font-size: 12px; }
+td input.inline { width: 84px; padding: 6px 8px; font-variant-numeric: tabular-nums; }
+.pill { font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+.pill.ok { color: var(--good); background: var(--good-soft); } .pill.low { color: var(--warn); background: var(--warn-soft); } .pill.out { color: var(--bad); background: var(--bad-soft); }
+.btn { border: 0; border-radius: 10px; background: linear-gradient(135deg, var(--blue), var(--blue-2)); color: var(--on-blue); padding: 9px 16px; font-weight: 700; }
+.btn:disabled { opacity: .5; cursor: default; }
+.btn.light { background: var(--blue-soft); color: var(--blue); }
+.btn.danger { background: var(--bad-soft); color: var(--bad); }
+.btn.small { padding: 5px 10px; font-size: 13px; }
+.form { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 20px; align-items: start; }
+@media (max-width: 860px) { .form { grid-template-columns: 1fr; } }
+.fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 14px; }
+.fields .wide { grid-column: 1 / -1; }
+@media (max-width: 560px) { .fields { grid-template-columns: 1fr; } }
+label.f { display: flex; flex-direction: column; gap: 4px; font-weight: 600; font-size: 13px; }
+label.f small { color: var(--muted); font-weight: 400; }
+label.f input, label.f select { width: 100%; }
+.checks { display: flex; flex-wrap: wrap; gap: 6px; }
+.check { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; font-weight: 500; font-size: 13px; background: #f8fbff; cursor: pointer; }
+.check input { margin: 0; }
+.preview { position: sticky; top: 16px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
+.card img { width: 100%; aspect-ratio: 5 / 6; object-fit: contain; background: linear-gradient(180deg, #fff, var(--blue-soft)); display: block; }
+.card .b { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 3px; }
+.card .price { font: 800 16px var(--display); color: var(--blue); }
+.tag { font-size: 10.5px; background: var(--blue-soft); color: var(--blue); border-radius: 999px; padding: 1px 8px; font-weight: 600; }
+.msg { border-radius: 12px; padding: 10px 14px; margin: 12px 0; font-size: 14px; }
+.msg.ok { background: var(--good-soft); color: var(--good); } .msg.err { background: var(--bad-soft); color: var(--bad); } .msg.warn { background: var(--warn-soft); color: var(--warn); }
+.login { max-width: 380px; margin: 12vh auto; }
+.login .panel { display: flex; flex-direction: column; gap: 12px; }
+.login h1 { font: 800 22px var(--display); margin: 0; color: var(--blue-deep); }
+.modal { position: fixed; inset: 0; background: rgba(15, 30, 61, .45); display: grid; place-items: center; z-index: 30; padding: 16px; }
+.modal .panel { max-width: 420px; width: 100%; display: flex; flex-direction: column; gap: 12px; }
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 9px 16px; border-radius: 10px; z-index: 40; font-size: 14px; }
+.list { display: flex; flex-direction: column; gap: 6px; }
+.list .row { display: flex; justify-content: space-between; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.list .row:last-child { border-bottom: 0; }
+.muted { color: var(--muted); }
+</style>
+</head>
+<body>
+
+<div id="loginView" class="login" hidden>
+  <div class="panel">
+    <h1>Store Manager</h1>
+    <p class="muted" style="margin:0">Sign in to manage the products your AI assistant sells.</p>
+    <div id="loginMsg"></div>
+    <form id="loginForm" style="display:flex;flex-direction:column;gap:10px">
+      <input id="password" type="password" placeholder="Manager password" autocomplete="current-password" aria-label="Manager password">
+      <button class="btn" type="submit">Sign in</button>
+    </form>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <div class="top">
+    <div class="bar">
+      <div class="logo">AI</div>
+      <div><h1>Store Manager</h1><small>Products added here are live in the AI shopping chat immediately.</small></div>
+      <div class="right"><a class="ghost" href="/" target="_blank" rel="noopener">Open chat ↗</a><button class="ghost" id="logout" type="button">Log out</button></div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button class="tab on" data-view="overview" type="button">Overview</button>
+      <button class="tab" data-view="products" type="button">Products</button>
+      <button class="tab" data-view="form" type="button" id="formTab">Add product</button>
+      <button class="tab" data-view="import" type="button">Import / Export</button>
+      <button class="tab" data-view="orders" type="button">Orders</button>
+    </nav>
+  </div>
+  <main>
+    <section id="overview"></section>
+    <section id="products" hidden>
+      <div class="tools">
+        <input id="q" type="search" placeholder="Search by name, brand or ID" aria-label="Search products">
+        <select id="cat" aria-label="Category"><option value="">All categories</option></select>
+        <select id="sort" aria-label="Sort">
+          <option value="name">Sort: name</option><option value="price">Sort: price</option><option value="stock">Sort: stock (low first)</option><option value="category">Sort: category</option>
+        </select>
+        <button class="btn" type="button" id="newBtn">+ Add product</button>
+      </div>
+      <p class="muted" id="count" style="margin:0 0 10px"></p>
+      <div class="table-wrap"><table>
+        <thead><tr><th></th><th>Product</th><th>ID</th><th>Category</th><th>Price ($)</th><th>Stock</th><th>Status</th><th></th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table></div>
+    </section>
+    <section id="form" hidden></section>
+    <section id="import" hidden>
+      <h2>Import / Export</h2>
+      <div class="panel" style="display:flex;flex-direction:column;gap:14px">
+        <div>
+          <b>Download the catalog</b>
+          <p class="muted" style="margin:4px 0 8px">Get all products as a CSV file. Open it in Excel or Google Sheets, edit, and upload it below.</p>
+          <button class="btn light" type="button" id="exportBtn">Download products.csv</button>
+        </div>
+        <hr style="border:0;border-top:1px solid var(--line);margin:0">
+        <div>
+          <b>Upload products from a CSV</b>
+          <p class="muted" style="margin:4px 0 8px">Rows with an existing ID update that product; rows without an ID (or a new ID) are added. Required columns: name, category, price, size. Lists like dietary go in one cell separated by semicolons, e.g. <code>vegan; gluten-free</code>. Nothing is saved until you confirm.</p>
+          <div class="tools"><input type="file" id="csvFile" accept=".csv,text/csv" aria-label="CSV file"><button class="btn" type="button" id="previewBtn">Check file</button></div>
+          <div id="importResult"></div>
+        </div>
+      </div>
+    </section>
+    <section id="orders" hidden></section>
+  </main>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const money = (n) => "$" + Number(n).toFixed(2);
+let products = [], options = { categories: [], dietary: [], allergens: [] };
+
+function toast(t) { const d = el("div", "toast", t); document.body.append(d); setTimeout(() => d.remove(), 2400); }
+function note(box, cls, text) { box.replaceChildren(el("div", "msg " + cls, text)); }
+async function api(path, opts = {}) {
+  const r = await fetch(path, { credentials: "same-origin", ...opts,
+    headers: opts.body && !(opts.body instanceof FormData) ? { "Content-Type": "application/json" } : {} });
+  if (r.status === 401 && !path.endsWith("/login")) { showLogin(); throw new Error("Please sign in again."); }
+  const data = r.headers.get("content-type")?.includes("json") ? await r.json() : await r.text();
+  if (!r.ok) throw new Error((data && data.detail) || "Something went wrong.");
+  return data;
+}
+const status = (s) => s <= 0 ? ["out", "Out of stock"] : s <= 5 ? ["low", "Low stock"] : ["ok", "In stock"];
+
+// ---------------------------------------------------------------- login
+function showLogin(msg) { $("app").hidden = true; $("loginView").hidden = false; if (msg) note($("loginMsg"), "err", msg); $("password").focus(); }
+$("loginForm").onsubmit = async (e) => {
+  e.preventDefault();
+  try { await api("/manager/api/login", { method: "POST", body: JSON.stringify({ password: $("password").value }) }); $("password").value = ""; start(); }
+  catch (err) { note($("loginMsg"), "err", err.message); }
+};
+$("logout").onclick = async () => { await api("/manager/api/logout", { method: "POST" }).catch(() => {}); showLogin(); };
+
+// ---------------------------------------------------------------- tabs
+function show(view) {
+  for (const t of document.querySelectorAll(".tab")) t.classList.toggle("on", t.dataset.view === view);
+  for (const s of ["overview", "products", "form", "import", "orders"]) $(s).hidden = s !== view;
+  ({ overview: renderOverview, products: renderProducts, orders: renderOrders })[view]?.();
+}
+$("tabs").onclick = (e) => { const t = e.target.closest(".tab"); if (!t) return; if (t.dataset.view === "form") openForm(); else show(t.dataset.view); };
+
+// ---------------------------------------------------------------- overview
+async function renderOverview() {
+  const o = await api("/manager/api/overview"), box = $("overview");
+  box.replaceChildren(el("h2", "", "Overview"));
+  const tiles = el("div", "tiles");
+  [["Products", o.products], ["In stock", o.in_stock], ["Low stock (≤ 5)", o.low_stock, "warn"], ["Out of stock", o.out_of_stock, "bad"],
+   ["Categories", o.categories], ["Chat orders", o.orders], ["Order value", money(o.revenue)]].forEach(([l, v, c]) => {
+    const t = el("div", "tile " + (c || "")); t.append(el("b", "", String(v)), el("span", "", l)); tiles.append(t); });
+  const need = el("div", "panel"); need.append(el("h2", "", "Needs attention"));
+  if (!o.needs_attention.length) need.append(el("p", "muted", "Everything is well stocked."));
+  const list = el("div", "list");
+  for (const p of o.needs_attention) {
+    const row = el("div", "row"); const [cls, label] = status(p.stock);
+    const left = el("div"); left.append(el("span", "", p.name + " "), el("span", "pill " + cls, `${label} · ${p.stock}`));
+    const b = el("button", "btn light small", "Edit"); b.type = "button"; b.onclick = () => openForm(products.find(x => x.id === p.id));
+    row.append(left, b); list.append(row);
+  }
+  need.append(list); box.append(tiles, need);
+}
+
+// ---------------------------------------------------------------- products table
+async function loadProducts() { products = await api("/manager/api/products"); fillCategories(); }
+function fillCategories() {
+  const sel = $("cat"), cur = sel.value; sel.replaceChildren(el("option", "", "All categories")); sel.firstChild.value = "";
+  [...new Set(products.map(p => p.category))].sort().forEach(c => { const o = el("option", "", c); o.value = c; sel.append(o); });
+  sel.value = cur;
+}
+function renderProducts() {
+  const q = $("q").value.trim().toLowerCase(), cat = $("cat").value, sort = $("sort").value;
+  let list = products.filter(p => (!cat || p.category === cat) && (!q || `${p.name} ${p.brand} ${p.id}`.toLowerCase().includes(q)));
+  list.sort((a, b) => sort === "price" ? a.price - b.price : sort === "stock" ? a.stock - b.stock : sort === "category" ? a.category.localeCompare(b.category) || a.name.localeCompare(b.name) : a.name.localeCompare(b.name));
+  $("count").textContent = `${list.length} of ${products.length} products`;
+  $("rows").replaceChildren(...list.map(p => {
+    const tr = el("tr"), [cls, label] = status(p.stock);
+    const img = el("img"); img.src = p.image_url; img.alt = "";
+    const name = el("td"); name.append(el("div", "n", p.name), el("div", "m", `${p.brand || "—"} · ${p.size}`));
+    const price = el("input", "inline"); price.type = "number"; price.step = "0.01"; price.min = "0.01"; price.value = p.price.toFixed(2); price.setAttribute("aria-label", "Price of " + p.name);
+    const stock = el("input", "inline"); stock.type = "number"; stock.step = "1"; stock.min = "0"; stock.value = p.stock; stock.setAttribute("aria-label", "Stock of " + p.name);
+    price.onchange = () => quickSave(p, { price: price.value }); stock.onchange = () => quickSave(p, { stock: stock.value });
+    const edit = el("button", "btn light small", "Edit"); edit.type = "button"; edit.onclick = () => openForm(p);
+    const del = el("button", "btn danger small", "Delete"); del.type = "button"; del.onclick = () => confirmDelete(p);
+    const acts = el("td"); acts.style.whiteSpace = "nowrap"; acts.append(edit, " ", del);
+    const cells = [img, name, el("span", "m", p.id), el("span", "", p.category), price, stock, el("span", "pill " + cls, label)];
+    cells.forEach((c, i) => { if (i === 1) tr.append(c); else { const td = el("td"); td.append(c); tr.append(td); } });
+    tr.append(acts); return tr;
+  }));
+}
+async function quickSave(p, change) {
+  try { const r = await api(`/manager/api/products/${encodeURIComponent(p.id)}`, { method: "PUT", body: JSON.stringify(change) });
+        Object.assign(p, r.product); toast(`Saved ${p.name}`); renderProducts(); }
+  catch (e) { toast(e.message); renderProducts(); }
+}
+function confirmDelete(p) {
+  const m = el("div", "modal"), box = el("div", "panel");
+  box.append(el("h2", "", "Delete product?"), el("p", "", `"${p.name}" will be removed from the store and the chat. This can't be undone.`));
+  const row = el("div", "tools"), yes = el("button", "btn danger", "Delete"), no = el("button", "btn light", "Cancel"); yes.type = no.type = "button";
+  no.onclick = () => m.remove();
+  yes.onclick = async () => { try { await api(`/manager/api/products/${encodeURIComponent(p.id)}`, { method: "DELETE" }); products = products.filter(x => x.id !== p.id); toast("Deleted"); m.remove(); renderProducts(); } catch (e) { toast(e.message); } };
+  row.append(yes, no); box.append(row); m.append(box); document.body.append(m); yes.focus();
+}
+["q", "cat", "sort"].forEach(id => $(id).addEventListener("input", renderProducts));
+$("newBtn").onclick = () => openForm();
+
+// ---------------------------------------------------------------- add / edit form
+function openForm(p) {
+  show("form"); $("formTab").textContent = p ? "Edit product" : "Add product";
+  const box = $("form"); box.replaceChildren(el("h2", "", p ? `Edit: ${p.name}` : "Add a product"));
+  const result = el("div"); const wrap = el("div", "form"); const panel = el("div", "panel"); const fields = el("div", "fields");
+  const v = p || { name: "", brand: "", category: "", price: "", size: "", stock: 10, description: "", keywords: "", dietary: [], allergens: [], pairs_with: [], image: "", rating: 4.5 };
+  const inputs = {};
+  const field = (key, label, hint, type = "text", wide = false) => {
+    const l = el("label", "f" + (wide ? " wide" : "")); l.append(el("span", "", label));
+    const i = key === "description" ? el("textarea") : el("input"); if (key !== "description") i.type = type;
+    i.id = "f-" + key; i.value = Array.isArray(v[key]) ? v[key].join("; ") : (v[key] ?? "");
+    if (type === "number") { i.step = key === "price" ? "0.01" : "1"; i.min = key === "price" ? "0.01" : "0"; }
+    l.append(i); if (hint) l.append(el("small", "", hint)); fields.append(l); inputs[key] = i; i.addEventListener("input", preview); return i;
+  };
+  field("name", "Product name *", "", "text", true);
+  field("brand", "Brand");
+  const catLabel = el("label", "f"); catLabel.append(el("span", "", "Category *"));
+  const cat = el("input"); cat.id = "f-category"; cat.setAttribute("list", "catList"); cat.value = v.category; cat.placeholder = "Pick or type a new one";
+  const dl = el("datalist"); dl.id = "catList"; options.categories.forEach(c => { const o = el("option"); o.value = c; dl.append(o); });
+  catLabel.append(cat, dl); fields.append(catLabel); inputs.category = cat; cat.addEventListener("input", preview);
+  field("price", "Price ($) *", "", "number"); field("size", "Size *", "e.g. 1 L, 500 g, 12 ct");
+  field("stock", "Stock", "", "number"); field("rating", "Rating (0–5)", "", "number");
+  field("description", "Description", "Shown to the AI when it searches. Leave empty to create one automatically.", "text", true);
+  field("keywords", "Search keywords", "Other words customers use, e.g. 'dairy milk' or 'soda pop'.", "text", true);
+  field("pairs_with", "Goes well with", "Separate with semicolons, e.g. cereal; cookies", "text", true);
+  const checks = (key, label, all) => {
+    const l = el("div", "f wide"); l.append(el("b", "", label)); const g = el("div", "checks");
+    all.forEach(o => { const c = el("label", "check"); const i = el("input"); i.type = "checkbox"; i.value = o; i.checked = (v[key] || []).includes(o); i.onchange = preview; c.append(i, o); g.append(c); });
+    l.append(g); fields.append(l); inputs[key] = g;
+  };
+  checks("dietary", "Dietary tags", options.dietary); checks("allergens", "Contains allergens", options.allergens);
+  const picLabel = el("label", "f wide"); picLabel.append(el("span", "", "Picture"));
+  const file = el("input"); file.type = "file"; file.accept = ".jpg,.jpeg,.png,.webp,.svg"; file.id = "f-file";
+  const url = el("input"); url.type = "url"; url.id = "f-url"; url.placeholder = "…or paste a picture link (https://…)"; url.value = (v.image || "").startsWith("http") ? v.image : "";
+  picLabel.append(file, url, el("small", "", "JPG, PNG, WEBP or SVG, up to 3 MB. Square pictures on a white background look best."));
+  fields.append(picLabel); file.onchange = preview; url.oninput = preview;
+  const save = el("button", "btn", p ? "Save changes" : "Add product"); save.type = "button";
+  const cancel = el("button", "btn light", "Cancel"); cancel.type = "button"; cancel.onclick = () => show("products");
+  const actions = el("div", "tools"); actions.style.marginTop = "14px"; actions.append(save, cancel);
+  panel.append(fields, actions);
+  const pv = el("div", "preview"); pv.append(el("p", "muted", "Preview in the chat"), el("div"));
+  wrap.append(panel, pv); box.append(result, wrap);
+
+  function values() {
+    const picked = (k) => [...inputs[k].querySelectorAll("input:checked")].map(i => i.value);
+    const out = { name: inputs.name.value, brand: inputs.brand.value, category: inputs.category.value, price: inputs.price.value, size: inputs.size.value,
+      stock: inputs.stock.value, rating: inputs.rating.value, description: inputs.description.value, keywords: inputs.keywords.value,
+      pairs_with: inputs.pairs_with.value, dietary: picked("dietary"), allergens: picked("allergens") };
+    if (url.value.trim()) out.image = url.value.trim(); else if (!p) out.image = "";
+    return out;
+  }
+  function preview() {
+    const x = values(), card = el("div", "card"), img = el("img");
+    img.alt = ""; img.src = file.files[0] ? URL.createObjectURL(file.files[0]) : (x.image || (p ? p.image_url : "/images/placeholder.svg"));
+    const b = el("div", "b"); b.append(el("b", "", x.name || "Product name"), el("span", "muted", `${x.brand || "Brand"} · ${x.size || "size"}`));
+    const tags = el("div", "checks"); x.dietary.slice(0, 3).forEach(t => tags.append(el("span", "tag", t)));
+    b.append(tags, el("span", "price", x.price ? money(x.price) : "$0.00")); card.append(img, b); pv.lastChild.replaceWith(card);
+  }
+  preview();
+  save.onclick = async () => {
+    save.disabled = true;
+    try {
+      const body = values();
+      const r = p ? await api(`/manager/api/products/${encodeURIComponent(p.id)}`, { method: "PUT", body: JSON.stringify(body) })
+                  : await api("/manager/api/products", { method: "POST", body: JSON.stringify(body) });
+      let saved = r.product;
+      if (file.files[0]) {
+        const fd = new FormData(); fd.append("file", file.files[0]);
+        saved = (await api(`/manager/api/products/${encodeURIComponent(saved.id)}/image`, { method: "POST", body: fd })).product;
+      }
+      await loadProducts();
+      note(result, r.warnings.length ? "warn" : "ok", `${p ? "Saved" : "Added"} "${saved.name}" (${saved.id}). It's live in the chat now.` + (r.warnings.length ? " Note: " + r.warnings.join(" ") : ""));
+      if (!p) { openForm(); $("form").prepend(result); } else { p = saved; }
+    } catch (e) { note(result, "err", e.message); }
+    save.disabled = false; window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+}
+
+// ---------------------------------------------------------------- import / export
+$("exportBtn").onclick = async () => {
+  try {
+    const text = await api("/manager/api/export.csv");
+    const a = el("a"); a.href = URL.createObjectURL(new Blob([text], { type: "text/csv" })); a.download = "products.csv"; document.body.append(a); a.click(); a.remove();
+  } catch (e) { toast(e.message); }
+};
+$("previewBtn").onclick = async () => {
+  const f = $("csvFile").files[0], box = $("importResult");
+  if (!f) { note(box, "err", "Choose a CSV file first."); return; }
+  const fd = new FormData(); fd.append("file", f);
+  try {
+    const r = await api("/manager/api/import/preview", { method: "POST", body: fd });
+    box.replaceChildren(el("div", "msg " + (r.errors.length ? "warn" : "ok"), `${r.added} new, ${r.updated} updated, ${r.errors.length} rows with errors.`));
+    if (r.errors.length) {
+      const wrap = el("div", "table-wrap"), t = el("table"); t.style.minWidth = "520px";
+      t.append(el("thead")); t.firstChild.append(Object.assign(el("tr"), { innerHTML: "<th>Row</th><th>Name</th><th>Problem</th>" }));
+      const tb = el("tbody"); r.errors.forEach(e => { const tr = el("tr"); [e.row, e.name || "—", e.error].forEach(x => tr.append(el("td", "", String(x)))); tb.append(tr); });
+      t.append(tb); wrap.append(t); box.append(wrap, el("p", "muted", "Fix these rows in the file and check it again. Nothing has been saved."));
+    } else {
+      r.warnings.forEach(w => box.append(el("div", "msg warn", w)));
+      const go = el("button", "btn", `Import ${r.added + r.updated} products`); go.type = "button";
+      go.onclick = async () => { go.disabled = true;
+        try { const c = await api("/manager/api/import/commit", { method: "POST", body: fd }); await loadProducts();
+              note(box, "ok", `Imported: ${c.added} added, ${c.updated} updated. They're live in the chat now.`); }
+        catch (e) { note(box, "err", e.message); go.disabled = false; } };
+      box.append(go);
+    }
+  } catch (e) { note(box, "err", e.message); }
+};
+
+// ---------------------------------------------------------------- orders
+async function renderOrders() {
+  const orders = await api("/manager/api/orders"), box = $("orders");
+  box.replaceChildren(el("h2", "", "Orders from the chat"));
+  if (!orders.length) { box.append(Object.assign(el("div", "panel"), { textContent: "No orders yet. Orders placed through the chat checkout appear here." })); return; }
+  const wrap = el("div", "table-wrap"), t = el("table");
+  t.innerHTML = "<thead><tr><th>Order</th><th>Time</th><th>Customer</th><th>Items</th><th>Payment</th><th>Total</th></tr></thead>";
+  const tb = el("tbody");
+  for (const o of orders) {
+    const tr = el("tr");
+    [o.order_id, o.placed_at, `${o.name} · ${o.address}`, o.items.map(i => `${i.quantity} × ${i.name}`).join(", "), o.payment + (o.demo ? " (demo)" : ""), money(o.total)]
+      .forEach(x => tr.append(el("td", "", x)));
+    tb.append(tr);
+  }
+  t.append(tb); wrap.append(t); box.append(wrap);
+}
+
+// ---------------------------------------------------------------- start
+async function start() {
+  const s = await api("/manager/api/session");
+  if (!s.configured) { showLogin("The dashboard is turned off. Add MANAGER_PASSWORD=your-password to the .env file and restart the app."); $("loginForm").hidden = true; return; }
+  if (!s.logged_in) { showLogin(); return; }
+  $("loginView").hidden = true; $("loginMsg").replaceChildren(); $("app").hidden = false;
+  options = await api("/manager/api/options"); await loadProducts(); show("overview");
+}
+start().catch(e => showLogin(e.message));
+</script>
+</body>
+</html>
