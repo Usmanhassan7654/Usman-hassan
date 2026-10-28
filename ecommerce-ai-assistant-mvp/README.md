@@ -32,6 +32,17 @@ You need Python 3.10 or newer and a free Groq key from https://console.groq.com/
    ```
    Your browser opens http://localhost:8000. Press Ctrl+C in the terminal to stop.
 
+## Real product photos
+
+The demo starts with vector pictures. To swap them for real photos (free, from Wikimedia Commons, no key needed):
+
+1. Stop the app (Ctrl+C).
+2. Run `python scripts/fetch_photos.py` (about 10 minutes for 200 products; it can be stopped and run again).
+3. A review page opens with every photo next to its product. Fix any wrong one in the dashboard (Edit → Picture).
+4. Start the app again with `python run.py`.
+
+Photos are saved as `data/images/<id>.jpg` and the `image` column of `products.csv` is updated. The vector pictures are kept: `python scripts/fetch_photos.py --undo` switches back. Photographers and licenses are listed in `data/images/CREDITS.csv`; some licenses (CC BY, CC BY-SA) ask for credit, so keep that file with the site.
+
 ## Manager dashboard
 
 Open http://localhost:8000/manager and sign in with `MANAGER_PASSWORD` from `.env`. The chat page has no link to it, and every dashboard action is checked on the server, so customers can't use it even if they find the address. After 5 wrong passwords, sign-in is blocked for 5 minutes.
