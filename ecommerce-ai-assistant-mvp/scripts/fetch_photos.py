@@ -45,7 +45,7 @@ REVIEW = ROOT / "data" / "photo_review.html"
 # Licenses that allow commercial use.
 FREE = re.compile(r"^\s*(cc0|public domain|pd\b|cc by(-sa)?\b)", re.I)
 # Titles that are usually not a photo of the food or product itself.
-NOT_PRODUCT = re.compile(r"still life|wellcome|afiche|dress|shoe|film|school|college|mulch|met \d|engraving|woman|\bman\b|people|vendor|\bfair\b|recall|milk glass|kids|band\b|concert|club|singer|perform|live at|crisps|freeze-dried|map|logo|label|poster|painting|drawing|diagram|chart|stamp|coat of arms|advert|museum|"
+NOT_PRODUCT = re.compile(r"baby|child|girl|boy|still life|wellcome|afiche|dress|shoe|film|school|college|mulch|met \d|engraving|woman|\bman\b|people|vendor|\bfair\b|recall|milk glass|kids|band\b|concert|club|singer|perform|live at|crisps|freeze-dried|map|logo|label|poster|painting|drawing|diagram|chart|stamp|coat of arms|advert|museum|"
                          r"church|portrait|menu|sign\b|plant|tree|flower|field|farm|market|factory|festival", re.I)
 # Words in our product names that don't help a photo search.
 FILLER = {"fresh", "organic", "pure", "classic", "gourmet", "artisan", "original", "variety", "premium", "farm", "large",
@@ -57,7 +57,7 @@ QUERIES = {
     "Oat Milk Original": "oat milk", "Pasture-Raised Eggs": "brown eggs", "Large White Eggs": "white chicken eggs",
     "Strawberry Yogurt Cups": "yogurt cup", "Gourmet Heavy Cream": "whipped cream", "Vegan Cheddar Shreds": "shredded cheddar",
     "Aged Parmesan": "parmigiano reggiano", "Unsalted Butter": "butter block", "Fresh Mozzarella": "mozzarella", "Gluten-Free Bread": "sliced bread loaf",
-    "Butter Croissants": "croissants", "Seasonal Fruit Medley": "fruit salad", "Navel Oranges": "oranges",
+    "Butter Croissants": "croissants", "Blueberry Muffins": "blueberry muffins", "Seasonal Fruit Medley": "fruit salad", "Navel Oranges": "oranges",
     "Gala Apples": "red apples", "Hass Avocados": "avocado", "Watermelon Chunks": "watermelon slices", "Organic Baby Spinach": "spinach",
     "Farm Fresh Vegetables Bundle": "assorted vegetables", "Fresh Parsley & Garlic": "parsley", "Broccoli Crowns": "broccoli head",
     "Red Bell Peppers": "red bell pepper", "Sweet Green Peas": "green peas", "Fresh Chicken Breasts": "raw chicken breast",
