@@ -45,7 +45,7 @@ REVIEW = ROOT / "data" / "photo_review.html"
 # Licenses that allow commercial use.
 FREE = re.compile(r"^\s*(cc0|public domain|pd\b|cc by(-sa)?\b)", re.I)
 # Titles that are usually not a photo of the food or product itself.
-NOT_PRODUCT = re.compile(r"milk glass|map|logo|label|poster|painting|drawing|diagram|chart|stamp|coat of arms|advert|museum|"
+NOT_PRODUCT = re.compile(r"milk glass|kids|band\b|concert|club|singer|perform|live at|crisps|freeze-dried|map|logo|label|poster|painting|drawing|diagram|chart|stamp|coat of arms|advert|museum|"
                          r"church|portrait|menu|sign\b|plant|tree|flower|field|farm|market|factory|festival", re.I)
 # Words in our product names that don't help a photo search.
 FILLER = {"fresh", "organic", "pure", "classic", "gourmet", "artisan", "original", "variety", "premium", "farm", "large",
@@ -53,10 +53,10 @@ FILLER = {"fresh", "organic", "pure", "classic", "gourmet", "artisan", "original
           "boneless", "lean", "90/10", "13", "gal", "70%", "medium", "roast", "dark", "gluten-free", "refill", "scent"}
 # Better searches for names that are hard to find as written.
 QUERIES = {
-    "Organic Whole Milk": "milk bottle", "2% Reduced Fat Milk": "milk carton", "Unsweetened Almond Milk": "almond milk",
+    "Organic Whole Milk": "milk bottle", "2% Reduced Fat Milk": "milk jug", "Unsweetened Almond Milk": "almond milk",
     "Oat Milk Original": "oat milk", "Pasture-Raised Eggs": "brown eggs", "Large White Eggs": "white chicken eggs",
-    "Strawberry Yogurt Cups": "strawberry yogurt", "Gourmet Heavy Cream": "whipped cream", "Vegan Cheddar Shreds": "grated cheese",
-    "Aged Parmesan": "parmesan cheese", "Fresh Mozzarella": "mozzarella", "Gluten-Free Bread": "bread loaf",
+    "Strawberry Yogurt Cups": "yogurt cup", "Gourmet Heavy Cream": "whipped cream", "Vegan Cheddar Shreds": "grated cheese",
+    "Aged Parmesan": "parmigiano reggiano", "Unsalted Butter": "butter block", "Fresh Mozzarella": "mozzarella", "Gluten-Free Bread": "bread loaf",
     "Butter Croissants": "croissants", "Seasonal Fruit Medley": "fruit salad", "Navel Oranges": "oranges",
     "Gala Apples": "red apples", "Hass Avocados": "avocado", "Watermelon Chunks": "watermelon", "Organic Baby Spinach": "spinach leaves",
     "Farm Fresh Vegetables Bundle": "assorted vegetables", "Fresh Parsley & Garlic": "parsley", "Broccoli Crowns": "broccoli",
